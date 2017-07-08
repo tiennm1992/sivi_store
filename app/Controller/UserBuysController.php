@@ -73,10 +73,11 @@ class UserBuysController extends AppController {
         );
         $sum_revenue = $this->UserBuy->find('all', array(
             'conditions' => $cond,
-            'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum','month' =>'MONTH(date)'),
+            'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum', 'month' => 'MONTH(date)'),
             'group' => array('MONTH(date)')
         ));
-        pr($sum_revenue);die;
+        pr($sum_revenue);
+        die;
         $sum_revenue = $sum_revenue[0][0]['total_sum'];
         $this->set('sum', $sum_revenue);
         $this->set('title_for_layout', 'Thống kê mua hàng');
@@ -187,6 +188,25 @@ class UserBuysController extends AppController {
         return $this->redirect(array('action' => 'order'));
     }
 
+    public function delete_order_success($id = null) {
+        try {
+            $this->UserBuy->id = $id;
+            if (!$this->UserBuy->exists()) {
+                throw new NotFoundException(__('Invalid user buy'));
+            }
+            $this->request->allowMethod('post', 'delete');
+            $this->UserBuy->recursive = -1;
+            if ($this->UserBuy->delete()) {
+                $this->Session->setFlash(__('The user buy has been deleted.'));
+            } else {
+                $this->Session->setFlash(__('The user buy could not be deleted. Please, try again.'));
+            }
+        } catch (Exception $exc) {
+            echo $exc->getMessage();
+        }
+        return $this->redirect(array('action' => 'success_buy'));
+    }
+
     public function order() {
         try {
             $conditions = array(
@@ -266,6 +286,7 @@ class UserBuysController extends AppController {
                     'UserBuy.id' => 'DESC'
                 ),
             );
+//            pr($this->Paginator->paginate());die;
             $this->set('userBuys', $this->Paginator->paginate());
             $this->set('title_for_layout', 'Danh đơn hàng thành công');
         } catch (Exception $exc) {
