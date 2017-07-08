@@ -334,6 +334,8 @@ class ApiController extends AppController {
                         'product_id' => $data['product_id'],
                         'price_origin' => $product_data['Product']['price_origin'],
                         'price_sale' => $product_data['Product']['price'],
+                        'partner_price' => $product_data['Product']['partner_price'],
+                        'employee_price' => $product_data['Product']['employee_price'],
                         'revenue' => $product_data['Product']['price'] - $product_data['Product']['price_origin'],
                         'date' => date("Y-m-d H:i:s"),
                         'number_product' => $num_product
@@ -364,7 +366,7 @@ class ApiController extends AppController {
         $end_date = date("Y-m-d H:s:i");
         $start_date = date("Y-m") . "-1 00:00:00";
         $cond = array(
-            'UserBuy.status' => 2,
+//            'UserBuy.status' => 2,
             'UserBuy.code' => $user_code,
             "UserBuy.date <= '{$end_date}'",
             "UserBuy.date > '{$start_date}'",
@@ -379,11 +381,11 @@ class ApiController extends AppController {
         ));
         $total_product = $sum_revenue[0][0]['total_product'];
         if ($total_product > 2 && $total_product < 10) {
-            $this->money(1, $data_payment);
+            $this->update_money(1, $data_payment);
         } elseif ($total_product > 9) {
-            $this->money(2, $data_payment);
+            $this->update_money(2, $data_payment);
         } else {
-            $this->money(0, $data_payment);
+            $this->update_money(0, $data_payment);
         }
     }
 
@@ -392,11 +394,11 @@ class ApiController extends AppController {
             $revenue = 0;
             $hieu_so = $value['UserBuy']['price_sale'] - $value['UserBuy']['price_origin'];
             if ($level == 1) {
-                $revenue = $value['UserBuy']['price_sale'] - $hieu_so * 0.5;
+                $revenue = $value['UserBuy']['price_sale'] - ($value['UserBuy']['price_sale'] - $value['UserBuy']['partner_price']) * 0.5;
             } elseif ($level == 2) {
-                $revenue = $value['UserBuy']['price_sale'] - $hieu_so * 0.7;
+                $revenue = $value['UserBuy']['price_sale'] - ($value['UserBuy']['price_sale'] - $value['UserBuy']['employee_price']) * 0.7;
             } else {
-                $revenue = $hieu_so;
+                $revenue = $value['UserBuy']['price_sale'] - $value['UserBuy']['price_origin'];
             }
             $value['UserBuy']['revenue'] = $revenue;
             $this->UserBuy->save($value['UserBuy']);

@@ -57,8 +57,8 @@ $urls = array(
             <li class="header"><i class="fa fa-square"></i> <span>Quản trị tài khoản</span></li>
             <li><a href="<?php echo $urls['super']; ?>"><i class="fa fa-angle-double-right"></i> <span>Super admin</span></a></li>
             <li><a href="<?php echo $urls['cskh']; ?>"><i class="fa fa-angle-double-right"></i> <span>Chăm sóc khách hàng</span></a></li>
-            <li><a href="<?php echo $urls['employee']; ?>"><i class="fa fa-angle-double-right"></i> <span>Nhân viên kinh doanh</span></a></li>
-            <li><a href="<?php echo $urls['partner']; ?>"><i class="fa fa-angle-double-right"></i> <span>Cộng tác viên</span></a></li>
+            <li><a href="<?php echo $urls['employee']; ?>"><i class="fa fa-angle-double-right"></i> <span>Người bán hàng</span></a></li>
+            <!--<li><a href="<?php // echo $urls['partner']; ?>"><i class="fa fa-angle-double-right"></i> <span>Cộng tác viên</span></a></li>-->
             <li><a href="<?php echo $urls['list_user']; ?>"><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
             <li><a href="<?php echo $urls['add_user']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm tài khoản</span></a></li>
         <?php endif; ?>

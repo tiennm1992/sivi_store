@@ -57,10 +57,16 @@ class UserBuysController extends AppController {
         $level = 0;
         if ($total_product > 2 && $total_product < 10) {
             $level = 1;
+            $point = 0;
         }
         if ($total_product > 9) {
             $level = 2;
         }
+        if ($level == 0) {
+            $total_revenue = 0;
+            $point = 0;
+        }
+//        pr($total_revenue);die;
         $this->set('sum', $total_revenue);
         $this->set('total_price', $total_price);
         $this->set('total_product', $total_product);
@@ -120,7 +126,7 @@ class UserBuysController extends AppController {
             'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum', 'sum(UserBuy.price_sale*UserBuy.number_product) as total_price', 'sum(UserBuy.number_product) as total_product',),
         ));
         $total_revenue = $sum_revenue[0][0]['total_sum'];
-        $total_price = $sum_revenue[0][0]['total_price'];
+        $total_price = !empty($sum_revenue[0][0]['total_price']) ? $sum_revenue[0][0]['total_price'] : 0;
         $total_product = $sum_revenue[0][0]['total_product'];
         $point = $total_revenue / 1000;
         $level = 0;
@@ -129,7 +135,13 @@ class UserBuysController extends AppController {
         }
         if ($total_product > 9) {
             $level = 2;
+            $point = 0;
         }
+        if ($level == 0) {
+            $total_revenue = 0;
+            $point = 0;
+        }
+//        pr($total_revenue);die;
         $this->set('sum', $total_revenue);
         $this->set('total_price', $total_price);
         $this->set('total_product', $total_product);
