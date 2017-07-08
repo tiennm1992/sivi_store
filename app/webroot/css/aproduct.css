@@ -1,0 +1,7 @@
+.form-group.has-error label{
+        clear: both;
+        float: left
+    }
+.form-horizontal .checkbox{
+    float: left
+}
