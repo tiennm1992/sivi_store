@@ -1,27 +1,29 @@
-<h3>Tổng lợi nhuận của tháng <?php echo date('m-Y')?> là: <?php echo number_format($sum, 0, ',', '.');?> đ</h3> 
+<h3>Tổng lợi nhuận của tháng <?php echo date('m-Y')?></h3> 
 <style>
     table {
         border-collapse: collapse;
+        margin-bottom: 10px;
     }
 
     table, td, th {
         border: 1px solid black;
+        padding: 5px;
     }
 </style>
 <table style="width: 100%; " >
     <tr>
-        <td>Số sản phẩm bán được: </td>
-        <td> Cấp bậc: </td>
-        <td>Điểm tích thưởng: </td>
+        <td>Số sản phẩm bán được:<?php echo $total_product; ?> </td>
+        <td> Cấp bậc: <?php echo $level; ?> </td>
+        <td>Điểm tích thưởng: <?php echo $point; ?> </td>
     </tr>
     <tr>
-        <td>Doanh thu bán hàng:</td>
-        <td>Hệ số tính: </td>
-        <td>Tiền thưởng:</th>
+        <td>Doanh thu bán hàng: <?php echo number_format(h($total_price), 0, ',', '.'); ?> </td>
+        <td>Hệ số tính: <?php echo ''; ?> </td>
+        <td>Tiền thưởng:<?php echo ''; ?> </th>
     </tr>
     <tr>
-        <td>Lợi nhuận: </td>
-        <td>: </td>
+        <td>Lợi nhuận: <?php echo number_format($sum, 0, ',', '.'); ?> </td>
+        <td> </td>
         <td></td>
     </tr>
 </table>
@@ -36,8 +38,11 @@ $option['title'] = 'Users';
         2 => array('key_tab' => 'product', 'title_tab' => 'Tên sản phẩm', 'option_tab' => 'sort'),
         3 => array('key_tab' => 'price', 'title_tab' => 'Giá bán', 'option_tab' => 'sort'),
         4 => array('key_tab' => 'price_origin', 'title_tab' => 'Giá gốc', 'option_tab' => 'sort'),
-        5 => array('key_tab' => 'revenue', 'title_tab' => 'Lợi nhuận', 'option_tab' => 'sort'),
-        6 => array('key_tab' => 'date', 'title_tab' => 'Ngày mua', 'option_tab' => 'sort'),
+        5 => array('key_tab' => 'partner_price', 'title_tab' => 'Giá CTV', 'option_tab' => 'sort'),
+        6 => array('key_tab' => 'employee_price', 'title_tab' => 'Giá NV', 'option_tab' => 'sort'),
+        7 => array('key_tab' => 'number_product', 'title_tab' => 'Số Sp', 'option_tab' => 'sort'),
+        8 => array('key_tab' => 'revenue', 'title_tab' => 'Lợi nhuận', 'option_tab' => 'sort'),
+        9 => array('key_tab' => 'date', 'title_tab' => 'Ngày mua', 'option_tab' => 'sort'),
 //        7 => array('key_tab' => 'option', 'title_tab' => 'option', 'option_tab' => ''),
 );
 echo $this->grid->create($userBuys, null, $option);
@@ -49,6 +54,9 @@ echo $this->grid->create($userBuys, null, $option);
     <td><?php echo h($userbuy['Product']['name']); ?>&nbsp;</td>
     <td><?php echo number_format(h($userbuy['UserBuy']['price_sale']), 0, ',', '.');?>&nbsp đ &nbsp;</td>
     <td><?php echo number_format(h($userbuy['UserBuy']['price_origin']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
+    <td><?php echo number_format(h($userbuy['UserBuy']['partner_price']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
+    <td><?php echo number_format(h($userbuy['UserBuy']['employee_price']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
+    <td><?php echo number_format(h($userbuy['UserBuy']['number_product']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
     <td><?php echo number_format(h($userbuy['UserBuy']['revenue']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
     <td><?php echo h($userbuy['UserBuy']['date']); ?>&nbsp;</td>
 <!--    <td class="actions">

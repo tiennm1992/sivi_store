@@ -10,7 +10,7 @@
         echo $this->Form->input('detail', array('label' => array('text' => 'Chi tiết sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'textarea', 'class' => 'ckeditor'));
         echo $this->Form->input('avatar', array('label' => array('text' => 'Ảnh đại diện', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'file'));
         echo $this->Form->input('price', array('label' => array('text' => 'Giá bán sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'),));
-//        echo $this->Form->input('price_origin', array('label' => array('text' => 'Giá gốc sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'),));
+        echo $this->Form->input('price_origin', array('label' => array('text' => 'Giá gốc sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('partner_price', array('label' => array('text' => 'Giá cộng tác viên', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('employee_price', array('label' => array('text' => 'Giá nhân viên', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('sale', array('label' => array('text' => 'Giảm giá', 'class' => 'control-label col-xs-12 col-sm-2'),));

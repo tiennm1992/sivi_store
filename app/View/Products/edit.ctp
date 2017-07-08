@@ -23,7 +23,7 @@
         <?php
 //		echo $this->Form->input('avatar');
         echo $this->Form->input('price', array('label' => array('text' => 'Giá bán sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'),));
-//        echo $this->Form->input('price_origin', array('label' => array('text' => 'Giá gốc sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'),));
+        echo $this->Form->input('price_origin', array('label' => array('text' => 'Giá gốc sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'),));
          echo $this->Form->input('partner_price', array('label' => array('text' => 'Giá cộng tác viên', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('employee_price', array('label' => array('text' => 'Giá nhân viên', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('sale', array('label' => array('text' => 'Giảm giá', 'class' => 'control-label col-xs-12 col-sm-2'),));

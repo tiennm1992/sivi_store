@@ -340,6 +340,7 @@ class ApiController extends AppController {
                     );
                     $this->UserBuy->create();
                     if ($this->UserBuy->save($arr)) {
+                        $this->calculate_money($arr['code']);
                         $rep = array(
                             'success' => 'true',
                             'infor' => 'Mua sản phẩm thành công',
@@ -356,6 +357,50 @@ class ApiController extends AppController {
             }
         } else {
             $this->echoError();
+        }
+    }
+
+    public function calculate_money($user_code) {
+        $end_date = date("Y-m-d H:s:i");
+        $start_date = date("Y-m") . "-1 00:00:00";
+        $cond = array(
+            'UserBuy.status' => 2,
+            'UserBuy.code' => $user_code,
+            "UserBuy.date <= '{$end_date}'",
+            "UserBuy.date > '{$start_date}'",
+        );
+        $sum_revenue = $this->UserBuy->find('all', array(
+            'conditions' => $cond,
+            'fields' => array('sum(UserBuy.number_product) as total_product',),
+        ));
+        $data_payment = $this->UserBuy->find('all', array(
+            'conditions' => $cond,
+            'fields' => array("UserBuy.*"),
+        ));
+        $total_product = $sum_revenue[0][0]['total_product'];
+        if ($total_product > 2 && $total_product < 10) {
+            $this->money(1, $data_payment);
+        } elseif ($total_product > 9) {
+            $this->money(2, $data_payment);
+        } else {
+            $this->money(0, $data_payment);
+        }
+    }
+
+    public function update_money($level = 0, $data = array()) {
+        foreach ($data as $key => $value) {
+            $revenue = 0;
+            $hieu_so = $value['UserBuy']['price_sale'] - $value['UserBuy']['price_origin'];
+            if ($level == 1) {
+                $revenue = $value['UserBuy']['price_sale'] - $hieu_so * 0.5;
+            } elseif ($level == 2) {
+                $revenue = $value['UserBuy']['price_sale'] - $hieu_so * 0.7;
+            } else {
+                $revenue = $hieu_so;
+            }
+            $value['UserBuy']['revenue'] = $revenue;
+            $this->UserBuy->save($value['UserBuy']);
+            $this->UserBuy->clear();
         }
     }
 

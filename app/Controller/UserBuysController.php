@@ -48,10 +48,24 @@ class UserBuysController extends AppController {
         );
         $sum_revenue = $this->UserBuy->find('all', array(
             'conditions' => $cond,
-            'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum')
+            'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum', 'sum(UserBuy.price_sale*UserBuy.number_product) as total_price', 'sum(UserBuy.number_product) as total_product',),
         ));
-        $sum_revenue = $sum_revenue[0][0]['total_sum'];
-        $this->set('sum', $sum_revenue);
+        $total_revenue = $sum_revenue[0][0]['total_sum'];
+        $total_price = $sum_revenue[0][0]['total_price'];
+        $total_product = $sum_revenue[0][0]['total_product'];
+        $point = $total_revenue / 1000;
+        $level = 0;
+        if ($total_product > 2 && $total_product < 10) {
+            $level = 1;
+        }
+        if ($total_product > 9) {
+            $level = 2;
+        }
+        $this->set('sum', $total_revenue);
+        $this->set('total_price', $total_price);
+        $this->set('total_product', $total_product);
+        $this->set('point', $point);
+        $this->set('level', $level);
         $this->set('userBuys', $this->Paginator->paginate());
         $this->set('title_for_layout', 'Thống kê mua hàng');
     }
@@ -103,10 +117,24 @@ class UserBuysController extends AppController {
         );
         $sum_revenue = $this->UserBuy->find('all', array(
             'conditions' => $cond,
-            'fields' => array('sum(UserBuy.revenue) as total_sum')
+            'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum', 'sum(UserBuy.price_sale*UserBuy.number_product) as total_price', 'sum(UserBuy.number_product) as total_product',),
         ));
-        $sum_revenue = $sum_revenue[0][0]['total_sum'];
-        $this->set('sum', $sum_revenue);
+        $total_revenue = $sum_revenue[0][0]['total_sum'];
+        $total_price = $sum_revenue[0][0]['total_price'];
+        $total_product = $sum_revenue[0][0]['total_product'];
+        $point = $total_revenue / 1000;
+        $level = 0;
+        if ($total_product > 2 && $total_product < 10) {
+            $level = 1;
+        }
+        if ($total_product > 9) {
+            $level = 2;
+        }
+        $this->set('sum', $total_revenue);
+        $this->set('total_price', $total_price);
+        $this->set('total_product', $total_product);
+        $this->set('point', $point);
+        $this->set('level', $level);
         $this->set('userBuys', $this->Paginator->paginate());
         $this->set('title_for_layout', 'Thống kê mua hàng');
     }
