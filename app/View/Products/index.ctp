@@ -55,37 +55,43 @@ $option = array();
 $option['title'] = 'Sản phẩm';
 $option['col'] = array(
     0 => array('key_tab' => 'id', 'title_tab' => 'STT', 'option_tab' => 'sort'),
-    1 => array('key_tab' => 'name', 'title_tab' => 'Tên', 'option_tab' => ''),
-    2 => array('key_tab' => 'title', 'title_tab' => 'Tiêu đề', 'option_tab' => 'sort'),
-//        3 => array('key_tab' => 'description', 'title_tab' => 'description', 'option_tab' => 'sort'),
-    4 => array('key_tab' => 'avatar', 'title_tab' => 'avatar', 'option_tab' => 'sort'),
-    5 => array('key_tab' => 'sale', 'title_tab' => 'sale', 'option_tab' => 'sort'),
-    6 => array('key_tab' => 'price', 'title_tab' => 'Giá bán', 'option_tab' => 'sort'),
-    7 => array('key_tab' => 'price origin ', 'title_tab' => 'Giá gốc', 'option_tab' => 'sort'),
-    8 => array('key_tab' => 'category', 'title_tab' => 'category', 'option_tab' => 'sort'),
-    9 => array('key_tab' => '', 'title_tab' => 'aption', 'option_tab' => ''),
+    1 => array('key_tab' => 'date_create', 'title_tab' => 'Ngày tạo', 'option_tab' => ''),
+    2 => array('key_tab' => 'product_code', 'title_tab' => 'Mã HH', 'option_tab' => ''),
+    3 => array('key_tab' => 'avatar', 'title_tab' => 'avatar', 'option_tab' => 'sort'),
+    4 => array('key_tab' => 'name', 'title_tab' => 'Tên', 'option_tab' => ''),
+    5 => array('key_tab' => 'price', 'title_tab' => 'Giá bán', 'option_tab' => 'sort'),
+    6 => array('key_tab' => 'price origin ', 'title_tab' => 'Giá gốc', 'option_tab' => 'sort'),
+    7 => array('key_tab' => 'name', 'title_tab' => 'Giá cấp 1', 'option_tab' => ''),
+    8 => array('key_tab' => 'name', 'title_tab' => 'Giá cấp 2', 'option_tab' => ''),
+    9 => array('key_tab' => 'sale', 'title_tab' => 'sale', 'option_tab' => 'sort'),
+    10 => array('key_tab' => 'title', 'title_tab' => 'Danh mục cha', 'option_tab' => 'sort'),
+    11 => array('key_tab' => 'category', 'title_tab' => 'Danh mục con', 'option_tab' => 'sort'),
+    12 => array('key_tab' => 'category', 'title_tab' => 'Kho hàng', 'option_tab' => 'sort'),
+    13 => array('key_tab' => '', 'title_tab' => 'aption', 'option_tab' => ''),
 );
 echo $this->grid->create($products, null, $option);
 ?>
 <?php foreach ($products as $key => $product): ?>
     <tr>
         <td><?php echo h($product['Product']['id']); ?>&nbsp;</td>
-        <td><?php echo h($product['Product']['name']); ?>&nbsp;</td>
-        <td><?php echo h($product['Product']['title']); ?>&nbsp;</td>
-        <!--<td><?php echo h($product['Product']['description']); ?>&nbsp;</td>-->
-        <!--<td><?php echo h($product['Product']['avatar']); ?>&nbsp;</td>-->
+        <td><?php echo h($product['Product']['date_create']); ?>&nbsp;</td>
+        <td><?php echo h($product['Product']['product_code']); ?>&nbsp;</td>
         <td><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . '/' . h($product['Product']['avatar']); ?>" style="width: 120px;height: 80px;"></td>
-        <td><?php echo h($product['Product']['sale']); ?>&nbsp;</td>
+        <td><?php echo h($product['Product']['name']); ?>&nbsp;</td>
         <td><?php echo h($product['Product']['price']); ?>&nbsp;</td>
         <td><?php echo h($product['Product']['price_origin']); ?>&nbsp;</td>
+        <td><?php echo h($product['Product']['partner_price']); ?>&nbsp;</td>
+        <td><?php echo h($product['Product']['employee_price']); ?>&nbsp;</td>
+        <td><?php echo h($product['Product']['sale']); ?>&nbsp;</td>
         <td>
             <?php echo $this->Html->link($product['Category']['name'], array('controller' => 'categories', 'action' => 'index', $product['Category']['id'])); ?>
         </td>
+        <td>
+            <?php echo $this->Html->link($product['Subcategory']['name'], array('controller' => 'subcategories', 'action' => 'index', $product['Subcategory']['id'])); ?>
+        </td>
+        <td><?php echo h($product['Product']['storage']); ?>&nbsp;</td>
         <td class="actions">
             <?php
-//                    echo $this->Html->link(
-//                        $this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-ok icon-white', 'title' => 'View')), array('action' => 'view', $product['Product']['id']), array('escape' => false, 'class' => 'btn btn-success btn-sm')
-//                ).'&nbsp';
             echo $this->Html->link(
                     $this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-edit icon-white', 'title' => 'Edit')), array('action' => 'edit', $product['Product']['id']), array('escape' => false, 'class' => 'btn btn-success btn-sm')
             ) . '&nbsp';

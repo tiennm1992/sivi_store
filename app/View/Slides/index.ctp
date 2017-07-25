@@ -4,9 +4,9 @@ $option['title'] = 'Products';
     $option['col'] = array(
         0 => array('key_tab' => 'id', 'title_tab' => 'ID', 'option_tab' => 'sort'),
         1 => array('key_tab' => 'image', 'title_tab' => 'Ảnh slide', 'option_tab' => ''),
-        2 => array('key_tab' => 'link', 'title_tab' => 'link trang web', 'option_tab' => 'sort'),
+        2 => array('key_tab' => 'link', 'title_tab' => 'link sản phẩm', 'option_tab' => 'sort'),
         4 => array('key_tab' => 'description', 'title_tab' => 'Mô tả', 'option_tab' => 'sort'),
-        5 => array('key_tab' => '', 'title_tab' => 'aption', 'option_tab' => ''),
+        5 => array('key_tab' => '', 'title_tab' => 'Chỉnh sửa', 'option_tab' => ''),
 );
 echo $this->grid->create($slides, null, $option);
 ?>

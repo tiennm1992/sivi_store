@@ -35,33 +35,34 @@ $urls = array(
 
 <ul class="sidebar-menu">
     <?php if ($user['role'] == 'super'): ?>
-        <!--quản lý sản phẩm-->
-        <li class="header"><i class="fa fa-square"></i> <span>Quản lý sản phẩm</span></li>
-        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Quản lý sản phẩm</span></a></li>
-        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm sản phẩm</span></a></li>
-        <!--Quản lý category-->
-        <li class="header"><i class="fa fa-square"></i> <span>Quản lý danh mục</span></li>
-        <li><a href="<?php echo $urls['category']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thể Loại</span></a></li>
-        <li><a href="<?php echo $urls['add_category']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm thể loại</span></a></li>
-        <!--Quản lý sub category-->
-        <li><a href="<?php echo $urls['subcategory']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thể loại con</span></a></li>
-        <li><a href="<?php echo $urls['add_subcategory']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm thể loại con</span></a></li>
         <!--Quản trị đơn hàng-->
         <li class="header"><i class="fa fa-square"></i> <span>Quản trị đơn hàng</span></li>
         <!--pages-->
         <li><a href="<?php echo $urls['user_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng mới</span></a></li>
         <li><a href="<?php echo $urls['check_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng đang chờ</span></a></li>
         <li><a href="<?php echo $urls['success_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng thành công</span></a></li>
+        <!--quản lý sản phẩm-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý sản phẩm</span></li>
+        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Danh sách SP</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm SP mới</span></a></li>
         <!--Quản lý tài khoản-->
         <?php if ($user['role'] == 'super'): ?>
             <li class="header"><i class="fa fa-square"></i> <span>Quản trị tài khoản</span></li>
-            <li><a href="<?php echo $urls['super']; ?>"><i class="fa fa-angle-double-right"></i> <span>Super admin</span></a></li>
-            <li><a href="<?php echo $urls['cskh']; ?>"><i class="fa fa-angle-double-right"></i> <span>Chăm sóc khách hàng</span></a></li>
-            <li><a href="<?php echo $urls['employee']; ?>"><i class="fa fa-angle-double-right"></i> <span>Người bán hàng</span></a></li>
-            <!--<li><a href="<?php // echo $urls['partner']; ?>"><i class="fa fa-angle-double-right"></i> <span>Cộng tác viên</span></a></li>-->
+            <li><a href="<?php echo $urls['super']; ?>"><i class="fa fa-angle-double-right"></i> <span>Admin</span></a></li>
+            <li><a href="<?php echo $urls['cskh']; ?>"><i class="fa fa-angle-double-right"></i> <span>CSKH</span></a></li>
+            <li><a href="<?php echo $urls['employee']; ?>"><i class="fa fa-angle-double-right"></i> <span>Sales</span></a></li>
             <li><a href="<?php echo $urls['list_user']; ?>"><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
             <li><a href="<?php echo $urls['add_user']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm tài khoản</span></a></li>
         <?php endif; ?>
+        <!--Quản lý category-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý danh mục</span></li>
+        <li><a href="<?php echo $urls['category']; ?>"><i class="fa fa-angle-double-right"></i> <span>Danh mục lớn</span></a></li>
+        <li><a href="<?php echo $urls['add_category']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm DML mới</span></a></li>
+        <!--Quản lý sub category-->
+        <li><a href="<?php echo $urls['subcategory']; ?>"><i class="fa fa-angle-double-right"></i> <span>Danh mục con</span></a></li>
+        <li><a href="<?php echo $urls['add_subcategory']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm DMC mới</span></a></li>
+
+
         <!--Quản lý slide-->
         <li class="header"><i class="fa fa-square"></i> <span>Quản lý khác</span></li>
         <!--pages-->

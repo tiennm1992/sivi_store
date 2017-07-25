@@ -21,11 +21,11 @@ $option = array();
 $option['title'] = 'Products';
 $option['col'] = array(
     0 => array('key_tab' => 'id', 'title_tab' => 'STT', 'option_tab' => 'sort'),
-    1 => array('key_tab' => 'name', 'title_tab' => 'name', 'option_tab' => ''),
-    2 => array('key_tab' => 'avatar', 'title_tab' => 'avatar', 'option_tab' => ''),
-    3 => array('key_tab' => 'title', 'title_tab' => 'Category', 'option_tab' => 'sort'),
-    4 => array('key_tab' => 'description', 'title_tab' => 'sort', 'option_tab' => 'sort'),
-    5 => array('key_tab' => '', 'title_tab' => 'option', 'option_tab' => ''),
+    1 => array('key_tab' => 'name', 'title_tab' => 'Tên danh mục', 'option_tab' => ''),
+    2 => array('key_tab' => 'avatar', 'title_tab' => 'Avatar', 'option_tab' => ''),
+    3 => array('key_tab' => 'title', 'title_tab' => 'Danh mục cha', 'option_tab' => 'sort'),
+    4 => array('key_tab' => 'description', 'title_tab' => 'Thứ tự', 'option_tab' => 'sort'),
+    5 => array('key_tab' => '', 'title_tab' => 'Chỉnh sửa', 'option_tab' => ''),
 );
 echo $this->grid->create($subcategories, null, $option);
 ?>

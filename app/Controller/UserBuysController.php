@@ -74,7 +74,7 @@ class UserBuysController extends AppController {
         $total_price = 0;
         $total_product = 0;
         foreach ($sum_revenue as $key => $value) {
-            $total_revenue += $value['Buy']['revenue'] ;
+            $total_revenue += $value['Buy']['revenue'];
             $total_price += $value['Buy']['price_sale'] * $value['Buy']['number_product'];
             $total_product += $value['Buy']['number_product'];
         }
@@ -147,7 +147,7 @@ class UserBuysController extends AppController {
         $total_price = 0;
         $total_product = 0;
         foreach ($sum_revenue as $key => $value) {
-            $total_revenue += $value['Buy']['revenue'] ;
+            $total_revenue += $value['Buy']['revenue'];
             $total_price += $value['Buy']['price_sale'] * $value['Buy']['number_product'];
             $total_product += $value['Buy']['number_product'];
         }
@@ -355,27 +355,6 @@ class UserBuysController extends AppController {
         return $this->redirect(array('action' => 'success_buy'));
     }
 
-    public function order() {
-        try {
-            $conditions = array(
-                'UserBuy.status' => 0,
-            );
-            $this->UserBuy->recursive = 0;
-            $this->Paginator->settings = array(
-                'conditions' => $conditions,
-                'limit' => 15,
-                'order' => array(
-                    'UserBuy.id' => 'DESC'
-                ),
-            );
-            $this->set('userBuys', $this->Paginator->paginate());
-            $this->set('title_for_layout', 'Danh sách đơn hàng mới');
-        } catch (Exception $exc) {
-            echo $exc->getMessage();
-            die;
-        }
-    }
-
     public function approval($buy_id = 0) {
 //        $this->UserBuy->id->$buy_id;
         $arr = array(
@@ -400,7 +379,56 @@ class UserBuysController extends AppController {
         }
     }
 
-    public function check_buy() {
+    public function success_buy() {
+        try {
+            $conditions = array(
+                'UserBuy.status' => 2,
+            );
+            $this->UserBuy->recursive = -1;
+            $this->Paginator->settings = array(
+                'fields' => array('Customer.*', 'Product.*', 'UserBuy.*', 'User.*',),
+                'conditions' => $conditions,
+                'limit' => 10,
+                'order' => array(
+                    'UserBuy.id' => 'DESC'
+                ),
+                'joins' => array(
+                    array(
+                        'table' => 'customers',
+                        'alias' => 'Customer',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'UserBuy.customer_id=Customer.id'
+                        )
+                    ),
+                    array(
+                        'table' => 'products',
+                        'alias' => 'Product',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'UserBuy.product_id=Product.id'
+                        )
+                    ),
+                    array(
+                        'table' => 'users',
+                        'alias' => 'User',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'User.code=UserBuy.code'
+                        )
+                    )
+                )
+            );
+//            pr($this->Paginator->paginate('UserBuy'));die;
+            $this->set('userBuys', $this->Paginator->paginate());
+            $this->set('title_for_layout', 'Danh đơn hàng thành công');
+        } catch (Exception $exc) {
+            echo $exc->getMessage();
+            die;
+        }
+    }
+
+    public function old_check_buy() {
         try {
             $conditions = array(
                 'UserBuy.status' => 1,
@@ -421,10 +449,108 @@ class UserBuysController extends AppController {
         }
     }
 
-    public function success_buy() {
+    public function check_buy() {
         try {
             $conditions = array(
-                'UserBuy.status' => 2,
+                'UserBuy.status' => 1,
+            );
+            $this->UserBuy->recursive = -1;
+            $this->Paginator->settings = array(
+                'fields' => array('Customer.*', 'Product.*', 'UserBuy.*', 'User.*',),
+                'conditions' => $conditions,
+                'limit' => 10,
+                'order' => array(
+                    'UserBuy.id' => 'DESC'
+                ),
+                'joins' => array(
+                    array(
+                        'table' => 'customers',
+                        'alias' => 'Customer',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'UserBuy.customer_id=Customer.id'
+                        )
+                    ),
+                    array(
+                        'table' => 'products',
+                        'alias' => 'Product',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'UserBuy.product_id=Product.id'
+                        )
+                    ),
+                    array(
+                        'table' => 'users',
+                        'alias' => 'User',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'User.code=UserBuy.code'
+                        )
+                    )
+                )
+            );
+//            pr($this->Paginator->paginate('UserBuy'));die;
+            $this->set('userBuys', $this->Paginator->paginate());
+            $this->set('title_for_layout', 'Danh sách đơn hàng đang chờ');
+        } catch (Exception $exc) {
+            echo $exc->getMessage();
+            die;
+        }
+    }
+
+    public function order() {
+        try {
+            $conditions = array(
+                'UserBuy.status' => 0,
+            );
+            $this->UserBuy->recursive = -1;
+            $this->Paginator->settings = array(
+                'fields' => array('Customer.*', 'Product.*', 'UserBuy.*', 'User.*',),
+                'conditions' => $conditions,
+                'limit' => 10,
+                'order' => array(
+                    'UserBuy.id' => 'DESC'
+                ),
+                'joins' => array(
+                    array(
+                        'table' => 'customers',
+                        'alias' => 'Customer',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'UserBuy.customer_id=Customer.id'
+                        )
+                    ),
+                    array(
+                        'table' => 'products',
+                        'alias' => 'Product',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'UserBuy.product_id=Product.id'
+                        )
+                    ),
+                    array(
+                        'table' => 'users',
+                        'alias' => 'User',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'User.code=UserBuy.code'
+                        )
+                    )
+                )
+            );
+//            pr($this->Paginator->paginate('UserBuy'));die;
+            $this->set('userBuys', $this->Paginator->paginate());
+            $this->set('title_for_layout', 'Danh sách đơn hàng đang chờ');
+        } catch (Exception $exc) {
+            echo $exc->getMessage();
+            die;
+        }
+    }
+
+    public function old_order() {
+        try {
+            $conditions = array(
+                'UserBuy.status' => 0,
             );
             $this->UserBuy->recursive = 0;
             $this->Paginator->settings = array(
@@ -436,7 +562,7 @@ class UserBuysController extends AppController {
             );
 //            pr($this->Paginator->paginate());die;
             $this->set('userBuys', $this->Paginator->paginate());
-            $this->set('title_for_layout', 'Danh đơn hàng thành công');
+            $this->set('title_for_layout', 'Danh sách đơn hàng mới');
         } catch (Exception $exc) {
             echo $exc->getMessage();
             die;

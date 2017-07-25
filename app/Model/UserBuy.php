@@ -97,6 +97,13 @@ class UserBuy extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+		),
+		'User' => array(
+			'className' => 'User',
+			'foreignKey' => 'code',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
 		)
 	);
 }
