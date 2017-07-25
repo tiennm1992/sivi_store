@@ -17,6 +17,8 @@ class UserBuysController extends AppController {
      */
     public $components = array('Paginator');
 
+//    public $uses = array('Buy','UserBuy',);
+
     /**
      * index method
      *
@@ -25,35 +27,189 @@ class UserBuysController extends AppController {
     public function beforeFilter() {
         $this->loadModel('UserBuy');
         $this->loadModel('Customer');
+        $this->loadModel('Buy');
     }
 
     public function index() {
         $user = $this->Auth->user();
+//        $conditions = array(
+//            'UserBuy.code' => $user['code']
+//        );
+        //tinh tien cua thang do
+//        $end_date = date("Y-m-d H:s:i");
+        $end_date = date("Y-m") . "-31 00:00:00";
+        $start_date = date("Y-m") . "-1 00:00:00";
+        $cond = array(
+//            'UserBuy.status' => 2,
+            'Buy.code' => $user['code'],
+            "Buy.date <= '{$end_date}'",
+            "Buy.date > '{$start_date}'",
+        );
+        $this->Paginator->settings = array(
+            'fields' => array('Buy.*', 'Customer.*', 'Product.*',),
+            'conditions' => $cond,
+            'joins' => array(
+                array(
+                    'table' => 'customers',
+                    'alias' => 'Customer',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Buy.customer_id=Customer.id'
+                    )
+                ),
+                array(
+                    'table' => 'products',
+                    'alias' => 'Product',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Buy.product_id=Product.id'
+                    )
+                )
+            )
+        );
+        $sum_revenue = $this->Buy->find('all', array(
+            'conditions' => $cond,
+        ));
+        $total_revenue = 0;
+        $total_price = 0;
+        $total_product = 0;
+        foreach ($sum_revenue as $key => $value) {
+            $total_revenue += $value['Buy']['revenue'] ;
+            $total_price += $value['Buy']['price_sale'] * $value['Buy']['number_product'];
+            $total_product += $value['Buy']['number_product'];
+        }
+        $point = $total_price / 1000;
+        $level = 0;
+        $bonus = 0;
+        if ($total_product > 2 && $total_product < 10) {
+            $level = 1;
+            $point = 0;
+        }
+        if ($total_product > 9) {
+            $level = 2;
+            if ($point > 10000) {
+                $bonus = $point * 10;
+            }
+        }
+        if ($level == 0) {
+            $total_revenue = 0;
+            $point = 0;
+        }
+//        pr($total_revenue);die;
+        $this->set('userBuys', $this->Paginator->paginate('Buy'));
+        $this->set('sum', $total_revenue);
+        $this->set('total_price', $total_price);
+        $this->set('total_product', $total_product);
+        $this->set('point', $point);
+        $this->set('level', $level);
+        $this->set('bonus', $bonus);
+
+        $this->set('title_for_layout', 'Thống kê mua hàng');
+    }
+
+    public function index2($code = 0) {
+        //tinh tien cua thang do
+//        $end_date = date("Y-m-d H:s:i");
+        $end_date = date("Y-m") . "-31 00:00:00";
+        $start_date = date("Y-m") . "-1 00:00:00";
+        $cond = array(
+//            'UserBuy.status' => 2,
+            'Buy.code' => $code,
+            "Buy.date <= '{$end_date}'",
+            "Buy.date > '{$start_date}'",
+        );
+        $this->Paginator->settings = array(
+            'fields' => array('Buy.*', 'Customer.*', 'Product.*',),
+            'conditions' => $cond,
+            'joins' => array(
+                array(
+                    'table' => 'customers',
+                    'alias' => 'Customer',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Buy.customer_id=Customer.id'
+                    )
+                ),
+                array(
+                    'table' => 'products',
+                    'alias' => 'Product',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Buy.product_id=Product.id'
+                    )
+                )
+            )
+        );
+        $sum_revenue = $this->Buy->find('all', array(
+            'conditions' => $cond,
+        ));
+        $total_revenue = 0;
+        $total_price = 0;
+        $total_product = 0;
+        foreach ($sum_revenue as $key => $value) {
+            $total_revenue += $value['Buy']['revenue'] ;
+            $total_price += $value['Buy']['price_sale'] * $value['Buy']['number_product'];
+            $total_product += $value['Buy']['number_product'];
+        }
+        $point = $total_price / 1000;
+        $level = 0;
+        $bonus = 0;
+        if ($total_product > 2 && $total_product < 10) {
+            $level = 1;
+            $point = 0;
+        }
+        if ($total_product > 9) {
+            $level = 2;
+            if ($point > 10000) {
+                $bonus = $point * 10;
+            }
+        }
+        if ($level == 0) {
+            $total_revenue = 0;
+            $point = 0;
+        }
+//        pr($total_revenue);die;
+        $this->set('userBuys', $this->Paginator->paginate('Buy'));
+        $this->set('sum', $total_revenue);
+        $this->set('total_price', $total_price);
+        $this->set('total_product', $total_product);
+        $this->set('point', $point);
+        $this->set('level', $level);
+        $this->set('bonus', $bonus);
+
+        $this->set('title_for_layout', 'Thống kê mua hàng');
+    }
+
+    public function index3($code = 0) {
+//        $user = $this->Auth->user();
         $conditions = array(
-            'UserBuy.code' => $user['code']
+            'UserBuy.code' => $code
         );
         $this->UserBuy->recursive = 0;
-        $this->Paginator->settings = array(
-            'conditions' => $conditions,
-        );
-
         //tinh tien cua thang do
         $end_date = date("Y-m-d H:s:i");
         $start_date = date("Y-m") . "-1 00:00:00";
         $cond = array(
-            'UserBuy.status' => 2,
-            'UserBuy.code' => $user['code'],
+            'UserBuy.code' => $code,
             "UserBuy.date <= '{$end_date}'",
             "UserBuy.date > '{$start_date}'",
         );
         $sum_revenue = $this->UserBuy->find('all', array(
             'conditions' => $cond,
-            'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum', 'sum(UserBuy.price_sale*UserBuy.number_product) as total_price', 'sum(UserBuy.number_product) as total_product',),
+//            'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum', 'sum(UserBuy.price_sale*UserBuy.number_product) as total_price', 'sum(UserBuy.number_product) as total_product',),
         ));
-        $total_revenue = $sum_revenue[0][0]['total_sum'];
-        $total_price = $sum_revenue[0][0]['total_price'];
-        $total_product = $sum_revenue[0][0]['total_product'];
-        $point = $total_revenue / 1000;
+        $this->Paginator->settings = array(
+            'conditions' => $cond,
+        );
+        $total_revenue = 0;
+        $total_price = 0;
+        $total_product = 0;
+        foreach ($sum_revenue as $key => $value) {
+            $total_revenue += $value['UserBuy']['revenue'] * $value['UserBuy']['number_product'];
+            $total_price += $value['UserBuy']['price_sale'] * $value['UserBuy']['number_product'];
+            $total_product += $value['UserBuy']['number_product'];
+        }
+        $point = $total_price / 1000;
         $level = 0;
         if ($total_product > 2 && $total_product < 10) {
             $level = 1;
@@ -103,54 +259,6 @@ class UserBuysController extends AppController {
         $this->set('title_for_layout', 'Thống kê mua hàng');
     }
 
-    public function index2($code = 0) {
-//        $user = $this->Auth->user();
-        $conditions = array(
-            'UserBuy.code' => $code
-        );
-        $this->UserBuy->recursive = 0;
-        $this->Paginator->settings = array(
-            'conditions' => $conditions,
-        );
-
-        //tinh tien cua thang do
-        $end_date = date("Y-m-d H:s:i");
-        $start_date = date("Y-m") . "-1 00:00:00";
-        $cond = array(
-            'UserBuy.code' => $code,
-            "UserBuy.date <= '{$end_date}'",
-            "UserBuy.date > '{$start_date}'",
-        );
-        $sum_revenue = $this->UserBuy->find('all', array(
-            'conditions' => $cond,
-            'fields' => array('sum(UserBuy.revenue*UserBuy.number_product) as total_sum', 'sum(UserBuy.price_sale*UserBuy.number_product) as total_price', 'sum(UserBuy.number_product) as total_product',),
-        ));
-        $total_revenue = $sum_revenue[0][0]['total_sum'];
-        $total_price = !empty($sum_revenue[0][0]['total_price']) ? $sum_revenue[0][0]['total_price'] : 0;
-        $total_product = $sum_revenue[0][0]['total_product'];
-        $point = $total_revenue / 1000;
-        $level = 0;
-        if ($total_product > 2 && $total_product < 10) {
-            $level = 1;
-        }
-        if ($total_product > 9) {
-            $level = 2;
-            $point = 0;
-        }
-        if ($level == 0) {
-            $total_revenue = 0;
-            $point = 0;
-        }
-//        pr($total_revenue);die;
-        $this->set('sum', $total_revenue);
-        $this->set('total_price', $total_price);
-        $this->set('total_product', $total_product);
-        $this->set('point', $point);
-        $this->set('level', $level);
-        $this->set('userBuys', $this->Paginator->paginate());
-        $this->set('title_for_layout', 'Thống kê mua hàng');
-    }
-
     /**
      * view method
      *
@@ -173,7 +281,7 @@ class UserBuysController extends AppController {
      */
     public function add() {
         if ($this->request->is('post')) {
-            $this->UserBuy->create();
+//            $this->UserBuy->create();
             if ($this->UserBuy->save($this->request->data)) {
                 $this->Session->setFlash(__('The user buy has been saved.'));
                 return $this->redirect(array('action' => 'index'));

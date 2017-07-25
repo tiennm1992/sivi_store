@@ -318,7 +318,7 @@ class ApiController extends AppController {
     // mua sản phẩm
     public function buy_item() {
         $data = $this->request->query;
-        if (!empty($data['token']) && !empty($data['user_id']) && !empty($data['product_id'])) {
+        if (!empty($data['token']) && !empty($data['user_id']) && !empty($data['product_id']) && !empty($data['sale_id'])) {
             if ($this->checkLogin($data['token'])) {
                 if ($this->Product->exists($data['product_id'])) {
                     $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
@@ -330,7 +330,8 @@ class ApiController extends AppController {
                     }
                     $arr = array(
                         'customer_id' => $data['user_id'],
-                        'code' => $product_user['Customer']['employee_code'],
+//                        'code' => $product_user['Customer']['employee_code'],
+                        'code' => $data['sale_id'],
                         'product_id' => $data['product_id'],
                         'price_origin' => $product_data['Product']['price_origin'],
                         'price_sale' => $product_data['Product']['price'],
@@ -340,8 +341,9 @@ class ApiController extends AppController {
                         'date' => date("Y-m-d H:i:s"),
                         'number_product' => $num_product
                     );
-                    $this->UserBuy->create();
+//                    $this->UserBuy->create();
                     if ($this->UserBuy->save($arr)) {
+                        $this->UserBuy->clear();
                         $this->calculate_money($arr['code']);
                         $rep = array(
                             'success' => 'true',
@@ -363,7 +365,7 @@ class ApiController extends AppController {
     }
 
     public function calculate_money($user_code) {
-        $end_date = date("Y-m-d H:s:i");
+        $end_date = date("Y-m") . "-31 00:00:00";
         $start_date = date("Y-m") . "-1 00:00:00";
         $cond = array(
 //            'UserBuy.status' => 2,
@@ -392,13 +394,18 @@ class ApiController extends AppController {
     public function update_money($level = 0, $data = array()) {
         foreach ($data as $key => $value) {
             $revenue = 0;
-            $hieu_so = $value['UserBuy']['price_sale'] - $value['UserBuy']['price_origin'];
             if ($level == 1) {
-                $revenue = $value['UserBuy']['price_sale'] - ($value['UserBuy']['price_sale'] - $value['UserBuy']['partner_price']) * 0.5;
+//                $revenue = $value['UserBuy']['price_sale'] - ($value['UserBuy']['price_sale'] - $value['UserBuy']['partner_price']) * 0.5;
+                $revenue = $value['UserBuy']['price_sale'] - $value['UserBuy']['partner_price'];
             } elseif ($level == 2) {
-                $revenue = $value['UserBuy']['price_sale'] - ($value['UserBuy']['price_sale'] - $value['UserBuy']['employee_price']) * 0.7;
-            } else {
-                $revenue = $value['UserBuy']['price_sale'] - $value['UserBuy']['price_origin'];
+                $revenue = $value['UserBuy']['price_sale'] - $value['UserBuy']['employee_price'];
+//                $revenue = $value['UserBuy']['price_sale'] - ($value['UserBuy']['price_sale'] - $value['UserBuy']['employee_price']) * 0.7;
+            }
+//            else {
+//                $revenue = $value['UserBuy']['price_sale'] - $value['UserBuy']['price_origin'];
+//            }
+            if (!empty($value['UserBuy']['number_product'])) {
+                $revenue = $revenue * $value['UserBuy']['number_product'];
             }
             $value['UserBuy']['revenue'] = $revenue;
             $this->UserBuy->save($value['UserBuy']);
@@ -463,7 +470,8 @@ class ApiController extends AppController {
                 $infor_user = array(
                     'user_name' => $data_user['username'],
                     'address' => $data_user['address'],
-                    'phone' => $data_user['phone'],
+//                    'phone' => $data_user['phone'],
+                    'phone' => !empty($data_user['phone']) ? $data_user['phone'] : '',
                     'employee_code' => $data_user['code'],
                 );
                 $rep = array(
@@ -488,7 +496,7 @@ class ApiController extends AppController {
                 $infor_user = array(
                     'user_name' => $data_user['username'],
                     'address' => $data_user['address'],
-                    'phone' => $data_user['phone'],
+                    'phone' => !empty($data_user['phone']) ? $data_user['phone'] : '',
                     'employee_code' => $data_user['employee_code'],
                     'list_id_product' => $list_product_id
                 );
@@ -508,7 +516,8 @@ class ApiController extends AppController {
     //đăng kí user
     public function sign_up() {
         $data = $this->request->query;
-        if (!empty($data['username']) && !empty($data['password']) && !empty($data['employee_code']) && !empty($data['phone'])) {
+        if (!empty($data['username']) && !empty($data['password'])) {
+//        if (!empty($data['username']) && !empty($data['password']) && !empty($data['employee_code']) && !empty($data['phone'])) {
             $check_account = $this->Customer->checkUser($data['username']);
             if (!$check_account) {
                 $this->bugError('Tài khoản đã tồn tại');
@@ -527,7 +536,7 @@ class ApiController extends AppController {
                 'password' => $data['password'],
                 'phone' => $data['phone'],
                 'address' => $address,
-                'employee_code' => $data['employee_code'],
+                'employee_code' => !empty($data['employee_code']) ? $data['employee_code'] : 0,
             );
             $this->Customer->create;
             if ($this->Customer->save($arr)) {

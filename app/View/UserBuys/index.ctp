@@ -20,7 +20,7 @@
     <tr>
         <td>Doanh thu bán hàng: <?php echo number_format(h($total_price), 0, ',', '.'); ?> </td>
         <td>Hệ số tính: <?php echo ''; ?> </td>
-        <td>Tiền thưởng:<?php echo ''; ?> </th>
+        <td>Tiền thưởng:<?php echo number_format(h($bonus), 0, ',', '.');  ?>  đ</th>
     </tr>
     <tr>
         <td>Lợi nhuận: <?php echo number_format($sum, 0, ',', '.'); ?> </td>
@@ -52,22 +52,22 @@ echo $this->grid->create($userBuys, null, $option);
         <td><?php echo $key + 1; ?>&nbsp;</td>
         <td><?php echo h($userbuy['Customer']['username']); ?>&nbsp;</td>
         <td><?php echo h($userbuy['Product']['name']); ?>&nbsp;</td>
-        <td><?php echo number_format(h($userbuy['UserBuy']['price_sale']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
-        <!--<td><?php // echo number_format(h($userbuy['UserBuy']['price_origin']), 0, ',', '.');  ?>&nbsp đ &nbsp;</td>-->
-        <td><?php echo number_format(h($userbuy['UserBuy']['partner_price']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
-        <td><?php echo number_format(h($userbuy['UserBuy']['employee_price']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
-        <td><?php echo number_format(h($userbuy['UserBuy']['revenue']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
-        <td><?php echo h($userbuy['UserBuy']['date']); ?>&nbsp;</td>
-        <td><?php echo h($userbuy['UserBuy']['number_product']); ?>&nbsp;</td>
+        <td><?php echo number_format(h($userbuy['Buy']['price_sale']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
+        <!--<td><?php // echo number_format(h($userbuy['Buy']['price_origin']), 0, ',', '.');  ?>&nbsp đ &nbsp;</td>-->
+        <td><?php echo number_format(h($userbuy['Buy']['partner_price']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
+        <td><?php echo number_format(h($userbuy['Buy']['employee_price']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
+        <td><?php echo number_format(h($userbuy['Buy']['revenue']), 0, ',', '.'); ?>&nbsp đ &nbsp;</td>
+        <td><?php echo h($userbuy['Buy']['date']); ?>&nbsp;</td>
+        <td><?php echo h($userbuy['Buy']['number_product']); ?>&nbsp;</td>
         <?php $status = array('Đơn hàng mới', 'Đang chờ', 'Thành công') ?>
-        <td><?php echo $status[$userbuy['UserBuy']['status']]; ?>&nbsp;</td>
+        <td><?php echo $status[$userbuy['Buy']['status']]; ?>&nbsp;</td>
     <!--    <td class="actions">
         <?php
         echo $this->Html->link(
-                $this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-edit icon-white', 'title' => 'Edit')), array('action' => 'edit', $userbuy['UserBuy']['id']), array('escape' => false, 'class' => 'btn btn-success btn-sm')
+                $this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-edit icon-white', 'title' => 'Edit')), array('action' => 'edit', $userbuy['Buy']['id']), array('escape' => false, 'class' => 'btn btn-success btn-sm')
         ) . '&nbsp';
         echo $this->Form->postLink(
-                $this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-remove icon-white', 'title' => 'Delete')), array('action' => 'delete', $userbuy['UserBuy']['id']), array('escape' => false, 'class' => 'btn btn-danger btn-sm btn-cat-cancel'), __('Bạn có chắc muốn xóa', $userbuy['UserBuy']['id'])
+                $this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-remove icon-white', 'title' => 'Delete')), array('action' => 'delete', $userbuy['Buy']['id']), array('escape' => false, 'class' => 'btn btn-danger btn-sm btn-cat-cancel'), __('Bạn có chắc muốn xóa', $userbuy['Buy']['id'])
         ) . '&nbsp';
         ?>
         </td>-->
