@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 App::uses('AppController', 'Controller');
 
@@ -76,8 +76,14 @@ class UsersController extends AppController {
                     echo 'Tài khoản đã tồn tại';
                     die;
                 }
-                $this->User->create();
-                if ($this->User->save($this->request->data)) {
+
+		$save_date = $this->request->data;
+		$save_date =$save_date['User'];
+		if(empty($save_date['sale_id_protected'])){
+		 unset($save_date['sale_id_protected']);
+		}
+                //$this->User->create();
+                if ($this->User->save($save_date )) {
                     echo 'done';
                     die;
                 }
