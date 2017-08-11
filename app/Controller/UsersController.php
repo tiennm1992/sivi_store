@@ -175,15 +175,15 @@ class UsersController extends AppController {
             $conditions['User.username LIKE'] = "%{$query['name']}%";
             $name = $query['name'];
         }
-//        $conditions['User.role'] = 'employee';
-        $conditions['OR']=array(
-            'User.role'=>'employee',
-            'User.role'=>'partner',
-        );
+      $conditions['User.role'] = 'employee';
+        //$conditions['OR']=array(
+          //  'User.role'=>'employee',
+         //   'User.role'=>'partner',
+        //);
         $this->Paginator->settings = array(
-            'conditions' => array(
-                
-            )
+            'conditions' => 
+                $conditions
+            
         );
         $this->User->recursive = 0;
         $this->set('users', $this->Paginator->paginate());
