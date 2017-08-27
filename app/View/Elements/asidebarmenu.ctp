@@ -30,6 +30,13 @@ $urls = array(
     'user_buy' => $this->Html->url(array('controller' => 'userBuys', 'action' => 'order', 'admin' => true), true),
     'check_buy' => $this->Html->url(array('controller' => 'userBuys', 'action' => 'check_buy', 'admin' => true), true),
     'success_buy' => $this->Html->url(array('controller' => 'userBuys', 'action' => 'success_buy', 'admin' => true), true),
+    
+    //for sasi
+    'sasi_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'sasi_list', 'admin' => true), true),
+    'order_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'order_list', 'admin' => true), true),
+    'summary' => $this->Html->url(array('controller' => 'sasi', 'action' => 'summary', 'admin' => true), true),
+    'policy' => $this->Html->url(array('controller' => 'sasi', 'action' => 'policy', 'admin' => true), true),
+    'convert_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'convert_list', 'admin' => true), true),
 );
 ?>
 
@@ -75,9 +82,18 @@ $urls = array(
         <!--quan ly cua nhan vien-->
         <li class="header"><i class="fa fa-square"></i> <span>Thông tin</span></li>
         <!--pages-->
+        <li><a href="<?php echo $urls['summary']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng thống kê</span></a></li>
+        <li><a href="<?php echo $urls['order_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng hàng</span></a></li>
+        <li><a href="<?php echo $urls['sasi_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Sasi</span></a></li>
         <li><a href="<?php echo $urls['customer']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
-        <li><a href="<?php echo $urls['userbuy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Doanh thu</span></a></li>
-        <!--<li><a href="<?php echo $urls['infor']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thông tin nhân viên</span></a></li>-->
+        <!--<li><a href="<?php // echo $urls['userbuy'];  ?>" ><i class="fa fa-angle-double-right"></i> <span>Doanh thu</span></a></li>-->
+        <li class="header"><i class="fa fa-square"></i> <span>More ...</span></li>
+        <li><a href="<?php echo $urls['infor']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thông tin cá nhân</span></a></li>
+        <li><a href="<?php echo $urls['convert_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng quy ước</span></a></li>
+        <li><a href="<?php echo $urls['policy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng chuyển đổi</span></a></li>
+        <li><a href="<?php echo $urls['customer']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Danh sách sản phẩm</span></a></li>
+
+
     <?php endif; ?>
     <?php if ($user['role'] == 'admin'): ?>
         <!--quan ly cua nhan vien vien ban hang-->
