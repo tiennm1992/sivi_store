@@ -16,6 +16,7 @@ class UserBuysController extends AppController {
      * @var array
      */
     public $components = array('Paginator');
+    public $uses = array('UserPosition', 'User', 'UserBuy');
 
 //    public $uses = array('Buy','UserBuy',);
 
@@ -368,11 +369,32 @@ class UserBuysController extends AppController {
     }
 
     public function approval_success($buy_id = 0) {
-//        $this->UserBuy->id->$buy_id;
         $arr = array(
             'id' => $buy_id,
             'status' => 2,
         );
+        //get empploy id
+        $this->UserBuy->recursive = -1;
+        $user_data = $this->UserBuy->find('first', array(
+            'fields' => array('UserBuy.*', "User.*"),
+            'conditions' => array(
+                "UserBuy.id" => $buy_id
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'users',
+                    'alias' => "User",
+                    'type' => 'inner',
+                    'conditions' => array(
+                        "User.code = UserBuy.code"
+                    )
+                )
+            )
+        ));
+        //update level
+        if (!empty($user_data['User']['id'])) {
+            $this->UserPosition->update_level($user_data['User']['id']);
+        }
 //        $this->UserBuy->save($arr);
         if ($this->UserBuy->save($arr)) {
             $this->redirect('/userBuys/check_buy');
@@ -419,8 +441,7 @@ class UserBuysController extends AppController {
                     )
                 )
             );
-//            pr($this->Paginator->paginate('UserBuy'));die;
-            $this->set('userBuys', $this->Paginator->paginate());
+            $this->set('userBuys', $this->Paginator->paginate('UserBuy'));
             $this->set('title_for_layout', 'Danh đơn hàng thành công');
         } catch (Exception $exc) {
             echo $exc->getMessage();
@@ -490,7 +511,7 @@ class UserBuysController extends AppController {
                 )
             );
 //            pr($this->Paginator->paginate('UserBuy'));die;
-            $this->set('userBuys', $this->Paginator->paginate());
+            $this->set('userBuys', $this->Paginator->paginate('UserBuy'));
             $this->set('title_for_layout', 'Danh sách đơn hàng đang chờ');
         } catch (Exception $exc) {
             echo $exc->getMessage();
@@ -539,7 +560,7 @@ class UserBuysController extends AppController {
                 )
             );
 //            pr($this->Paginator->paginate('UserBuy'));die;
-            $this->set('userBuys', $this->Paginator->paginate());
+            $this->set('userBuys', $this->Paginator->paginate('UserBuy'));
             $this->set('title_for_layout', 'Danh sách đơn hàng đang chờ');
         } catch (Exception $exc) {
             echo $exc->getMessage();
