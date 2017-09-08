@@ -19,10 +19,10 @@ class UserPosition extends AppModel {
                 'User.id' => $user_id
             )
         ));
-        $date=date("Y-m");
-        $date= explode('-', $date);
-        $month=$date[1];
-        $year=$date[0];
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
         $position_data = $this->find('first', array(
             'conditions' => array(
                 "code" => $user_data['User']['code'],
@@ -37,7 +37,7 @@ class UserPosition extends AppModel {
             'sasi_position' => $cur_position,
             'sasi_sub_position' => $cur_sub_position
         );
-       
+
         //get condition
         switch ($cur_position) {
             case 0:// up to sasim
@@ -224,7 +224,18 @@ class UserPosition extends AppModel {
         }
     }
 
+    //lay điểm
     public function get_point() {
+        
+    }
+
+    //doanh thu
+    public function get_revenue() {
+        
+    }
+
+    //loi nhuan
+    public function get_profit() {
         
     }
 
