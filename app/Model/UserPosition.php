@@ -159,9 +159,27 @@ class UserPosition extends AppModel {
         ));
         if (!empty($position_data)) {
             $position_data = $position_data['UserPosition'];
+
             //get revenue
             $position_data['revenue'] = $this->get_revenue($user_data['User']['code']);
+
+            $profit_type = 'c0';
+            switch ($position_data['revenue']['sasi_position']) {
+                case 0:// up to sasim
+                    $profit_type = 'c0';
+                    break;
+                case 1: //up to sasima
+                    $profit_type = 'c0';
+                    break;
+                case 2: //up to sasime
+                    $profit_type = 'c0';
+                case 3:
+                    $profit_type = 'c0';
+            }
             //get profit
+            $position_data['profit'] = $this->get_profit($user_data['User']['code'], $profit_type);
+            
+            $this->save($position_data);
         }
     }
 
@@ -266,21 +284,21 @@ class UserPosition extends AppModel {
         $conditions['UserBuy.date <='] = $end_date;
         $conditions['UserBuy.date >'] = $start_date;
 
-        if ($type_price == 'c0') {
-            $fields = array(" SUM(UserBuy.c0)  as sum ");
-        } elseif ($type_price == 'c1') {
-            $fields = array(" SUM(UserBuy.partner_price)  as sum ");
-        } elseif ($type_price == 'c2') {
-            $fields = array(" SUM(UserBuy.employee_price)  as sum ");
-        }
         $user_profit = $User_buy->find('all', array(
-            'fields' => $fields,
             'conditions' => $conditions
         ));
-        if (!empty($user_profit[0][0]['sum'])) {
-            return $user_profit[0][0]['sum'];
+        $profit = 0;
+        foreach ($user_profit as $key => $value) {
+            if ($type_price == 'c0') {
+                $profit += $value['UserBuy']['price_sale'] - $value['UserBuy']['c0'];
+            } elseif ($type_price == 'c1') {
+                $profit += $value['UserBuy']['price_sale'] - $value['UserBuy']['partner_price'];
+            } elseif ($type_price == 'c2') {
+                $profit += $value['UserBuy']['price_sale'] - $value['UserBuy']['employee_price'];
+            }
         }
-        return 0;
+
+        return $profit;
     }
 
     //loi nhuan

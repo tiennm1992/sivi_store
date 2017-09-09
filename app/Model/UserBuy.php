@@ -114,7 +114,7 @@ class UserBuy extends AppModel {
     public function get_number_buy($code = 0) {
         $end_date = date("Y-m-d H:s:i");
         $start_date = date("Y-m") . "-1 00:00:00";
-        $num_buy_data = $this->find('count', array(
+        $num_buy_data = $this->find('all', array(
             'conditions' => array(
                 'UserBuy.code' => $code,
                 'UserBuy.status' => 2,
@@ -122,8 +122,12 @@ class UserBuy extends AppModel {
                 "UserBuy.date > '{$start_date}'",
             )
         ));
+        $num = 0;
         if (!empty($num_buy_data)) {
-            return $num_buy_data;
+            foreach ($num_buy_data as $key => $value) {
+                $num += $value['UserBuy']['number_product'];
+            }
+            return $num;
         }
         return 0;
     }
