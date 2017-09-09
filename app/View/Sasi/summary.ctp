@@ -72,30 +72,36 @@
         </td>
     </tr>
     <tr>
-        <td colspan="3" rowspan="2" class="text_3">Team-Group</td>
-        <td colspan="6" class="text_1" style="width: 40%"> T-SASI</td>
-        <td colspan="6" class="text_1" style="width: 40%"> N-SASI</td>
+        <td colspan="3" rowspan="2" ">Team-Group</td>
+        <td colspan="6" class="text_1" style="width: 40%">
+            <p class="text_3">T-SASI</p>
+            <P><?php echo $sasi_list['count'] ?></P>
+        </td>
+        <td colspan="6" class="text_1" style="width: 40%">
+            <p class="text_3">N-SASI</p>
+            <p><?php echo $sasi_list['newbie'] ?></p>
+            </td>
     </tr>
     <tr>
         <td colspan="2">
             <p>Sasim</p>    
-            <p>0</p>    
+            <p><?php echo $sasi_list['sasim'] ?></p>    
         </td>
         <td colspan="2">
             <p>Sasima</p>    
-            <p>0</p>    
+            <p><?php echo $sasi_list['sasima'] ?></p>    
         </td>
         <td colspan="2">
             <p>Sasime</p>    
-            <p>0</p>    
+            <p><?php echo $sasi_list['sasime'] ?></p>    
         </td>
         <td colspan="2">
             <p>Sasimi</p>    
-            <p>0</p>    
+            <p><?php echo $sasi_list['sasimi'] ?></p>    
         </td>
         <td colspan="2">
             <p>Sasimo</p>    
-            <p>0</p>    
+            <p><?php echo $sasi_list['sasimu'] ?></p>    
         </td>
         <td colspan="2">
             <p>Sasimu</p>    
@@ -119,7 +125,7 @@
         </td>
         <td colspan="3" >
             <p class="text_1">So khach hang</p>
-            <p>0</p>
+            <p><?php echo $number_customer ?></p>
         </td>
     </tr>
 

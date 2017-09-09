@@ -45,7 +45,7 @@ echo $this->grid->create($userBuys, null, $option);
         <td class="actions">
             <?php
             echo $this->Html->link(
-                    $this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-edit icon-white', 'title' => 'Edit')), array('action' => 'edit', $userbuy['UserBuy']['id']), array('escape' => false, 'class' => 'btn btn-success btn-sm')
+                    $this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-edit icon-white', 'title' => 'Edit')), array('action' => 'approval', $userbuy['UserBuy']['id']), array('escape' => false, 'class' => 'btn btn-success btn-sm')
             ) . '&nbsp';
             ?>
         </td>

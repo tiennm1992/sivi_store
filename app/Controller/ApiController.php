@@ -318,7 +318,7 @@ class ApiController extends AppController {
     // mua sản phẩm
     public function buy_item() {
         $data = $this->request->query;
-        if (!empty($data['token']) && !empty($data['user_id']) && !empty($data['product_id']) && !empty($data['sale_id'])) {
+        if (!empty($data['token']) && !empty($data['user_id']) && !empty($data['product_id'])) {
             if ($this->checkLogin($data['token'])) {
                 if ($this->Product->exists($data['product_id'])) {
                     $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
@@ -330,8 +330,8 @@ class ApiController extends AppController {
                     }
                     $arr = array(
                         'customer_id' => $data['user_id'],
-//                        'code' => $product_user['Customer']['employee_code'],
-                        'code' => $data['sale_id'],
+                        'code' => $product_user['Customer']['employee_code'],
+//                        'code' => $data['sale_id'],
                         'product_id' => $data['product_id'],
                         'price_origin' => $product_data['Product']['price_origin'],
                         'price_sale' => $product_data['Product']['price'],

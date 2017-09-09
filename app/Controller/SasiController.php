@@ -10,7 +10,7 @@ App::uses('AppController', 'Controller');
 class SasiController extends AppController {
 
     public $components = array('Paginator');
-    public $uses = array('UserPosition', 'User', 'UserBuy', 'UserPosition');
+    public $uses = array('Customer','UserPosition', 'User', 'UserBuy', 'UserPosition');
     public $user_info;
     public $user_code;
 
@@ -59,8 +59,12 @@ class SasiController extends AppController {
             );
         }
         $number_buy = $this->UserBuy->get_number_buy($this->user_code);
+        $sasi_list = $this->UserPosition->get_sub_position_list($this->user_code);
+        $number_customer= $this->Customer->get_num_customer($this->user_code);
         $this->set('sasi', $revenue_sasi);
         $this->set('number_buy', $number_buy);
+        $this->set('number_customer', $number_customer);
+        $this->set('sasi_list', $sasi_list);
         $this->set('user_name', $this->user_info['name']);
     }
 

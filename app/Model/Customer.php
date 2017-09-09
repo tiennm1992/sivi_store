@@ -17,6 +17,13 @@ class Customer extends AppModel {
         }
     }
 
-    
+    public function get_num_customer($user_code) {
+        $data = $this->find('count', array(
+            'conditions' => array(
+                'employee_code' => $user_code
+            )
+        ));
+        return $data;
+    }
 
 }

@@ -139,6 +139,32 @@ class UserPosition extends AppModel {
         //update level for manage
     }
 
+    public function update_revenue($user_id) {
+        $User_model = ClassRegistry::init('User');
+        $user_data = $User_model->find('first', array(
+            'conditions' => array(
+                'User.id' => $user_id
+            )
+        ));
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
+        $position_data = $this->find('first', array(
+            'conditions' => array(
+                "code" => $user_data['User']['code'],
+                'month' => $month,
+                'year' => $year,
+            )
+        ));
+        if (!empty($position_data)) {
+            $position_data = $position_data['UserPosition'];
+            //get revenue
+            $position_data['revenue'] = $this->get_revenue($user_data['User']['code']);
+            //get profit
+        }
+    }
+
     public function check_number_product($code, $condition_position) {
         $User_buy = ClassRegistry::init('UserBuy');
         $end_date = date("Y-m-d H:s:i");
@@ -230,8 +256,7 @@ class UserPosition extends AppModel {
     }
 
     //doanh thu
-    public function get_revenue($user_code, $type_price = "c0") {
-
+    public function get_profit($user_code, $type_price = "c0") {
         $User_buy = ClassRegistry::init('UserBuy');
         $end_date = date("Y-m-d H:s:i");
         $start_date = date("Y-m") . "-1 00:00:00";
@@ -259,7 +284,7 @@ class UserPosition extends AppModel {
     }
 
     //loi nhuan
-    public function get_profit($user_code) {
+    public function get_revenue($user_code) {
         $User_buy = ClassRegistry::init('UserBuy');
         $end_date = date("Y-m-d H:s:i");
         $start_date = date("Y-m") . "-1 00:00:00";
@@ -276,6 +301,66 @@ class UserPosition extends AppModel {
             return $user_profit[0][0]['sum'];
         }
         return 0;
+    }
+
+    public function get_sub_position_list($user_code) {
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
+        $position_data = $this->find('first', array(
+            'conditions' => array(
+                "sale_id_protected" => $user_code,
+                'month' => $month,
+                'year' => $year,
+            )
+        ));
+        $rep_data = array(
+            'count' => 0,
+            'newbie' => 0,
+            'sasim' => 0,
+            'sasima' => 0,
+            'sasime' => 0,
+            'sasimi' => 0,
+            'sasimo' => 0,
+            'sasimu' => 0,
+        );
+        if (!empty($position_data)) {
+            foreach ($position_data as $key => $value) {
+                switch ($value['UserPosition']['sasi_position']) {
+                    case 0:// up to sasim
+                        $rep_data['sasim'] += 1;
+                        break;
+                    case 1: //up to sasima
+                        $rep_data['sasima'] += 1;
+                        break;
+                    case 2: //up to sasime
+                        $rep_data['sasime'] += 1;
+                        break;
+                    case 3:
+                        $rep_data['sasimi'] += 1;
+                        break;
+                    case 4:
+                        $rep_data['sasimo'] += 1;
+                        break;
+                    case 5:
+                        $rep_data['sasimu'] += 1;
+                        break;
+                }
+            }
+            $rep_data['count'] = count($position_data);
+        }
+        $end_date = date("Y-m-d H:s:i");
+        $start_date = date("Y-m") . "-1 00:00:00";
+        $User_model = ClassRegistry::init('User');
+        $rep_data['newbie'] = $User_model->find('count', array(
+            'conditions' => array(
+                'User.sale_id_protected' => $user_code,
+                "User.created_datetime <= '{$end_date}'",
+                "User.created_datetime > '{$start_date}'",
+            )
+        ));
+        return $rep_data;
     }
 
 }

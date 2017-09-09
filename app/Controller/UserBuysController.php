@@ -394,6 +394,7 @@ class UserBuysController extends AppController {
         //update level
         if (!empty($user_data['User']['id'])) {
             $this->UserPosition->update_level($user_data['User']['id']);
+            $this->UserPosition->update_revenue($user_data['User']['id']);
         }
 //        $this->UserBuy->save($arr);
         if ($this->UserBuy->save($arr)) {
