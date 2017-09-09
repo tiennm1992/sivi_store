@@ -12,13 +12,16 @@ class UserPosition extends AppModel {
 
     public $useTable = "user_position";
 
-    public function update_level($user_id) {
+    public function update_level($user_id = 0) {
         $User_model = ClassRegistry::init('User');
         $user_data = $User_model->find('first', array(
             'conditions' => array(
                 'User.id' => $user_id
             )
         ));
+        if (empty($user_data)) {
+            return 1;
+        }
         $date = date("Y-m");
         $date = explode('-', $date);
         $month = $date[1];
@@ -45,7 +48,7 @@ class UserPosition extends AppModel {
                 $condition_position['level_1']['sub_position'] = 0;
                 $condition_position['level_1']['num_position'] = 1;
                 $condition_position['num_product'] = 1;
-                $condition_position['num_level'] = 1;
+                $condition_position['num_level'] = 0;
                 $up_position['sasi_position'] = 1;
                 $up_position['sasi_sub_position'] = 0;
                 break;
@@ -118,7 +121,7 @@ class UserPosition extends AppModel {
         }
         $check_num = $this->check_number_product($user_data['User']['code'], $condition_position);
         $check_low_employee = $this->check_low_employee($user_data['User']['code'], $condition_position);
-        if ($check_low_employee && $check_nums) {
+        if ($check_low_employee && $check_num) {
             //dc thang cap
             $save_data = array();
             if (!empty($position_data['UserPosition'])) {
@@ -128,11 +131,12 @@ class UserPosition extends AppModel {
                 $save_data['month'] = $month;
                 $save_data['user_id'] = $user_id;
                 $save_data['year'] = $year;
+                $save_data['sale_id_protected'] = $user_data['User']['sale_id_protected'];
             }
             $save_data['sasi_position'] = $up_position['sasi_position'];
             $save_data['sasi_sub_position'] = $up_position['sasi_sub_position'];
             if ($this->save($save_data)) {
-                $this->update_level();
+                $this->update_level($user_data['User']['sale_id_protected']);
             }
         }
 
@@ -163,7 +167,7 @@ class UserPosition extends AppModel {
             $position_data['revenue'] = $this->get_revenue($user_data['User']['code']);
 
             $profit_type = 'c0';
-            switch ($position_data['revenue']['sasi_position']) {
+            switch ($position_data['sasi_position']) {
                 case 0:// up to sasim
                     $profit_type = 'c0';
                     break;
@@ -210,13 +214,16 @@ class UserPosition extends AppModel {
                 array(
                     'table' => 'user_position',
                     'alias' => "User_pos",
-                    'type' => 'inner',
+                    'type' => 'left',
                     'conditions' => array(
                         'User_pos.code = User.code'
                     )
                 )
             )
         ));
+        if ($condition_position['num_level'] == 0 && count($level_data) > 1) {
+            return 1;
+        }
         if ($condition_position['num_level'] == 1) {
             $num_position = 0;
             foreach ($level_data as $key => $value) {
