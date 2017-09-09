@@ -42,14 +42,14 @@
     <tr>
         <td colspan="5">
             <p  class="text_2">Chức danh hiện tại</p>
-            <p>Sasime</p>
+            <p><?php echo $current_position ?></p>
         </td>
         <td colspan="5" >
             <?php echo $user_name ?>
         </td>
         <td colspan="5" > 
             <p class="text_2">Chức danh cao nhất</p>
-            <p>Sasimo</p>
+            <p></p>
         </td>
     </tr>
     <tr>
@@ -63,7 +63,7 @@
             <p><?php echo $sasi['revenue'] ?></p>
         </td>
         <td colspan="3"   style="width: 20%">
-            <p class="text_1" >ĐR</p>    
+            <p class="text_1" >Đr</p>    
             <p><?php echo $sasi['point_dr'] ?></p>
         </td>
         <td colspan="3"   style="width: 20%">
@@ -80,7 +80,7 @@
         <td colspan="6" class="text_1" style="width: 40%">
             <p class="text_3">N-SASI</p>
             <p><?php echo $sasi_list['newbie'] ?></p>
-            </td>
+        </td>
     </tr>
     <tr>
         <td colspan="2">
