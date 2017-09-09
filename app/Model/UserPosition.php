@@ -159,7 +159,6 @@ class UserPosition extends AppModel {
         ));
         if (!empty($position_data)) {
             $position_data = $position_data['UserPosition'];
-
             //get revenue
             $position_data['revenue'] = $this->get_revenue($user_data['User']['code']);
 
@@ -178,7 +177,7 @@ class UserPosition extends AppModel {
             }
             //get profit
             $position_data['profit'] = $this->get_profit($user_data['User']['code'], $profit_type);
-            
+            //update cc for bosss . loi nhuan chenh lech cho thang cap cao
             $this->save($position_data);
         }
     }
@@ -379,6 +378,38 @@ class UserPosition extends AppModel {
             )
         ));
         return $rep_data;
+    }
+
+    public function update_cc_for_boss($buy_data, $user_code) {
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
+        $position_data = $this->find('first', array(
+            'conditions' => array(
+                "code" => $user_code,
+                'month' => $month,
+                'year' => $year,
+            )
+        ));
+        $user_data = $this->find('first', array(
+            'conditions' => array(
+                "code" => $buy_data['code'],
+                'month' => $month,
+                'year' => $year,
+            )
+        ));
+        if (!empty($position_data['UserPosition']) && $position_data['UserPosition']['sasi_position'] > 1 && !empty($user_data['UserPosition'])) {
+            $position = $user_data['UserPosition']['sasi_position'];
+            $profit_add = 0;
+            if (($position == 1 || $position == 0) && $position_data['UserPosition']['sasi_position'] > 1) {
+                $profit_add = $buy_data['c0'] - $buy_data['partner_price'];
+            } elseif ($position == 2 && $position_data['UserPosition']['sasi_position'] > 2) {
+                $profit_add = $buy_data['c0'] - $buy_data['employee_price'];
+            }
+            $position_data['UserPosition']['profit_cc'] += $profit_add;
+        }
+        $this->save($position_data);
     }
 
 }

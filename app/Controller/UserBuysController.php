@@ -399,6 +399,7 @@ class UserBuysController extends AppController {
             if (!empty($user_data['User']['id'])) {
                 $this->UserPosition->update_level($user_data['User']['id']);
                 $this->UserPosition->update_revenue($user_data['User']['id']);
+                $this->UserPosition->update_cc_for_boss($user_data['UserBuy'],$user_data['User']['sale_id_protected']);
             }
             $this->redirect('/userBuys/check_buy');
         }
