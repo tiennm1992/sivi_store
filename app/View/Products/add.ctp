@@ -12,6 +12,7 @@
         
         echo $this->Form->input('price', array('label' => array('text' => 'Giá bán lẻ', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('price_origin', array('label' => array('text' => 'Giá nhập', 'class' => 'control-label col-xs-12 col-sm-2'),));
+        echo $this->Form->input('c0', array('label' => array('text' => 'Giá C0', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('partner_price', array('label' => array('text' => 'Giá C1', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('employee_price', array('label' => array('text' => 'Giá C2', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('sale', array('label' => array('text' => 'Giảm sale', 'class' => 'control-label col-xs-12 col-sm-2'),));

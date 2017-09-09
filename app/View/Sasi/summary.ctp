@@ -33,7 +33,7 @@
         color: #000000;
         font-weight:bold;
         font-size: 20px;
-        
+
 
     }
 
@@ -44,7 +44,9 @@
             <p  class="text_2">Chức danh hiện tại</p>
             <p>Sasime</p>
         </td>
-        <td colspan="5" >Tên</td>
+        <td colspan="5" >
+            <?php echo $user_name ?>
+        </td>
         <td colspan="5" > 
             <p class="text_2">Chức danh cao nhất</p>
             <p>Sasimo</p>
@@ -54,19 +56,19 @@
         <td colspan="3" class="text_3"> Activity</td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >SPB</p>    
-            <p>23</p>
+            <?php echo $number_buy ?>
         </td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >DT</p>    
-            <p>23</p>
+            <p><?php echo $sasi['revenue'] ?></p>
         </td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >ĐR</p>    
-            <p>23</p>
+            <p><?php echo $sasi['point_dr'] ?></p>
         </td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >Đ</p>    
-            <p>23</p>
+            <p><?php echo $sasi['point_d'] ?></p>
         </td>
     </tr>
     <tr>
@@ -77,27 +79,27 @@
     <tr>
         <td colspan="2">
             <p>Sasim</p>    
-            <p>2</p>    
+            <p>0</p>    
         </td>
         <td colspan="2">
             <p>Sasima</p>    
-            <p>2</p>    
+            <p>0</p>    
         </td>
         <td colspan="2">
             <p>Sasime</p>    
-            <p>1</p>    
+            <p>0</p>    
         </td>
         <td colspan="2">
             <p>Sasimi</p>    
-            <p>2</p>    
+            <p>0</p>    
         </td>
         <td colspan="2">
             <p>Sasimo</p>    
-            <p>3</p>    
+            <p>0</p>    
         </td>
         <td colspan="2">
             <p>Sasimu</p>    
-            <p>4</p>
+            <p>0</p>
         </td>
 
     </tr>
@@ -105,21 +107,21 @@
         <td colspan="3" class="text_3">Income</td>
         <td colspan="3" >
             <p class="text_1">LN</p>
-            <p>2</p>
+            <p><?php echo $sasi['profit'] ?></p>
         </td>
         <td colspan="3" >
             <p class="text_1">CC</p>
-            <p>2</p>
+            <p>0</p>
         </td>
         <td colspan="3" >
             <p class="text_1">TN</p>
-            <p>2</p>
+            <p>0</p>
         </td>
         <td colspan="3" >
             <p class="text_1">So khach hang</p>
-            <p>2</p>
+            <p>0</p>
         </td>
     </tr>
-   
+
 
 </table>

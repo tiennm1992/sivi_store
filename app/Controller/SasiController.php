@@ -43,6 +43,25 @@ class SasiController extends AppController {
                 'UserPosition.year' => $year,
             )
         ));
+        if (!empty($revenue_sasi)) {
+            $revenue_sasi = $revenue_sasi['UserPosition'];
+        } else {
+            $revenue_sasi = array(
+                'sasi_position' => 0,
+                'sasi_sub_position' => 0,
+                'revenue' => 0,
+                'profit' => 0,
+                'point_dr' => 0,
+                'point_dc' => 0,
+                'point_d' => 0,
+                'month' => $month,
+                'year' => $year
+            );
+        }
+        $number_buy = $this->UserBuy->get_number_buy($this->user_code);
+        $this->set('sasi', $revenue_sasi);
+        $this->set('number_buy', $number_buy);
+        $this->set('user_name', $this->user_info['name']);
     }
 
     public function order_list() {
@@ -114,11 +133,19 @@ class SasiController extends AppController {
     }
 
     public function policy() {
-        
+        $this->render(false);
     }
 
     public function convert_list() {
-        
+//        $this->layout = false;
+        $this->render(false);
+    }
+
+    public function test() {
+        $a = $this->UserPosition->get_revenue(20170720, 'c1');
+//        $a= $this->UserPosition->get_profit(20170720);
+        pr($a);
+        die;
     }
 
 }

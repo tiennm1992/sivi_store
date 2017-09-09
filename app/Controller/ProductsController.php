@@ -200,6 +200,7 @@ class ProductsController extends AppController {
         if ($this->request->is(array('post', 'put'))) {
             $data = $this->request->data;
             $data_upload = $data['Product'];
+           
             $img_arr = '';
             $file = $data['Product']['img'];
             if (!empty($data['Product']['img_tmp']) && isset($data['Product']['img_tmp'])) {

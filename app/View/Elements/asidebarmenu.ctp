@@ -16,7 +16,7 @@ $urls = array(
     //
     'add_employee' => $this->Html->url(array('controller' => 'employees', 'action' => 'add', 'admin' => true), true),
     'userbuy' => $this->Html->url(array('controller' => 'userBuys', 'action' => 'index', 'admin' => true), true),
-    'infor' => $this->Html->url(array('controller' => 'user', 'action' => 'infor', 'admin' => true), true),
+    'infor' => $this->Html->url(array('controller' => 'users', 'action' => 'infor', 'admin' => true), true),
     'promotion' => $this->Html->url(array('controller' => 'promotions', 'action' => 'index', 'admin' => true), true),
     'slides' => $this->Html->url(array('controller' => 'slides', 'action' => 'index', 'admin' => true), true),
     'customer' => $this->Html->url(array('controller' => 'customers', 'action' => 'index', 'admin' => true), true),

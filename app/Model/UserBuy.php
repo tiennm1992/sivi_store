@@ -111,4 +111,21 @@ class UserBuy extends AppModel {
         )
     );
 
+    public function get_number_buy($code = 0) {
+        $end_date = date("Y-m-d H:s:i");
+        $start_date = date("Y-m") . "-1 00:00:00";
+        $num_buy_data = $this->find('count', array(
+            'conditions' => array(
+                'UserBuy.code' => $code,
+                'UserBuy.status' => 2,
+                "UserBuy.date <= '{$end_date}'",
+                "UserBuy.date > '{$start_date}'",
+            )
+        ));
+        if (!empty($num_buy_data)) {
+            return $num_buy_data;
+        }
+        return 0;
+    }
+
 }

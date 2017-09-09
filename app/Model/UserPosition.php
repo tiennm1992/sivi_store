@@ -230,13 +230,52 @@ class UserPosition extends AppModel {
     }
 
     //doanh thu
-    public function get_revenue() {
-        
+    public function get_revenue($user_code, $type_price = "c0") {
+
+        $User_buy = ClassRegistry::init('UserBuy');
+        $end_date = date("Y-m-d H:s:i");
+        $start_date = date("Y-m") . "-1 00:00:00";
+        $conditions = array();
+        $conditions['UserBuy.code'] = $user_code;
+        $conditions['UserBuy.status'] = 2;
+        $conditions['UserBuy.date <='] = $end_date;
+        $conditions['UserBuy.date >'] = $start_date;
+
+        if ($type_price == 'c0') {
+            $fields = array(" SUM(UserBuy.c0)  as sum ");
+        } elseif ($type_price == 'c1') {
+            $fields = array(" SUM(UserBuy.partner_price)  as sum ");
+        } elseif ($type_price == 'c2') {
+            $fields = array(" SUM(UserBuy.employee_price)  as sum ");
+        }
+        $user_profit = $User_buy->find('all', array(
+            'fields' => $fields,
+            'conditions' => $conditions
+        ));
+        if (!empty($user_profit[0][0]['sum'])) {
+            return $user_profit[0][0]['sum'];
+        }
+        return 0;
     }
 
     //loi nhuan
-    public function get_profit() {
-        
+    public function get_profit($user_code) {
+        $User_buy = ClassRegistry::init('UserBuy');
+        $end_date = date("Y-m-d H:s:i");
+        $start_date = date("Y-m") . "-1 00:00:00";
+        $conditions = array();
+        $conditions['UserBuy.code'] = $user_code;
+        $conditions['UserBuy.status'] = 2;
+        $conditions['UserBuy.date <='] = $end_date;
+        $conditions['UserBuy.date >'] = $start_date;
+        $user_profit = $User_buy->find('all', array(
+            'fields' => array(" SUM(UserBuy.revenue)  as sum "),
+            'conditions' => $conditions
+        ));
+        if (!empty($user_profit[0][0]['sum'])) {
+            return $user_profit[0][0]['sum'];
+        }
+        return 0;
     }
 
 }

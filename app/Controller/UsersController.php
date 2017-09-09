@@ -28,6 +28,7 @@ class UsersController extends AppController {
 
     public function infor() {
         $user = $this->Auth->user();
+         $this->render(false);
     }
 
     public function login() {
