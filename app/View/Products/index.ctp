@@ -59,10 +59,10 @@ $option['col'] = array(
     2 => array('key_tab' => 'product_code', 'title_tab' => 'Mã HH', 'option_tab' => ''),
     3 => array('key_tab' => 'avatar', 'title_tab' => 'avatar', 'option_tab' => 'sort'),
     4 => array('key_tab' => 'name', 'title_tab' => 'Tên', 'option_tab' => ''),
-    5 => array('key_tab' => 'price', 'title_tab' => 'Giá bán', 'option_tab' => 'sort'),
-    6 => array('key_tab' => 'price origin ', 'title_tab' => 'Giá gốc', 'option_tab' => 'sort'),
-    7 => array('key_tab' => 'name', 'title_tab' => 'Giá cấp 1', 'option_tab' => ''),
-    8 => array('key_tab' => 'name', 'title_tab' => 'Giá cấp 2', 'option_tab' => ''),
+    5 => array('key_tab' => 'price', 'title_tab' => 'Giá bán lẻ', 'option_tab' => 'sort'),
+    6 => array('key_tab' => 'price origin ', 'title_tab' => 'Giá C0', 'option_tab' => 'sort'),
+    7 => array('key_tab' => 'name', 'title_tab' => 'Giá  C1', 'option_tab' => ''),
+    8 => array('key_tab' => 'name', 'title_tab' => 'Giá  C2', 'option_tab' => ''),
     9 => array('key_tab' => 'sale', 'title_tab' => 'sale', 'option_tab' => 'sort'),
     10 => array('key_tab' => 'title', 'title_tab' => 'Danh mục cha', 'option_tab' => 'sort'),
     11 => array('key_tab' => 'category', 'title_tab' => 'Danh mục con', 'option_tab' => 'sort'),
@@ -79,7 +79,7 @@ echo $this->grid->create($products, null, $option);
         <td><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . '/' . h($product['Product']['avatar']); ?>" style="width: 120px;height: 80px;"></td>
         <td><?php echo h($product['Product']['name']); ?>&nbsp;</td>
         <td><?php echo h($product['Product']['price']); ?>&nbsp;</td>
-        <td><?php echo h($product['Product']['price_origin']); ?>&nbsp;</td>
+        <td><?php echo h($product['Product']['c0']); ?>&nbsp;</td>
         <td><?php echo h($product['Product']['partner_price']); ?>&nbsp;</td>
         <td><?php echo h($product['Product']['employee_price']); ?>&nbsp;</td>
         <td><?php echo h($product['Product']['sale']); ?>&nbsp;</td>

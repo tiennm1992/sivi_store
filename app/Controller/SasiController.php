@@ -43,41 +43,21 @@ class SasiController extends AppController {
                 'UserPosition.year' => $year,
             )
         ));
+        $best_sasi = $this->UserPosition->find('first', array(
+            'conditions' => array(
+                'UserPosition.code' => $this->user_code,
+                'UserPosition.year' => $year,
+            ),
+            'order' => array('UserPosition.sasi_position DESC', 'UserPosition.sasi_sub_position DESC')
+        ));
         $current_position = 'sasim';
+        $best_position = 'sasim';
+        if (!empty($best_sasi)) {
+            $best_position = $this->UserPosition->convert_position($best_sasi['UserPosition']['sasi_position'], $best_sasi['UserPosition']['sasi_position']);
+        }
         if (!empty($revenue_sasi)) {
             $revenue_sasi = $revenue_sasi['UserPosition'];
-            switch ($revenue_sasi['sasi_position']) {
-                case 0:// up to sasim
-                    $current_position = 'sasim';
-                    break;
-                case 1: //up to sasima
-                    $current_position = 'sasima';
-                    break;
-                case 2: //up to sasime
-                    $current_position = 'sasime';
-                    switch ($revenue_sasi['sasi_sub_position']) {
-                        case 0:
-                            break;
-                        case 1:
-                            break;
-                        case 2:
-                            break;
-                    }
-                    break;
-                case 3:
-                    $current_position = 'sasimi';
-                    switch ($revenue_sasi['sasi_sub_position']) {
-                        case 0:
-                            break;
-                        case 1:
-                            break;
-                        case 2:
-                            break;
-                        case 3:
-                            break;
-                    }
-                    break;
-            }
+            $current_position = $this->UserPosition->convert_position($revenue_sasi['sasi_position'], $revenue_sasi['sasi_sub_position']);
         } else {
             $revenue_sasi = array(
                 'sasi_position' => 0,
@@ -96,6 +76,7 @@ class SasiController extends AppController {
         $number_customer = $this->Customer->get_num_customer($this->user_code);
         $this->set('sasi', $revenue_sasi);
         $this->set('current_position', $current_position);
+        $this->set('best_position', $best_position);
         $this->set('number_buy', $number_buy);
         $this->set('number_customer', $number_customer);
         $this->set('sasi_list', $sasi_list);

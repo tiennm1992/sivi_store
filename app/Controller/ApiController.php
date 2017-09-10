@@ -335,6 +335,7 @@ class ApiController extends AppController {
                         'product_id' => $data['product_id'],
                         'price_origin' => $product_data['Product']['price_origin'],
                         'price_sale' => $product_data['Product']['price'],
+                        'c0' => $product_data['Product']['c0'],
                         'partner_price' => $product_data['Product']['partner_price'],
                         'employee_price' => $product_data['Product']['employee_price'],
                         'revenue' => $product_data['Product']['price'] - $product_data['Product']['price_origin'],

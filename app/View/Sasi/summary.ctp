@@ -49,7 +49,7 @@
         </td>
         <td colspan="5" > 
             <p class="text_2">Chức danh cao nhất</p>
-            <p></p>
+            <p><?php echo $best_position ?></p>
         </td>
     </tr>
     <tr>
@@ -68,11 +68,11 @@
         </td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >Đ</p>    
-            <p><?php echo $sasi['point_d'] ?></p>
+            <p><?php echo $sasi['point_dr'] + $sasi['point_dc'] ?></p>
         </td>
     </tr>
     <tr>
-        <td colspan="3" rowspan="2" ">Team-Group</td>
+        <td colspan="3" rowspan="2" class="text_3">Team-Group</td>
         <td colspan="6" class="text_1" style="width: 40%">
             <p class="text_3">T-SASI</p>
             <P><?php echo $sasi_list['count'] ?></P>
@@ -124,7 +124,7 @@
             <p>0</p>
         </td>
         <td colspan="3" >
-            <p class="text_1">So khach hang</p>
+            <p class="text_1">Số khách hàng</p>
             <p><?php echo $number_customer ?></p>
         </td>
     </tr>

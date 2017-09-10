@@ -181,7 +181,8 @@ class UserPosition extends AppModel {
             }
             //get profit
             $position_data['profit'] = $this->get_profit($user_data['User']['code'], $profit_type);
-            //update cc for bosss . loi nhuan chenh lech cho thang cap cao
+            //update point
+            $position_data['point_dr'] = round($position_data['revenue'] / 1000);
             $this->save($position_data);
         }
     }
@@ -214,15 +215,23 @@ class UserPosition extends AppModel {
                 array(
                     'table' => 'user_position',
                     'alias' => "User_pos",
-                    'type' => 'left',
+                    'type' => 'inner',
                     'conditions' => array(
                         'User_pos.code = User.code'
                     )
                 )
             )
         ));
-        if ($condition_position['num_level'] == 0 && count($level_data) > 1) {
-            return 1;
+        if ($condition_position['num_level'] == 0) {
+            $check = $UserModel->find('all', array(
+                'conditions' => array(
+                    'User.sale_id_protected' => $code
+                ),
+            ));
+            if (count($check) > 1) {
+                return 1;
+            }
+            return 0;
         }
         if ($condition_position['num_level'] == 1) {
             $num_position = 0;
@@ -318,7 +327,7 @@ class UserPosition extends AppModel {
         $conditions['UserBuy.date <='] = $end_date;
         $conditions['UserBuy.date >'] = $start_date;
         $user_profit = $User_buy->find('all', array(
-            'fields' => array(" SUM(UserBuy.revenue)  as sum "),
+            'fields' => array(" SUM(UserBuy.price_sale * UserBuy.number_product )  as sum "),
             'conditions' => $conditions
         ));
         if (!empty($user_profit[0][0]['sum'])) {
@@ -332,7 +341,7 @@ class UserPosition extends AppModel {
         $date = explode('-', $date);
         $month = $date[1];
         $year = $date[0];
-        $position_data = $this->find('first', array(
+        $position_data = $this->find('all', array(
             'conditions' => array(
                 "sale_id_protected" => $user_code,
                 'month' => $month,
@@ -417,6 +426,43 @@ class UserPosition extends AppModel {
             $position_data['UserPosition']['profit_cc'] += $profit_add;
         }
         $this->save($position_data);
+    }
+
+    public function convert_position($position, $sub_positision) {
+        $current_position = 'sasim';
+        switch ($position) {
+            case 0:// up to sasim
+                $current_position = 'sasim';
+                break;
+            case 1: //up to sasima
+                $current_position = 'sasima';
+                break;
+            case 2: //up to sasime
+                $current_position = 'sasime';
+                switch ($sub_positision) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                }
+                break;
+            case 3:
+                $current_position = 'sasimi';
+                switch ($sub_positision) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                }
+                break;
+        }
+        return $current_position;
     }
 
 }
