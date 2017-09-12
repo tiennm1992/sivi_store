@@ -381,7 +381,6 @@ class UserPosition extends AppModel {
                         break;
                 }
             }
-            $rep_data['count'] = count($position_data);
         }
         $end_date = date("Y-m-d H:s:i");
         $start_date = date("Y-m") . "-1 00:00:00";
@@ -391,6 +390,11 @@ class UserPosition extends AppModel {
                 'User.sale_id_protected' => $user_code,
                 "User.created_datetime <= '{$end_date}'",
                 "User.created_datetime > '{$start_date}'",
+            )
+        ));
+        $rep_data['count'] = $User_model->find('count', array(
+            'conditions' => array(
+                'User.sale_id_protected' => $user_code,
             )
         ));
         return $rep_data;
