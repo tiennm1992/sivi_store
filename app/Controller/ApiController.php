@@ -264,17 +264,21 @@ class ApiController extends AppController {
                             'id' => $data_user['id'],
                             'token' => $token
                         );
-                        $rep = array(
-                            'success' => 'true',
-                            'infor' => 'Login thành công',
-                            'mess' => array(
-                                'id' => $data_user['id'],
-                                'role' => $data_user['role'],
-                                'token' => $token,
-                                'username' => $data['username']
-                            ),
-                        );
-                        echo json_encode($rep, true);
+                        if ($this->User->save($data_update)) {
+                            $rep = array(
+                                'success' => 'true',
+                                'infor' => 'Login thành công',
+                                'mess' => array(
+                                    'id' => $data_user['id'],
+                                    'role' => $data_user['role'],
+                                    'token' => $token,
+                                    'username' => $data['username']
+                                ),
+                            );
+                            echo json_encode($rep, true);
+                        } else {
+                            $this->bugError('Lỗi khi đăng nhập');
+                        }
                     } else {
                         $this->bugError('Sai mật khẩu');
                     }

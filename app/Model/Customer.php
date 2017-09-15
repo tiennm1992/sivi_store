@@ -26,4 +26,13 @@ class Customer extends AppModel {
         return $data;
     }
 
+    public function get_customer($user_code) {
+        $data = $this->find('all', array(
+            'conditions' => array(
+                'employee_code' => $user_code
+            )
+        ));
+        return $data;
+    }
+
 }
