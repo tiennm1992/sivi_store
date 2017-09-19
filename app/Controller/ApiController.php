@@ -270,7 +270,8 @@ class ApiController extends AppController {
                                 'infor' => 'Login thành công',
                                 'mess' => array(
                                     'id' => $data_user['id'],
-                                    'role' => $data_user['role'],
+                                    'role' => 'sasi',
+//                                    'role' => $data_user['role'],
                                     'token' => $token,
                                     'username' => $data['username']
                                 ),
