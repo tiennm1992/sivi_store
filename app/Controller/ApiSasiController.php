@@ -396,7 +396,7 @@ class ApiSasiController extends AppController {
             $data_api[] = $value['Product'];
         }
         $data_api = array(
-            'success' => 'true',
+            'success' => 1,
             'infor' => $data_api,
         );
         $data_api = json_encode($data_api, true);
@@ -405,7 +405,7 @@ class ApiSasiController extends AppController {
 
     function echoError() {
         $data_api = array(
-            'success' => 'false',
+            'success' => 0,
             'infor' => 'Thiếu tham số',
         );
         $data_api = json_encode($data_api, true);
@@ -414,7 +414,7 @@ class ApiSasiController extends AppController {
 
     function bugError($infor) {
         $data_api = array(
-            'success' => 'false',
+            'success' => 0,
             'infor' => $infor,
         );
         $data_api = json_encode($data_api, true);
@@ -424,7 +424,7 @@ class ApiSasiController extends AppController {
 
     function success($infor, $data = array()) {
         $data_api = array(
-            'success' => 'success',
+            'success' => 1,
             'infor' => $infor,
             'data' => $data,
         );

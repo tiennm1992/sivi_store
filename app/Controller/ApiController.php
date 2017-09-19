@@ -254,7 +254,7 @@ class ApiController extends AppController {
         if (!empty($data['username']) && !empty($data['password'])) {
             $username = $data['username'];
             $data_user = $this->Customer->find('all', array('conditions' => array('Customer.username' => $username)));
-            if (empty($data_user)) {
+            if (!empty($data['role']) && $data['role'] == 'sasi') {
                 $data_user = $this->User->find('all', array('conditions' => array('User.username' => $username)));
                 if ($data_user) {
                     $data_user = $data_user[0]['User'];
@@ -286,7 +286,7 @@ class ApiController extends AppController {
                 } else {
                     $this->bugError('Tài khoản không tồn tại');
                 }
-            } else {
+            } else if (!empty($data_user)) {
                 $data_user = $data_user[0]['Customer'];
                 $data_user['role'] = 'customer';
                 if ($data_user['password'] == $data['password']) {
@@ -315,6 +315,7 @@ class ApiController extends AppController {
                     $this->bugError('Sai mật khẩu');
                 }
             }
+            $this->bugError('Đăng nhập không hợp lệ, Tài khoản không đúng hoặc không tồn tại !');
         } else {
             $this->echoError();
         }
