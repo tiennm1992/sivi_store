@@ -124,8 +124,8 @@ class UserPosition extends AppModel {
 
         $check_num = $this->check_number_product($user_data['User']['code'], $condition_position);
         $check_low_employee = $this->check_low_employee($user_data['User']['code'], $condition_position);
-//        pr($check_num);
-//        pr($check_low_employee);die;
+        pr($check_num);
+        pr($check_low_employee);die;
         if ($check_low_employee && $check_num) {
             //dc thang cap
             $save_data = array();
