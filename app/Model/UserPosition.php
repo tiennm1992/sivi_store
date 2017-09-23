@@ -33,17 +33,7 @@ class UserPosition extends AppModel {
                 'year' => $year,
             )
         ));
-        if (empty($position_data)) {
-            $position_tmp = array(
-                "user_id" => $user_data['User']['id'],
-                "code" => $user_data['User']['code'],
-                'month' => $month,
-                'year' => $year,
-                'sale_id_protected' => $user_data['User']['sale_id_protected'],
-            );
-            $this->save($position_tmp);
-            $this->clear();
-        }
+
         $cur_position = !empty($position_data['UserPosition']['sasi_position']) ? $position_data['UserPosition']['sasi_position'] : 0;
         $cur_sub_position = !empty($position_data['UserPosition']['sasi_sub_position']) ? $position_data['UserPosition']['sasi_sub_position'] : 0;
         $condition_position = array();
@@ -130,8 +120,12 @@ class UserPosition extends AppModel {
                 }
                 break;
         }
+
+
         $check_num = $this->check_number_product($user_data['User']['code'], $condition_position);
         $check_low_employee = $this->check_low_employee($user_data['User']['code'], $condition_position);
+//        pr($check_num);
+//        pr($check_low_employee);die;
         if ($check_low_employee && $check_num) {
             //dc thang cap
             $save_data = array();
@@ -149,11 +143,24 @@ class UserPosition extends AppModel {
             if ($this->save($save_data)) {
                 $this->update_level($user_data['User']['sale_id_protected']);
             }
+        } else {
+            if (empty($position_data)) {
+                $position_tmp = array(
+                    "user_id" => $user_data['User']['id'],
+                    "code" => $user_data['User']['code'],
+                    'month' => $month,
+                    'year' => $year,
+                    'sale_id_protected' => $user_data['User']['sale_id_protected'],
+                );
+                $this->save($position_tmp);
+                $this->clear();
+            }
         }
 
 
         //update level for manage
     }
+
     public function update_revenue($user_id) {
         $User_model = ClassRegistry::init('User');
         $user_data = $User_model->find('first', array(
@@ -176,7 +183,6 @@ class UserPosition extends AppModel {
             $position_data = $position_data['UserPosition'];
             //get revenue
             $position_data['revenue'] = $this->get_revenue($user_data['User']['code']);
-
             $profit_type = 'c0';
             switch ($position_data['sasi_position']) {
                 case 0:// up to sasim
@@ -200,7 +206,8 @@ class UserPosition extends AppModel {
 
     public function check_number_product($code, $condition_position) {
         $User_buy = ClassRegistry::init('UserBuy');
-        $end_date = date("Y-m-d H:s:i");
+        $end_date = date("Y-m") . "-31 00:00:00";
+        ;
         $start_date = date("Y-m") . "-1 00:00:00";
         $num_buy_data = $User_buy->find('count', array(
             'conditions' => array(
@@ -219,6 +226,7 @@ class UserPosition extends AppModel {
     public function check_low_employee($code, $condition_position) {
         $UserModel = ClassRegistry::init('User');
         $level_data = $UserModel->find('all', array(
+            'fields' => array("User_pos.*", "User.*"),
             'conditions' => array(
                 'User.sale_id_protected' => $code
             ),
@@ -233,65 +241,68 @@ class UserPosition extends AppModel {
                 )
             )
         ));
-        if ($condition_position['num_level'] == 0) {
-            $check = $UserModel->find('all', array(
-                'conditions' => array(
-                    'User.sale_id_protected' => $code
-                ),
-            ));
-            if (count($check) > 1) {
-                return 1;
+        if (!empty($level_data)) {
+            if ($condition_position['num_level'] == 0) {
+                $check = $UserModel->find('all', array(
+                    'conditions' => array(
+                        'User.sale_id_protected' => $code
+                    ),
+                ));
+                if (count($check) > 1) {
+                    return 1;
+                }
+                return 0;
             }
-            return 0;
+            if ($condition_position['num_level'] == 1) {
+                $num_position = 0;
+                foreach ($level_data as $key => $value) {
+                    if ($value['User_pos']['sasi_position'] == $condition_position['level_1']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_1']['sub_position']) {
+                        $num_position += 1;
+                    }
+                }
+                if ($num_position >= $condition_position['level_1']['num_position']) {
+                    return 1;
+                }
+                return 0;
+            }
+            if ($condition_position['num_level'] == 2) {
+                $num_level_1 = 0;
+                $num_level_2 = 0;
+                foreach ($level_data as $key => $value) {
+                    if ($value['User_pos']['sasi_position'] == $condition_position['level_1']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_1']['sub_position']) {
+                        $num_level_1 += 1;
+                    }
+                    if ($value['User_pos']['sasi_position'] == $condition_position['level_2']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_2']['sub_position']) {
+                        $num_level_2 += 1;
+                    }
+                }
+                if ($num_level_1 >= $condition_position['level_1']['num_position'] && $num_level_2 >= $condition_position['level_2']['num_position']) {
+                    return 1;
+                }
+                return 0;
+            }
+            if ($condition_position['num_level'] == 3) {
+                $num_level_1 = 0;
+                $num_level_2 = 0;
+                $num_level_3 = 0;
+                foreach ($level_data as $key => $value) {
+                    if ($value['User_pos']['sasi_position'] == $condition_position['level_1']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_1']['sub_position']) {
+                        $num_level_1 += 1;
+                    }
+                    if ($value['User_pos']['sasi_position'] == $condition_position['level_2']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_2']['sub_position']) {
+                        $num_level_2 += 1;
+                    }
+                    if ($value['User_pos']['sasi_position'] == $condition_position['level_3']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_3']['sub_position']) {
+                        $num_level_3 += 1;
+                    }
+                }
+                if ($num_level_1 >= $condition_position['level_1']['num_position'] && $num_level_2 >= $condition_position['level_2']['num_position'] && $num_level_3 >= $condition_position['level_3']['num_position']) {
+                    return 1;
+                }
+                return 0;
+            }
         }
-        if ($condition_position['num_level'] == 1) {
-            $num_position = 0;
-            foreach ($level_data as $key => $value) {
-                if ($value['User_pos']['sasi_position'] == $condition_position['level_1']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_1']['sub_position']) {
-                    $num_position += 1;
-                }
-            }
-            if ($num_position >= $condition_position['level_1']['num_position']) {
-                return 1;
-            }
-            return 0;
-        }
-        if ($condition_position['num_level'] == 2) {
-            $num_level_1 = 0;
-            $num_level_2 = 0;
-            foreach ($level_data as $key => $value) {
-                if ($value['User_pos']['sasi_position'] == $condition_position['level_1']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_1']['sub_position']) {
-                    $num_level_1 += 1;
-                }
-                if ($value['User_pos']['sasi_position'] == $condition_position['level_2']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_2']['sub_position']) {
-                    $num_level_2 += 1;
-                }
-            }
-            if ($num_level_1 >= $condition_position['level_1']['num_position'] && $num_level_2 >= $condition_position['level_2']['num_position']) {
-                return 1;
-            }
-            return 0;
-        }
-        if ($condition_position['num_level'] == 3) {
-            $num_level_1 = 0;
-            $num_level_2 = 0;
-            $num_level_3 = 0;
-            foreach ($level_data as $key => $value) {
-                if ($value['User_pos']['sasi_position'] == $condition_position['level_1']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_1']['sub_position']) {
-                    $num_level_1 += 1;
-                }
-                if ($value['User_pos']['sasi_position'] == $condition_position['level_2']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_2']['sub_position']) {
-                    $num_level_2 += 1;
-                }
-                if ($value['User_pos']['sasi_position'] == $condition_position['level_3']['position'] && $value['User_pos']['sasi_sub_position'] == $condition_position['level_3']['sub_position']) {
-                    $num_level_3 += 1;
-                }
-            }
-            if ($num_level_1 >= $condition_position['level_1']['num_position'] && $num_level_2 >= $condition_position['level_2']['num_position'] && $num_level_3 >= $condition_position['level_3']['num_position']) {
-                return 1;
-            }
-            return 0;
-        }
+        return 0;
     }
 
     //lay điểm
@@ -302,7 +313,7 @@ class UserPosition extends AppModel {
     //doanh thu
     public function get_profit($user_code, $type_price = "c0") {
         $User_buy = ClassRegistry::init('UserBuy');
-        $end_date = date("Y-m-d H:s:i");
+        $end_date = date("Y-m") . "-31 00:00:00";
         $start_date = date("Y-m") . "-1 00:00:00";
         $conditions = array();
         $conditions['UserBuy.code'] = $user_code;
@@ -330,7 +341,7 @@ class UserPosition extends AppModel {
     //loi nhuan
     public function get_revenue($user_code) {
         $User_buy = ClassRegistry::init('UserBuy');
-        $end_date = date("Y-m-d H:s:i");
+        $end_date = date("Y-m") . "-31 00:00:00";
         $start_date = date("Y-m") . "-1 00:00:00";
         $conditions = array();
         $conditions['UserBuy.code'] = $user_code;
@@ -362,6 +373,7 @@ class UserPosition extends AppModel {
         $rep_data = array(
             'count' => 0,
             'newbie' => 0,
+            'sasi' => 0,
             'sasim' => 0,
             'sasima' => 0,
             'sasime' => 0,
@@ -373,21 +385,24 @@ class UserPosition extends AppModel {
             foreach ($position_data as $key => $value) {
                 switch ($value['UserPosition']['sasi_position']) {
                     case 0:// up to sasim
+                        $rep_data['sasi'] += 1;
+                        break;
+                    case 1:// up to sasim
                         $rep_data['sasim'] += 1;
                         break;
-                    case 1: //up to sasima
+                    case 2: //up to sasima
                         $rep_data['sasima'] += 1;
                         break;
-                    case 2: //up to sasime
+                    case 3: //up to sasime
                         $rep_data['sasime'] += 1;
                         break;
-                    case 3:
+                    case 4:
                         $rep_data['sasimi'] += 1;
                         break;
-                    case 4:
+                    case 5:
                         $rep_data['sasimo'] += 1;
                         break;
-                    case 5:
+                    case 6:
                         $rep_data['sasimu'] += 1;
                         break;
                 }
