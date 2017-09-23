@@ -71,6 +71,10 @@ class SasiController extends AppController {
                 'year' => $year
             );
         }
+        if ($current_position == 'sasi' || $current_position == 'sasim') {
+            $revenue_sasi['point_dr'] = 0;
+            $revenue_sasi['point_d'] = 0;
+        }
         $number_buy = $this->UserBuy->get_number_buy($this->user_code);
         $sasi_list = $this->UserPosition->get_sub_position_list($this->user_code);
         $number_customer = $this->Customer->get_num_customer($this->user_code);
