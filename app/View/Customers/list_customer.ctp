@@ -25,10 +25,11 @@ $option['col'] = array(
     2 => array('key_tab' => 'name', 'title_tab' => 'Họ và tên', 'option_tab' => ''),
     3 => array('key_tab' => 'title', 'title_tab' => 'Số điện thoại', 'option_tab' => 'sort'),
     4 => array('key_tab' => 'address', 'title_tab' => 'Địa chỉ', 'option_tab' => 'sort'),
-    5 => array('key_tab' => 'address', 'title_tab' => 'ID sale', 'option_tab' => 'sort'),
+    5 => array('key_tab' => 'address', 'title_tab' => 'ID Sasi', 'option_tab' => 'sort'),
     6 => array('key_tab' => 'address', 'title_tab' => 'Quản lý', 'option_tab' => 'sort'),
-    7 => array('key_tab' => '', 'title_tab' => 'Sửa tài khoản', 'option_tab' => ''),
-    8 => array('key_tab' => '', 'title_tab' => 'Xóa tài khoản', 'option_tab' => ''),
+    7 => array('key_tab' => 'created_datetime', 'title_tab' => 'Ngày tham gia', 'option_tab' => 'sort'),
+    8 => array('key_tab' => '', 'title_tab' => 'Sửa tài khoản', 'option_tab' => ''),
+    9 => array('key_tab' => '', 'title_tab' => 'Xóa tài khoản', 'option_tab' => ''),
 );
 echo $this->grid->create($customers, null, $option);
 ?>
@@ -40,6 +41,7 @@ echo $this->grid->create($customers, null, $option);
         <td><?php echo h($customer['Customer']['phone']); ?>&nbsp;</td>
         <td><?php echo h($customer['Customer']['address']); ?>&nbsp;</td>
         <td><?php echo h($customer['Customer']['employee_code']); ?>&nbsp;</td>
+        <td><?php echo h($customer['Customer']['created_datetime']); ?>&nbsp;</td>
         <td><a>Lịch sử mua hàng</a></td>
         <td class="actions">
             <?php
