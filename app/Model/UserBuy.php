@@ -112,7 +112,7 @@ class UserBuy extends AppModel {
     );
 
     public function get_number_buy($code = 0) {
-        $end_date = date("Y-m-d H:s:i");
+        $end_date = date("Y-m") . "-31 00:00:00";
         $start_date = date("Y-m") . "-1 00:00:00";
         $num_buy_data = $this->find('all', array(
             'conditions' => array(

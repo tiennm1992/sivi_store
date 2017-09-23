@@ -132,9 +132,6 @@ class UserPosition extends AppModel {
         }
         $check_num = $this->check_number_product($user_data['User']['code'], $condition_position);
         $check_low_employee = $this->check_low_employee($user_data['User']['code'], $condition_position);
-        pr($check_low_employee);
-        pr($check_num);
-        die;
         if ($check_low_employee && $check_num) {
             //dc thang cap
             $save_data = array();
@@ -157,7 +154,6 @@ class UserPosition extends AppModel {
 
         //update level for manage
     }
-
     public function update_revenue($user_id) {
         $User_model = ClassRegistry::init('User');
         $user_data = $User_model->find('first', array(
