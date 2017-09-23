@@ -33,6 +33,17 @@ class UserPosition extends AppModel {
                 'year' => $year,
             )
         ));
+        if (empty($position_data)) {
+            $position_tmp = array(
+                "user_id" => $user_data['User']['id'],
+                "code" => $user_data['User']['code'],
+                'month' => $month,
+                'year' => $year,
+                'sale_id_protected' => $user_data['User']['sale_id_protected'],
+            );
+            $this->save($position_tmp);
+            $this->clear();
+        }
         $cur_position = !empty($position_data['UserPosition']['sasi_position']) ? $position_data['UserPosition']['sasi_position'] : 0;
         $cur_sub_position = !empty($position_data['UserPosition']['sasi_sub_position']) ? $position_data['UserPosition']['sasi_sub_position'] : 0;
         $condition_position = array();
@@ -121,6 +132,9 @@ class UserPosition extends AppModel {
         }
         $check_num = $this->check_number_product($user_data['User']['code'], $condition_position);
         $check_low_employee = $this->check_low_employee($user_data['User']['code'], $condition_position);
+        pr($check_low_employee);
+        pr($check_num);
+        die;
         if ($check_low_employee && $check_num) {
             //dc thang cap
             $save_data = array();
@@ -139,6 +153,7 @@ class UserPosition extends AppModel {
                 $this->update_level($user_data['User']['sale_id_protected']);
             }
         }
+
 
         //update level for manage
     }
@@ -433,15 +448,18 @@ class UserPosition extends AppModel {
     }
 
     public function convert_position($position, $sub_positision) {
-        $current_position = 'sasim';
+        $current_position = 'sasi';
         switch ($position) {
             case 0:// up to sasim
+                $current_position = 'sasi';
+                break;
+            case 1:// up to sasim
                 $current_position = 'sasim';
                 break;
-            case 1: //up to sasima
+            case 2: //up to sasima
                 $current_position = 'sasima';
                 break;
-            case 2: //up to sasime
+            case 3: //up to sasime
                 $current_position = 'sasime';
                 switch ($sub_positision) {
                     case 0:
@@ -452,7 +470,7 @@ class UserPosition extends AppModel {
                         break;
                 }
                 break;
-            case 3:
+            case 4:
                 $current_position = 'sasimi';
                 switch ($sub_positision) {
                     case 0:
