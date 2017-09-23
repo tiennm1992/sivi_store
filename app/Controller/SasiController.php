@@ -50,8 +50,8 @@ class SasiController extends AppController {
             ),
             'order' => array('UserPosition.sasi_position DESC', 'UserPosition.sasi_sub_position DESC')
         ));
-        $current_position = 'sasim';
-        $best_position = 'sasim';
+        $current_position = 'sasi';
+        $best_position = 'sasi';
         if (!empty($best_sasi)) {
             $best_position = $this->UserPosition->convert_position($best_sasi['UserPosition']['sasi_position'], $best_sasi['UserPosition']['sasi_position']);
         }

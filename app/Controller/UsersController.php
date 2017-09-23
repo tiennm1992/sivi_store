@@ -1,5 +1,4 @@
 ﻿<?php
-
 App::uses('AppController', 'Controller');
 
 /**
@@ -17,6 +16,8 @@ class UsersController extends AppController {
         $this->Auth->allow('login', 'logout', 'infor');
         $this->loadModel('Customer');
         $this->loadModel('User');
+        $this->loadModel('User');
+        $this->loadModel('UserPosition');
     }
 
     public function isAuthorized($user) {
@@ -28,7 +29,7 @@ class UsersController extends AppController {
 
     public function infor() {
         $user = $this->Auth->user();
-         $this->render(false);
+        $this->render(false);
     }
 
     public function login() {
@@ -78,13 +79,13 @@ class UsersController extends AppController {
                     die;
                 }
 
-		$save_date = $this->request->data;
-		$save_date =$save_date['User'];
-		if(empty($save_date['sale_id_protected'])){
-		 unset($save_date['sale_id_protected']);
-		}
+                $save_date = $this->request->data;
+                $save_date = $save_date['User'];
+                if (empty($save_date['sale_id_protected'])) {
+                    unset($save_date['sale_id_protected']);
+                }
                 //$this->User->create();
-                if ($this->User->save($save_date )) {
+                if ($this->User->save($save_date)) {
                     echo 'done';
                     die;
                 }
@@ -138,6 +139,7 @@ class UsersController extends AppController {
         }
         $this->request->allowMethod('post', 'delete');
         if ($this->User->delete()) {
+            $this->UserPosition->deleteAll(array('user_id' => $id));
             $this->Session->setFlash(__('The User has been deleted.'));
         } else {
             $this->Session->setFlash(__('The User could not be deleted. Please, try again.'));
@@ -176,15 +178,14 @@ class UsersController extends AppController {
             $conditions['User.username LIKE'] = "%{$query['name']}%";
             $name = $query['name'];
         }
-      $conditions['User.role'] = 'employee';
+        $conditions['User.role'] = 'employee';
         //$conditions['OR']=array(
-          //  'User.role'=>'employee',
-         //   'User.role'=>'partner',
+        //  'User.role'=>'employee',
+        //   'User.role'=>'partner',
         //);
         $this->Paginator->settings = array(
-            'conditions' => 
-                $conditions
-            
+            'conditions' =>
+            $conditions
         );
         $this->User->recursive = 0;
         $this->set('users', $this->Paginator->paginate());
