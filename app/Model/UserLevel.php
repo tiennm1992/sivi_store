@@ -14,6 +14,7 @@ class UserLevel extends AppModel {
 
     public function update_level($code) {
         $User_model = ClassRegistry::init('User');
+        $User_buy = ClassRegistry::init('UserBuy');
         $user_data = $User_model->find('first', array(
             'conditions' => array(
                 'User.code' => $code
@@ -22,32 +23,35 @@ class UserLevel extends AppModel {
         if (empty($user_data)) {
             return 0;
         }
-        $number_product = $this->get_number_product($code);
+        $number_product = $User_buy->get_number_buy($code);
         $arr = $this->get_sub_level($code);
         $level = $this->conditions_level($arr, $number_product);
         $profit = 0;
         $profit_type = 'c0';
-        switch ($level) {
-            case 10:// up to sasim
-                $profit_type = 'c0';
-                break;
-            case 20: //up to sasima
-                $profit_type = 'c0';
-                break;
-            case 30: //up to sasime
-            case 31:
-            case 32:
-                $profit_type = 'c1';
-                break;
-            case 40:
-            case 41:
-            case 42:
-            case 43:
-                $profit_type = 'c2';
-                break;
+        if ($level >= 10) {
+            switch ($level) {
+                case 10:// up to sasim
+                    $profit_type = 'c0';
+                    break;
+                case 20: //up to sasima
+                    $profit_type = 'c0';
+                    break;
+                case 30: //up to sasime
+                case 31:
+                case 32:
+                    $profit_type = 'c1';
+                    break;
+                case 40:
+                case 41:
+                case 42:
+                case 43:
+                    $profit_type = 'c2';
+                    break;
+            }
+            //get profit
+            $profit = $this->get_profit($user_data['User']['code'], $profit_type);
         }
-        //get profit
-        $profit = $this->get_profit($user_data['User']['code'], $profit_type);
+
         //update revenue
         $revenue = $this->get_revenue($user_data['User']['code']);
         //update level
@@ -206,11 +210,11 @@ class UserLevel extends AppModel {
         $profit = 0;
         foreach ($user_profit as $key => $value) {
             if ($type_price == 'c0') {
-                $profit += $value['UserBuy']['price_sale'] - $value['UserBuy']['c0'];
+                $profit += ( $value['UserBuy']['price_sale'] - $value['UserBuy']['c0']) * $value['UserBuy']['number_product'];
             } elseif ($type_price == 'c1') {
-                $profit += $value['UserBuy']['price_sale'] - $value['UserBuy']['partner_price'];
+                $profit += ($value['UserBuy']['price_sale'] - $value['UserBuy']['partner_price']) * $value['UserBuy']['number_product'];
             } elseif ($type_price == 'c2') {
-                $profit += $value['UserBuy']['price_sale'] - $value['UserBuy']['employee_price'];
+                $profit += ($value['UserBuy']['price_sale'] - $value['UserBuy']['employee_price']) * $value['UserBuy']['number_product'];
             }
         }
 

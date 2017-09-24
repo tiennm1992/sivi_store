@@ -18,6 +18,8 @@ class UsersController extends AppController {
         $this->loadModel('User');
         $this->loadModel('User');
         $this->loadModel('UserPosition');
+        $this->loadModel('UserBuy');
+        $this->loadModel('UserLevel');
     }
 
     public function isAuthorized($user) {
@@ -99,7 +101,11 @@ class UsersController extends AppController {
     public function add() {
         if ($this->request->is('post')) {
             $this->User->create();
+            $data = $this->request->data;
             if ($this->User->save($this->request->data)) {
+                if (!empty($data['code'])) {
+                    $this->UserLevel->update_level($data['code']);
+                }
                 $this->Session->setFlash(__('The user has been saved'));
                 return $this->redirect(array('action' => 'index'));
             }
@@ -138,13 +144,19 @@ class UsersController extends AppController {
             throw new NotFoundException(__('Invalid User'));
         }
         $this->request->allowMethod('post', 'delete');
+        $user_data = $this->User->find('first', array(
+            'conditions' => array(
+                'User.id' => $id
+            )
+        ));
         if ($this->User->delete()) {
             $this->UserPosition->deleteAll(array('user_id' => $id));
+            $this->UserBuy->deleteAll(array('UserBuy.code' => $user_data['User']['code']));
             $this->Session->setFlash(__('The User has been deleted.'));
         } else {
             $this->Session->setFlash(__('The User could not be deleted. Please, try again.'));
         }
-        return $this->redirect(array('action' => 'index'));
+        return $this->redirect(array('action' => 'employee'));
     }
 
     public function ajaxcode() {
