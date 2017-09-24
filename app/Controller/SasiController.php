@@ -10,7 +10,7 @@ App::uses('AppController', 'Controller');
 class SasiController extends AppController {
 
     public $components = array('Paginator');
-    public $uses = array('Customer', 'UserPosition', 'User', 'UserBuy', 'UserPosition');
+    public $uses = array('Customer', 'UserPosition','UserLevel',  'User', 'UserBuy', 'UserPosition');
     public $user_info;
     public $user_code;
 
@@ -53,11 +53,11 @@ class SasiController extends AppController {
         $current_position = 'sasi';
         $best_position = 'sasi';
         if (!empty($best_sasi)) {
-            $best_position = $this->UserPosition->convert_position($best_sasi['UserPosition']['sasi_position'], $best_sasi['UserPosition']['sasi_position']);
+            $best_position = $this->UserLevel->convert_position($best_sasi['UserPosition']['level']);
         }
         if (!empty($revenue_sasi)) {
             $revenue_sasi = $revenue_sasi['UserPosition'];
-            $current_position = $this->UserPosition->convert_position($revenue_sasi['sasi_position'], $revenue_sasi['sasi_sub_position']);
+            $current_position = $this->UserLevel->convert_position($revenue_sasi['level']);
         } else {
             $revenue_sasi = array(
                 'sasi_position' => 0,
@@ -76,7 +76,7 @@ class SasiController extends AppController {
             $revenue_sasi['point_d'] = 0;
         }
         $number_buy = $this->UserBuy->get_number_buy($this->user_code);
-        $sasi_list = $this->UserPosition->get_sub_position_list($this->user_code);
+        $sasi_list = $this->UserLevel->get_sub_position_list($this->user_code);
         $number_customer = $this->Customer->get_num_customer($this->user_code);
         $this->set('sasi', $revenue_sasi);
         $this->set('current_position', $current_position);
