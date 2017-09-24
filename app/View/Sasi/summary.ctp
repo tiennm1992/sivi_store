@@ -117,7 +117,7 @@
         </td>
         <td colspan="3" >
             <p class="text_1">CC</p>
-            <p>0</p>
+            <p><?php echo $sasi['profit_cc'] ?></p>
         </td>
         <td colspan="3" >
             <p class="text_1">TN</p>

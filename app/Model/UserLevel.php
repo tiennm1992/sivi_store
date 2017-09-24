@@ -193,6 +193,38 @@ class UserLevel extends AppModel {
         return $arr;
     }
 
+    //get point 
+    public function get_point_dc($user_code) {
+        $UserModel = ClassRegistry::init('User');
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
+        $boss_data = $this->find('all', array(
+            'conditions' => array(
+                "sale_id_protected" => $user_code,
+                'month' => $month,
+                'year' => $year,
+            )
+        ));
+        $user_data = $this->find('first', array(
+            'conditions' => array(
+                "code" => $user_code,
+                'month' => $month,
+                'year' => $year,
+            )
+        ));
+        $point = 0;
+        if (!empty($boss_data) && !empty($user_data)) {
+            foreach ($boss_data as $key => $value) {
+                if (($value['UserLevel']['level'] < $user_data['UserLevel']['level']) && ($user_data['UserLevel']['level'] >= 30)) {
+                    $point += $value['UserLevel']['point_dr'];
+                }
+            }
+        }
+        return $point;
+    }
+
     //doanh thu
     public function get_profit($user_code, $type_price = "c0") {
         $User_buy = ClassRegistry::init('UserBuy');
@@ -320,7 +352,7 @@ class UserLevel extends AppModel {
         return $rep_data;
     }
 
-    public function update_cc_for_boss($buy_data, $boss_code) {
+    public function update_cc_for_boss($buy_data, $boss_code, $status = 1) {
         $date = date("Y-m");
         $date = explode('-', $date);
         $month = $date[1];
@@ -339,35 +371,68 @@ class UserLevel extends AppModel {
                 'year' => $year,
             )
         ));
+
         $profit_add = 0;
+
         if (!empty($boss_data)) {
             $boss_data = $boss_data['UserLevel'];
-            switch ($boss_data['level']) {
-                case 0:// up to sasim
-                    break;
-                case 10:// up to sasim
-                    break;
-                case 20: //up to sasima
-                    break;
-                case 30: //up to sasime
-                case 31: //up to sasime
-                case 32: //up to sasime
-                    if ($user_data['UserLevel']['level'] >= 10) {
-                        $profit_add = $buy_data['c0'] - $buy_data['partner_price'];
+            if ($status) {
+                if ($user_data['UserLevel']['level'] < $boss_data['level']) {
+                    switch ($boss_data['level']) {
+                        case 0:// up to sasim
+                            break;
+                        case 10:// up to sasim
+                            break;
+                        case 20: //up to sasima
+                            break;
+                        case 30: //up to sasime
+                        case 31: //up to sasime
+                        case 32: //up to sasime
+                            if ($user_data['UserLevel']['level'] >= 10) {
+                                $profit_add = ($buy_data['c0'] - $buy_data['partner_price']) * $buy_data['number_product'];
+                            }
+                            break;
+                        case 40:
+                        case 41:
+                        case 42:
+                        case 43:
+                            if ($user_data['UserLevel']['level'] >= 30) {
+                                $profit_add = ($buy_data['c0'] - $buy_data['employee_price']) * $buy_data['number_product'];
+                            } elseif ($user_data['UserLevel']['level'] >= 10) {
+                                $profit_add = ($buy_data['c0'] - $buy_data['partner_price']) * $buy_data['number_product'];
+                            }
+                            break;
                     }
-                    break;
-                case 40:
-                case 41:
-                case 42:
-                case 43:
-                    if ($user_data['UserLevel']['level'] >= 30) {
-                        $profit_add = $buy_data['c0'] - $buy_data['employee_price'];
-                    } elseif ($user_data['UserLevel']['level'] >= 10) {
-                        $profit_add = $buy_data['c0'] - $buy_data['partner_price'];
-                    }
-                    break;
+                    $boss_data['profit_cc'] += $profit_add;
+                }
+            } else {
+                switch ($boss_data['level']) {
+                    case 0:// up to sasim
+                        break;
+                    case 10:// up to sasim
+                        break;
+                    case 20: //up to sasima
+                        break;
+                    case 30: //up to sasime
+                    case 31: //up to sasime
+                    case 32: //up to sasime
+                        if ($user_data['UserLevel']['level'] >= 10) {
+                            $profit_add = ($buy_data['c0'] - $buy_data['partner_price']) * $buy_data['number_product'];
+                        }
+                        break;
+                    case 40:
+                    case 41:
+                    case 42:
+                    case 43:
+                        if ($user_data['UserLevel']['level'] >= 30) {
+                            $profit_add = ($buy_data['c0'] - $buy_data['employee_price']) * $buy_data['number_product'];
+                        } elseif ($user_data['UserLevel']['level'] >= 10) {
+                            $profit_add = ($buy_data['c0'] - $buy_data['partner_price']) * $buy_data['number_product'];
+                        }
+                        break;
+                }
+                $boss_data['profit_cc'] -= $profit_add;
             }
-            $boss_data['profit_cc'] += $profit_add;
             $this->save($boss_data);
         }
     }
@@ -385,27 +450,49 @@ class UserLevel extends AppModel {
                 $current_position = 'sasima';
                 break;
             case 30: //up to sasime
+                $current_position = 'sasime Captian ';
+                break;
             case 31: //up to sasime
+                $current_position = 'sasime  Vice';
+                break;
             case 32: //up to sasime
-                $current_position = 'sasime';
+                $current_position = 'sasime Monitor';
                 break;
             case 40:
+                $current_position = 'sasimi Admin';
+                break;
             case 41:
+                $current_position = 'sasimi leader';
+                break;
             case 42:
+                $current_position = 'sasimi Manager';
+                break;
             case 43:
-                $current_position = 'sasimi';
+                $current_position = 'sasimi Director';
                 break;
             case 50:
+                $current_position = 'sasimo  Admin';
+                break;
             case 51:
+                $current_position = 'sasimo Leader';
+                break;
             case 52:
+                $current_position = 'sasimo Manager';
+                break;
             case 53:
-                $current_position = 'sasimo';
+                $current_position = 'sasimo Director';
                 break;
             case 60:
+                $current_position = 'sasimu Admin';
+                break;
             case 61:
+                $current_position = 'sasimu Leader';
+                break;
             case 62:
+                $current_position = 'sasimu Manager';
+                break;
             case 63:
-                $current_position = 'sasimu';
+                $current_position = 'sasimu Director';
                 break;
         }
         return $current_position;

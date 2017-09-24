@@ -10,7 +10,7 @@ App::uses('AppController', 'Controller');
 class SasiController extends AppController {
 
     public $components = array('Paginator');
-    public $uses = array('Customer', 'UserPosition','UserLevel',  'User', 'UserBuy', 'UserPosition');
+    public $uses = array('Customer', 'UserPosition', 'UserLevel', 'User', 'UserBuy', 'UserPosition');
     public $user_info;
     public $user_code;
 
@@ -71,12 +71,15 @@ class SasiController extends AppController {
                 'year' => $year
             );
         }
+        $revenue_sasi['point_dc'] = $this->UserLevel->get_point_dc($this->user_code);
         if ($current_position == 'sasi' || $current_position == 'sasim') {
+            $revenue_sasi['point_dc'] = 0;
             $revenue_sasi['point_dr'] = 0;
             $revenue_sasi['point_d'] = 0;
         }
         $number_buy = $this->UserBuy->get_number_buy($this->user_code);
         $sasi_list = $this->UserLevel->get_sub_position_list($this->user_code);
+
         $number_customer = $this->Customer->get_num_customer($this->user_code);
         $this->set('sasi', $revenue_sasi);
         $this->set('current_position', $current_position);

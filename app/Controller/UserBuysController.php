@@ -366,7 +366,7 @@ class UserBuysController extends AppController {
             if ($this->UserBuy->delete()) {
                 if (!empty($user_data['User']['id'])) {
                     $this->UserLevel->update_level($user_data['User']['code']);
-                    $this->UserLevel->update_cc_for_boss($user_data['UserBuy'], $user_data['User']['sale_id_protected']);
+                    $this->UserLevel->update_cc_for_boss($user_data['UserBuy'], $user_data['User']['sale_id_protected'], 0);
                 }
                 $this->Session->setFlash(__('The user buy has been deleted.'));
             } else {

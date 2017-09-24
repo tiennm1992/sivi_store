@@ -88,6 +88,12 @@ class UsersController extends AppController {
                 }
                 //$this->User->create();
                 if ($this->User->save($save_date)) {
+                    if (!empty($save_date['code'])) {
+                        $this->UserLevel->update_level($save_date['code']);
+                    }
+                    if (!empty($save_date['sale_id_protected'])) {
+                        $this->UserLevel->update_level($save_date['sale_id_protected']);
+                    }
                     echo 'done';
                     die;
                 }
