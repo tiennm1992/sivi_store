@@ -544,6 +544,7 @@ class ApiController extends AppController {
                 'phone' => $data['phone'],
                 'address' => $address,
                 'employee_code' => !empty($data['employee_code']) ? $data['employee_code'] : 0,
+                'created_datetime'=>date("Y-m-d H:i:s")
             );
             $this->Customer->create;
             if ($this->Customer->save($arr)) {

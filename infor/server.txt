@@ -1,0 +1,21 @@
+http://studiothemes.site/quantr
+sivistore.com
+ 
+sftp account:
+user: quantr
+pass: quan123
+folder: /var/www/html/quantr
+ 
+
+
+phpmyadmin: http://studiothemes.site/phpmyadmin
+user: quantr
+pass: quantr
+
+
+**********
+Login pass popup
+phpmyadmin
+Authentication User: hungdo/hung1234%
+
+Sivi Store /  sivistore@sivistore

@@ -16,8 +16,8 @@ $option['col'] = array(
     11 => array('key_tab' => 'customer', 'title_tab' => 'Tên khách hàng', 'option_tab' => ''),
     12 => array('key_tab' => 'customer', 'title_tab' => 'Số điên thoại', 'option_tab' => ''),
     13 => array('key_tab' => 'customer', 'title_tab' => 'Địa chỉ', 'option_tab' => ''),
-    14 => array('key_tab' => 'customer', 'title_tab' => 'ID sales', 'option_tab' => ''),
-    15 => array('key_tab' => 'customer', 'title_tab' => 'Name sales', 'option_tab' => ''),
+    14 => array('key_tab' => 'customer', 'title_tab' => 'ID sasi', 'option_tab' => ''),
+    15 => array('key_tab' => 'customer', 'title_tab' => 'Name sasi', 'option_tab' => ''),
     16 => array('key_tab' => 'customer', 'title_tab' => 'Duyệt', 'option_tab' => ''),
     17 => array('key_tab' => 'customer', 'title_tab' => 'Xóa', 'option_tab' => ''),
 );

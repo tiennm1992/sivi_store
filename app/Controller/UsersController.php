@@ -1,5 +1,4 @@
 ﻿<?php
-
 App::uses('AppController', 'Controller');
 
 /**
@@ -17,6 +16,10 @@ class UsersController extends AppController {
         $this->Auth->allow('login', 'logout', 'infor');
         $this->loadModel('Customer');
         $this->loadModel('User');
+        $this->loadModel('User');
+        $this->loadModel('UserPosition');
+        $this->loadModel('UserBuy');
+        $this->loadModel('UserLevel');
     }
 
     public function isAuthorized($user) {
@@ -28,7 +31,7 @@ class UsersController extends AppController {
 
     public function infor() {
         $user = $this->Auth->user();
-         $this->render(false);
+        $this->render(false);
     }
 
     public function login() {
@@ -78,13 +81,19 @@ class UsersController extends AppController {
                     die;
                 }
 
-		$save_date = $this->request->data;
-		$save_date =$save_date['User'];
-		if(empty($save_date['sale_id_protected'])){
-		 unset($save_date['sale_id_protected']);
-		}
+                $save_date = $this->request->data;
+                $save_date = $save_date['User'];
+                if (empty($save_date['sale_id_protected'])) {
+                    unset($save_date['sale_id_protected']);
+                }
                 //$this->User->create();
-                if ($this->User->save($save_date )) {
+                if ($this->User->save($save_date)) {
+                    if (!empty($save_date['code'])) {
+                        $this->UserLevel->update_level($save_date['code']);
+                    }
+                    if (!empty($save_date['sale_id_protected'])) {
+                        $this->UserLevel->update_level($save_date['sale_id_protected']);
+                    }
                     echo 'done';
                     die;
                 }
@@ -98,7 +107,11 @@ class UsersController extends AppController {
     public function add() {
         if ($this->request->is('post')) {
             $this->User->create();
+            $data = $this->request->data;
             if ($this->User->save($this->request->data)) {
+                if (!empty($data['code'])) {
+                    $this->UserLevel->update_level($data['code']);
+                }
                 $this->Session->setFlash(__('The user has been saved'));
                 return $this->redirect(array('action' => 'index'));
             }
@@ -137,12 +150,19 @@ class UsersController extends AppController {
             throw new NotFoundException(__('Invalid User'));
         }
         $this->request->allowMethod('post', 'delete');
+        $user_data = $this->User->find('first', array(
+            'conditions' => array(
+                'User.id' => $id
+            )
+        ));
         if ($this->User->delete()) {
+            $this->UserPosition->deleteAll(array('user_id' => $id));
+            $this->UserBuy->deleteAll(array('UserBuy.code' => $user_data['User']['code']));
             $this->Session->setFlash(__('The User has been deleted.'));
         } else {
             $this->Session->setFlash(__('The User could not be deleted. Please, try again.'));
         }
-        return $this->redirect(array('action' => 'index'));
+        return $this->redirect(array('action' => 'employee'));
     }
 
     public function ajaxcode() {
@@ -176,15 +196,14 @@ class UsersController extends AppController {
             $conditions['User.username LIKE'] = "%{$query['name']}%";
             $name = $query['name'];
         }
-      $conditions['User.role'] = 'employee';
+        $conditions['User.role'] = 'employee';
         //$conditions['OR']=array(
-          //  'User.role'=>'employee',
-         //   'User.role'=>'partner',
+        //  'User.role'=>'employee',
+        //   'User.role'=>'partner',
         //);
         $this->Paginator->settings = array(
-            'conditions' => 
-                $conditions
-            
+            'conditions' =>
+            $conditions
         );
         $this->User->recursive = 0;
         $this->set('users', $this->Paginator->paginate());

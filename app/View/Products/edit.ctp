@@ -6,6 +6,7 @@
         <?php
         echo $this->Form->input('id');
         echo $this->Form->input('name', array('label' => array('text' => 'Tên sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2')));
+        echo $this->Form->input('product_code', array('label' => array('text' => 'Mã HH', 'class' => 'control-label col-xs-12 col-sm-2')));
         echo $this->Form->input('title', array('label' => array('text' => 'Tiêu đề', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'text'));
         echo $this->Form->input('description', array('label' => array('text' => 'Mô tả', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'textarea', 'class' => 'ckeditor'));
         echo $this->Form->input('detail', array('label' => array('text' => 'Chi tiết sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'textarea', 'class' => 'ckeditor'));

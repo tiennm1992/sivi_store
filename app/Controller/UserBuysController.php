@@ -16,7 +16,7 @@ class UserBuysController extends AppController {
      * @var array
      */
     public $components = array('Paginator');
-    public $uses = array('UserPosition', 'User', 'UserBuy');
+    public $uses = array('UserPosition', 'UserLevel', 'User', 'UserBuy');
 
 //    public $uses = array('Buy','UserBuy',);
 
@@ -343,9 +343,31 @@ class UserBuysController extends AppController {
             if (!$this->UserBuy->exists()) {
                 throw new NotFoundException(__('Invalid user buy'));
             }
+            $this->UserBuy->recursive = -1;
+            $user_data = $this->UserBuy->find('first', array(
+                'fields' => array('UserBuy.*', "User.*"),
+                'conditions' => array(
+                    "UserBuy.id" => $id
+                ),
+                'joins' => array(
+                    array(
+                        'table' => 'users',
+                        'alias' => "User",
+                        'type' => 'inner',
+                        'conditions' => array(
+                            "User.code = UserBuy.code"
+                        )
+                    )
+                )
+            ));
+
             $this->request->allowMethod('post', 'delete');
             $this->UserBuy->recursive = -1;
             if ($this->UserBuy->delete()) {
+                if (!empty($user_data['User']['id'])) {
+                    $this->UserLevel->update_level($user_data['User']['code']);
+                    $this->UserLevel->update_cc_for_boss($user_data['UserBuy'], $user_data['User']['sale_id_protected'], 0);
+                }
                 $this->Session->setFlash(__('The user buy has been deleted.'));
             } else {
                 $this->Session->setFlash(__('The user buy could not be deleted. Please, try again.'));
@@ -391,15 +413,11 @@ class UserBuysController extends AppController {
                 )
             )
         ));
-
-
-//        $this->UserBuy->save($arr);
         if ($this->UserBuy->save($arr)) {
             //update level
             if (!empty($user_data['User']['id'])) {
-                $this->UserPosition->update_level($user_data['User']['id']);
-                $this->UserPosition->update_revenue($user_data['User']['id']);
-                $this->UserPosition->update_cc_for_boss($user_data['UserBuy'],$user_data['User']['sale_id_protected']);
+                $this->UserLevel->update_level($user_data['User']['code']);
+                $this->UserLevel->update_cc_for_boss($user_data['UserBuy'], $user_data['User']['sale_id_protected']);
             }
             $this->redirect('/userBuys/check_buy');
         }
