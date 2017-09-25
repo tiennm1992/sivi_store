@@ -437,6 +437,81 @@ class UserLevel extends AppModel {
         }
     }
 
+    public function update_cc_boss($boss_code) {
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
+        $boss_data = $this->find('first', array(
+            'conditions' => array(
+                "code" => $boss_code,
+                'month' => $month,
+                'year' => $year,
+            )
+        ));
+        $profit_cc = 0;
+        if (!empty($boss_data)) {
+            $boss_data = $boss_data['UserLevel'];
+            $sub_user_data = $this->find('all', array(
+                'conditions' => array(
+                    "sale_id_protected" => $boss_code,
+                    'month' => $month,
+                    'year' => $year,
+                )
+            ));
+            if (!empty($sub_user_data)) {
+                $User_buy = ClassRegistry::init('UserBuy');
+                $end_date = date("Y-m") . "-31 00:00:00";
+                $start_date = date("Y-m") . "-1 00:00:00";
+                $conditions = array();
+                $conditions['UserBuy.status'] = 2;
+                $conditions['UserBuy.date <='] = $end_date;
+                $conditions['UserBuy.date >'] = $start_date;
+                foreach ($sub_user_data as $key => $value) {
+                    $conditions['UserBuy.code'] = $value['UserLevel'];
+                    $user_profit = $User_buy->find('all', array(
+                        'conditions' => $conditions
+                    ));
+                    if (!empty($user_profit)) {
+                        foreach ($user_profit as $key1 => $value1) {
+                            $profit_tmp = 0;
+                            switch ($boss_data['level']) {
+                                case 0:// up to sasim
+                                    break;
+                                case 10:// up to sasim
+                                    break;
+                                case 20: //up to sasima
+                                    break;
+                                case 30: //up to sasime
+                                case 31: //up to sasime
+                                case 32: //up to sasime
+                                    if ($value['UserLevel']['level'] >= 10) {
+                                        $profit_tmp = ($value1['c0'] - $value1['partner_price']) * $value1['number_product'];
+                                    }
+                                    break;
+                                case 40:
+                                case 41:
+                                case 42:
+                                case 43:
+                                    if ($value['UserLevel']['level'] >= 30) {
+                                        $profit_tmp = ($value1['c0'] - $value1['employee_price']) * $value1['number_product'];
+                                    } elseif ($value['UserLevel']['level'] >= 10) {
+                                        $profit_tmp = ($value1['c0'] - $value1['partner_price']) * $value1['number_product'];
+                                    }
+                                    break;
+                            }
+                            if ($value['UserLevel']['level'] < $boss_data['level']) {
+                                $profit_cc += $profit_tmp;
+                            }
+                        }
+                    }
+                }
+                $boss_data['profit_cc'] = $profit_cc;
+                $this->save($boss_data);
+            }
+        }
+    }
+
     public function convert_position($level) {
         $current_position = 'sasi';
         switch ($level) {
