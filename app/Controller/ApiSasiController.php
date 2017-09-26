@@ -21,6 +21,7 @@ class ApiSasiController extends AppController {
         $this->loadModel('UserLike');
         $this->loadModel('User');
         $this->loadModel('UserPosition');
+        $this->loadModel('UserLevel');
     }
 
     //******************************* API customer*****************************
@@ -30,7 +31,13 @@ class ApiSasiController extends AppController {
 
     public function sasi_summary() {
         $data = $this->request->query;
+
         if (!empty($data['token'])) {
+            $user_data = $this->checkLogin($data['token']);
+            if (empty($user_data)) {
+                $this->bugError('Tài khoản không tồn tại, hoặc token hết hạn');
+                die;
+            }
             if ($this->checkLogin($data['token'])) {
                 $date = date("Y-m");
                 $date = explode('-', $date);
@@ -38,26 +45,26 @@ class ApiSasiController extends AppController {
                 $year = $date[0];
                 $revenue_sasi = $this->UserPosition->find('first', array(
                     'conditions' => array(
-                        'UserPosition.code' => $this->user_code,
+                        'UserPosition.code' => $user_data['code'],
                         'UserPosition.month' => $month,
                         'UserPosition.year' => $year,
                     )
                 ));
                 $best_sasi = $this->UserPosition->find('first', array(
                     'conditions' => array(
-                        'UserPosition.code' => $this->user_code,
+                        'UserPosition.code' => $user_data['code'],
                         'UserPosition.year' => $year,
                     ),
                     'order' => array('UserPosition.sasi_position DESC', 'UserPosition.sasi_sub_position DESC')
                 ));
-                $current_position = 'sasim';
-                $best_position = 'sasim';
+                $current_position = 'sasi';
+                $best_position = 'sasi';
                 if (!empty($best_sasi)) {
-                    $best_position = $this->UserPosition->convert_position($best_sasi['UserPosition']['sasi_position'], $best_sasi['UserPosition']['sasi_position']);
+                    $best_position = $this->UserLevel->convert_position($best_sasi['UserPosition']['level']);
                 }
                 if (!empty($revenue_sasi)) {
                     $revenue_sasi = $revenue_sasi['UserPosition'];
-                    $current_position = $this->UserPosition->convert_position($revenue_sasi['sasi_position'], $revenue_sasi['sasi_sub_position']);
+                    $current_position = $this->UserLevel->convert_position($revenue_sasi['level']);
                 } else {
                     $revenue_sasi = array(
                         'sasi_position' => 0,
@@ -71,29 +78,35 @@ class ApiSasiController extends AppController {
                         'year' => $year
                     );
                 }
-                $number_buy = $this->UserBuy->get_number_buy($this->user_code);
-                $sasi_list = $this->UserPosition->get_sub_position_list($this->user_code);
-                $number_customer = $this->Customer->get_num_customer($this->user_code);
+                $revenue_sasi['point_dc'] = $this->UserLevel->get_point_dc($user_data['code']);
+                if ($current_position == 'sasi' || $current_position == 'sasim') {
+                    $revenue_sasi['point_dc'] = 0;
+                    $revenue_sasi['point_dr'] = 0;
+                    $revenue_sasi['point_d'] = 0;
+                }
+                $number_buy = $this->UserBuy->get_number_buy($user_data['code']);
+                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code']);
+                $number_customer = $this->Customer->get_num_customer($user_data['code']);
                 $rep = array(
-                    'name' => '',
-                    'spb' => '',
-                    'dt' => '',
-                    'current_level' => '',
-                    'best_level' => '',
-                    't_sasi' => '',
-                    'n_sasi' => '',
-                    't_kh' => '',
-                    'sasim' => '',
-                    'sasima' => '',
-                    'sasime' => '',
-                    'sasimi' => '',
-                    'sasimo' => '',
-                    'sasimu' => '',
-                    'dr' => '',
-                    'd' => '',
-                    'ln' => '',
-                    'cc' => '',
-                    'tn' => '',
+                    'name' => $user_data['name'],
+                    'spb' => $number_buy . '',
+                    'dt' => $revenue_sasi['revenue'] . '',
+                    'current_level' => $current_position,
+                    'best_level' => $best_position,
+                    't_sasi' => $sasi_list['count'] . '',
+                    'n_sasi' => $sasi_list['newbie'] . '',
+                    'sasim' => $sasi_list['sasim'] . '',
+                    'sasima' => $sasi_list['sasima'] . '',
+                    'sasime' => $sasi_list['sasime'] . '',
+                    'sasimi' => $sasi_list['sasimi'] . '',
+                    'sasimo' => $sasi_list['sasimo'] . '',
+                    'sasimu' => $sasi_list['sasimu'] . '',
+                    'dr' => $revenue_sasi['point_dr'] . '',
+                    'd' => ($revenue_sasi['point_dr'] + $revenue_sasi['point_dc']) . '',
+                    'ln' => $revenue_sasi['profit'] . '',
+                    'cc' => $revenue_sasi['profit_cc'] . '',
+                    'tn' => '0',
+                    'num_customer' => $number_customer . '',
                 );
             }
             $this->success('Lấy thành công danh sách', $rep);
@@ -165,6 +178,7 @@ class ApiSasiController extends AppController {
                         $rep[$key] = array(
                             'id' => $value['UserBuy']['id'],
                             'product_name' => $value['Product']['name'],
+                            'product_avatar' => $value['Product']['avatar'],
                             'sasi_name' => $value['User']['name'],
                             'phone_sasi' => $value['User']['phone'],
                             'address' => $value['User']['address'],
@@ -310,7 +324,8 @@ class ApiSasiController extends AppController {
             foreach ($product_list as $key => $value) {
                 $rep[$key] = array(
                     'id' => $value['Product']['id'],
-                    'category_id' => $value['Product']['id'],
+                    'avatar' => $value['Product']['avatar'],
+                    'category_id' => $value['Product']['category_id'],
                     'product_name' => $value['Product']['name'],
                     'gbl' => $value['Product']['price_origin'],
                     'gs' => $value['Product']['price'],
@@ -346,7 +361,8 @@ class ApiSasiController extends AppController {
             foreach ($product_list as $key => $value) {
                 $rep[$key] = array(
                     'id' => $value['Product']['id'],
-                    'category_id' => $value['Product']['id'],
+                    'avatar' => $value['Product']['avatar'],
+                    'category_id' => $value['Product']['category_id'],
                     'product_name' => $value['Product']['name'],
                     'gbl' => $value['Product']['price_origin'],
                     'gs' => $value['Product']['sale'],

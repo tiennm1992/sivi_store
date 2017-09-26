@@ -352,7 +352,7 @@ class UserLevel extends AppModel {
         return $rep_data;
     }
 
-    public function update_cc_for_boss($buy_data, $boss_code, $status = 1) {
+    public function update_cc_for_boss_old($buy_data, $boss_code, $status = 1) {
         $date = date("Y-m");
         $date = explode('-', $date);
         $month = $date[1];
@@ -437,7 +437,8 @@ class UserLevel extends AppModel {
         }
     }
 
-    public function update_cc_boss($boss_code) {
+    public function update_cc_for_boss($buy_data, $boss_code, $status = 1) {
+//    public function update_cc_boss($boss_code) {
         $date = date("Y-m");
         $date = explode('-', $date);
         $month = $date[1];
@@ -474,6 +475,7 @@ class UserLevel extends AppModel {
                     ));
                     if (!empty($user_profit)) {
                         foreach ($user_profit as $key1 => $value1) {
+                            $value1=$value1['UserBuy'];
                             $profit_tmp = 0;
                             switch ($boss_data['level']) {
                                 case 0:// up to sasim
