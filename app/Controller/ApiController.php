@@ -286,7 +286,7 @@ class ApiController extends AppController {
                 } else {
                     $this->bugError('Tài khoản không tồn tại');
                 }
-            } else if (!empty($data_user)) {
+            } else if (!empty($data_user) && ( $data['role'] == 'sasi')) {
                 $data_user = $data_user[0]['Customer'];
                 $data_user['role'] = 'customer';
                 if ($data_user['password'] == $data['password']) {
@@ -544,7 +544,7 @@ class ApiController extends AppController {
                 'phone' => $data['phone'],
                 'address' => $address,
                 'employee_code' => !empty($data['employee_code']) ? $data['employee_code'] : 0,
-                'created_datetime'=>date("Y-m-d H:i:s")
+                'created_datetime' => date("Y-m-d H:i:s")
             );
             $this->Customer->create;
             if ($this->Customer->save($arr)) {

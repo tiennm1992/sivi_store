@@ -26,11 +26,16 @@ class Customer extends AppModel {
         return $data;
     }
 
-    public function get_customer($user_code) {
+    public function get_customer($user_code, $last_id = 0, $limit = 10) {
+        $conditions = array();
+        $conditions['employee_code'] = $user_code;
+        if (!empty($last_id)) {
+            $conditions['id <'] = $last_id;
+        }
         $data = $this->find('all', array(
-            'conditions' => array(
-                'employee_code' => $user_code
-            )
+            'conditions' => $conditions,
+            'limit' => $limit,
+            'order' => array("Customer.id DESC")
         ));
         return $data;
     }

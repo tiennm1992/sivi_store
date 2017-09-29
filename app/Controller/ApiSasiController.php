@@ -39,10 +39,15 @@ class ApiSasiController extends AppController {
                 die;
             }
             if ($this->checkLogin($data['token'])) {
-                $date = date("Y-m");
-                $date = explode('-', $date);
-                $month = $date[1];
-                $year = $date[0];
+                if (!empty($data['month']) && !empty($data['year'])) {
+                    $month = $data['month'];
+                    $year = $data['year'];
+                } else {
+                    $date = date("Y-m");
+                    $date = explode('-', $date);
+                    $month = $date[1];
+                    $year = $date[0];
+                }
                 $revenue_sasi = $this->UserPosition->find('first', array(
                     'conditions' => array(
                         'UserPosition.code' => $user_data['code'],
@@ -296,10 +301,28 @@ class ApiSasiController extends AppController {
 
     public function customer_list() {
         $data = $this->request->query;
-        $user_data = $this->checkLogin($data['token']);
-        if ($user_data) {
-            if ($this->checkLogin($data['token'])) {
-                $client_data = $this->Customer->get_customer($user_data['code']);
+        if (!empty($data['token'])) {
+            $user_data = $this->checkLogin($data['token']);
+            $last_id = (!empty($data['last_id'])) ? $data['last_id'] : 0;
+            $limit = (!empty($data['limit'])) ? $data['limit'] : 10;
+            if ($user_data) {
+                if ($this->checkLogin($data['token'])) {
+                    $client_data = $this->Customer->get_customer($user_data['code'], $last_id, $limit);
+                    $rep = array();
+                    if (!empty($client_data)) {
+                        foreach ($client_data as $key => $value) {
+                            $rep[$key]['client_id'] = $value['Customer']['id'];
+                            $rep[$key]['client_name'] = $value['Customer']['username'];
+                            $rep[$key]['client_phone'] = $value['Customer']['phone'];
+                            $rep[$key]['client_address'] = $value['Customer']['address'];
+                            $rep[$key]['join_date'] = $value['Customer']['created_datetime'];
+                            $rep[$key]['number_buy'] = $this->UserBuy->get_number_buy_client($user_data['code'], $value['Customer']['id']);
+                        }
+                    }
+                    $this->success('Lấy thành công danh sách', $rep);
+                }
+            } else {
+                $this->bugError('Tài khoản không tồn tại');
             }
         } else {
             $this->echoError();
@@ -378,8 +401,68 @@ class ApiSasiController extends AppController {
     public function edit_infor() {
         $data = $this->request->query;
         if (!empty($data['token'])) {
-            if ($this->checkLogin($data['token'])) {
-                
+            $user_data = $this->checkLogin($data['token']);
+            if (empty($user_data)) {
+                $this->bugError('Tài khoản không tồn tại, hoặc token hết hạn');
+                die;
+            }
+            if ($user_data['role'] != 'employee') {
+                $this->bugError('Tài khoản này bạn không có quyền chỉnh sửa!');
+                die;
+            }
+            if (!empty($data['address'])) {
+                $user_data['address'] = $data['address'];
+            }
+            if (!empty($data['email'])) {
+                $user_data['email'] = $data['email'];
+            }
+            if (!empty($data['bank_atm'])) {
+                $user_data['bank_atm'] = $data['bank_atm'];
+            }
+            if (!empty($data['full_name'])) {
+                $user_data['full_name'] = $data['full_name'];
+            }
+            if (!empty($data['cmtnd'])) {
+                $user_data['cmtnd'] = $data['cmtnd'];
+            }
+            if ($this->User->save($user_data)) {
+                $this->success('Update thành công thông tin!', $rep = array());
+            }
+        } else {
+            $this->echoError();
+        }
+    }
+
+    public function edit_password() {
+        $data = $this->request->query;
+        if (!empty($data['username']) && !empty($data['password'])) {
+            $data_user = $this->User->find('first', array('conditions' => array('User.username' => $username)));
+            if ($data_user) {
+                $data_user = $data_user['User'];
+                if ($data_user['password'] == $data['password']) {
+                    $data_update = array(
+                        'id' => $data_user['id'],
+                        'password' => $data['new_password']
+                    );
+                    if ($this->User->save($data_update)) {
+                        $rep = array(
+                            'success' => 1,
+                            'infor' => 'Đổi password thành công !',
+                            'mess' => array(
+                                'id' => $data_user['id'],
+                                'role' => 'sasi',
+                                'username' => $data['username']
+                            ),
+                        );
+                        echo json_encode($rep, true);
+                    } else {
+                        $this->bugError('Lỗi khi đổi password !');
+                    }
+                } else {
+                    $this->bugError('Sai mật khẩu');
+                }
+            } else {
+                $this->bugError('Tài khoản không tồn tại');
             }
         } else {
             $this->echoError();

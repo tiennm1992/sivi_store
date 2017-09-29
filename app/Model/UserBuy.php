@@ -133,4 +133,23 @@ class UserBuy extends AppModel {
         return 0;
     }
 
+    public function get_number_buy_client($code = 0, $client_id) {
+        $this->recursive = -1;
+        $num_buy_data = $this->find('all', array(
+            'conditions' => array(
+                'UserBuy.code' => $code,
+                'UserBuy.customer_id' => $client_id,
+                'UserBuy.status' => 2,
+            )
+        ));
+        $num = 0;
+        if (!empty($num_buy_data)) {
+            foreach ($num_buy_data as $key => $value) {
+                $num += $value['UserBuy']['number_product'];
+            }
+            return $num;
+        }
+        return 0;
+    }
+
 }
