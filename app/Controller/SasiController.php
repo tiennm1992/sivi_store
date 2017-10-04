@@ -64,6 +64,7 @@ class SasiController extends AppController {
                 'sasi_sub_position' => 0,
                 'revenue' => 0,
                 'profit' => 0,
+                'profit_cc' => 0,
                 'point_dr' => 0,
                 'point_dc' => 0,
                 'point_d' => 0,

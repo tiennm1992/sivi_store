@@ -229,7 +229,7 @@ class ApiSasiController extends AppController {
                             'sasi_name' => $value['User']['name'],
                             'sasi_phone' => $value['User']['phone'],
                             'sasi_code' => $value['User']['code'],
-                            'date_join' => $value['User']['created_datetime'],
+                            'date_join' => date("Y-m-d", strtotime($value['User']['created_datetime'])),
                         );
                     }
                 }
@@ -268,7 +268,7 @@ class ApiSasiController extends AppController {
                     'sasi_name' => $value['User']['name'],
                     'sasi_phone' => $value['User']['phone'],
                     'sasi_code' => $value['User']['code'],
-                    'date_join' => $value['User']['created_datetime'],
+                    'date_join' => date("Y-m-d", strtotime($value['User']['created_datetime'])),
                 );
             }
         }
@@ -425,6 +425,13 @@ class ApiSasiController extends AppController {
             if (!empty($data['cmtnd'])) {
                 $user_data['cmtnd'] = $data['cmtnd'];
             }
+            if (!empty($data['phone'])) {
+                $user_data['phone'] = $data['phone'];
+            }
+            if (!empty($data['birthday'])) {
+                $user_data['birthday'] = $data['birthday'];
+            }
+            unset($user_data['password']);
             if ($this->User->save($user_data)) {
                 $this->success('Update thành công thông tin!', $rep = array());
             }
@@ -436,7 +443,7 @@ class ApiSasiController extends AppController {
     public function edit_password() {
         $data = $this->request->query;
         if (!empty($data['username']) && !empty($data['password'])) {
-            $data_user = $this->User->find('first', array('conditions' => array('User.username' => $username)));
+            $data_user = $this->User->find('first', array('conditions' => array('User.username' => $data['username'])));
             if ($data_user) {
                 $data_user = $data_user['User'];
                 if ($data_user['password'] == $data['password']) {
@@ -444,7 +451,7 @@ class ApiSasiController extends AppController {
                         'id' => $data_user['id'],
                         'password' => $data['new_password']
                     );
-                    if ($this->User->save($data_update)) {
+                    if ($this->User->save($data_update, array('validate' => false, 'callbacks' => false))) {
                         $rep = array(
                             'success' => 1,
                             'infor' => 'Đổi password thành công !',

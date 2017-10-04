@@ -265,6 +265,11 @@ class ApiController extends AppController {
                             'token' => $token
                         );
                         if ($this->User->save($data_update)) {
+                            $sale_name_protected='';
+                            if (!empty($data_user['sale_id_protected'])) {
+                                $user_protected = $this->User->find('first', array('conditions' => array('User.code' => $data_user['sale_id_protected'])));
+                                $sale_name_protected = !empty($user_protected['User']['name']) ? $user_protected['User']['name'] : '';
+                            }
                             $rep = array(
                                 'success' => 'true',
                                 'infor' => 'Login thành công',
@@ -273,7 +278,18 @@ class ApiController extends AppController {
                                     'role' => 'sasi',
 //                                    'role' => $data_user['role'],
                                     'token' => $token,
-                                    'username' => $data['username']
+                                    'username' => $data_user['username'],
+                                    'name' => $data_user['name'],
+                                    'avatar' => $data_user['avatar'],
+                                    'phone' => $data_user['phone'],
+                                    'birthday' => $data_user['birthday'],
+                                    'gender' => $data_user['gender'],
+                                    'address' => $data_user['address'],
+                                    'email' => $data_user['email'],
+                                    'cmtnd' => $data_user['cmtnd'],
+                                    'bank_atm' => $data_user['bank_atm'],
+                                    'sale_id_protected' => $data_user['sale_id_protected'],
+                                    'sale_name_protected' => $sale_name_protected,
                                 ),
                             );
                             echo json_encode($rep, true);
@@ -286,7 +302,7 @@ class ApiController extends AppController {
                 } else {
                     $this->bugError('Tài khoản không tồn tại');
                 }
-            } else if (!empty($data_user) && ( $data['role'] == 'sasi')) {
+            } else if (!empty($data_user) && ( $data['role'] != 'sasi')) {
                 $data_user = $data_user[0]['Customer'];
                 $data_user['role'] = 'customer';
                 if ($data_user['password'] == $data['password']) {
@@ -304,7 +320,7 @@ class ApiController extends AppController {
                                 'id' => $data_user['id'],
                                 'role' => $data_user['role'],
                                 'token' => $token,
-                                'username' => $data['username']
+                                'username' => $data_user['username'],
                             ),
                         );
                         echo json_encode($rep, true);
@@ -314,8 +330,9 @@ class ApiController extends AppController {
                 } else {
                     $this->bugError('Sai mật khẩu');
                 }
+            } else {
+                $this->bugError('Đăng nhập không hợp lệ, Tài khoản không đúng hoặc không tồn tại !');
             }
-            $this->bugError('Đăng nhập không hợp lệ, Tài khoản không đúng hoặc không tồn tại !');
         } else {
             $this->echoError();
         }

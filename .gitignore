@@ -8,6 +8,10 @@
 /build
 /dist
 /tags
+/app/nbproject
+/app/nbproject/private/private.xml
+
+
 *.mo
 
 # IDE and editor specific files #
