@@ -265,7 +265,7 @@ class ApiController extends AppController {
                             'token' => $token
                         );
                         if ($this->User->save($data_update)) {
-                            $sale_name_protected='';
+                            $sale_name_protected = '';
                             if (!empty($data_user['sale_id_protected'])) {
                                 $user_protected = $this->User->find('first', array('conditions' => array('User.code' => $data_user['sale_id_protected'])));
                                 $sale_name_protected = !empty($user_protected['User']['name']) ? $user_protected['User']['name'] : '';
@@ -288,6 +288,7 @@ class ApiController extends AppController {
                                     'email' => $data_user['email'],
                                     'cmtnd' => $data_user['cmtnd'],
                                     'bank_atm' => $data_user['bank_atm'],
+                                    'date_join' => date("Y-m-d", strtotime($data_user['created_datetime'])),
                                     'sale_id_protected' => $data_user['sale_id_protected'],
                                     'sale_name_protected' => $sale_name_protected,
                                 ),

@@ -431,6 +431,9 @@ class ApiSasiController extends AppController {
             if (!empty($data['birthday'])) {
                 $user_data['birthday'] = $data['birthday'];
             }
+            if (!empty($data['gender'])) {
+                $user_data['gender'] = $data['gender'];
+            }
             unset($user_data['password']);
             if ($this->User->save($user_data)) {
                 $this->success('Update thành công thông tin!', $rep = array());
@@ -442,7 +445,7 @@ class ApiSasiController extends AppController {
 
     public function edit_password() {
         $data = $this->request->query;
-        if (!empty($data['username']) && !empty($data['password'])) {
+        if (!empty($data['username']) && !empty($data['password']) && !empty($data['new_password'])) {
             $data_user = $this->User->find('first', array('conditions' => array('User.username' => $data['username'])));
             if ($data_user) {
                 $data_user = $data_user['User'];
