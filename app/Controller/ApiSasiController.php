@@ -79,6 +79,7 @@ class ApiSasiController extends AppController {
                         'point_dr' => 0,
                         'point_dc' => 0,
                         'point_d' => 0,
+                        'profit_cc' => 0,
                         'month' => $month,
                         'year' => $year
                     );
@@ -88,10 +89,11 @@ class ApiSasiController extends AppController {
                     $revenue_sasi['point_dc'] = 0;
                     $revenue_sasi['point_dr'] = 0;
                     $revenue_sasi['point_d'] = 0;
+                    $revenue_sasi['profit_cc'] = 0;
                 }
-                $number_buy = $this->UserBuy->get_number_buy($user_data['code']);
-                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code']);
-                $number_customer = $this->Customer->get_num_customer($user_data['code']);
+                $number_buy = $this->UserBuy->get_number_buy($user_data['code'],$month,$year);
+                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code',$month,$year);
+                $number_customer = $this->Customer->get_num_customer($user_data['code'],$month,$year);
                 $rep = array(
                     'name' => $user_data['name'],
                     'spb' => $number_buy . '',
@@ -308,6 +310,37 @@ class ApiSasiController extends AppController {
             if ($user_data) {
                 if ($this->checkLogin($data['token'])) {
                     $client_data = $this->Customer->get_customer($user_data['code'], $last_id, $limit);
+                    $rep = array();
+                    if (!empty($client_data)) {
+                        foreach ($client_data as $key => $value) {
+                            $rep[$key]['client_id'] = $value['Customer']['id'];
+                            $rep[$key]['client_name'] = $value['Customer']['username'];
+                            $rep[$key]['client_phone'] = $value['Customer']['phone'];
+                            $rep[$key]['client_address'] = $value['Customer']['address'];
+                            $rep[$key]['join_date'] = $value['Customer']['created_datetime'];
+                            $rep[$key]['number_buy'] = $this->UserBuy->get_number_buy_client($user_data['code'], $value['Customer']['id']);
+                        }
+                    }
+                    $this->success('Lấy thành công danh sách', $rep);
+                }
+            } else {
+                $this->bugError('Tài khoản không tồn tại');
+            }
+        } else {
+            $this->echoError();
+        }
+    }
+
+    public function search_customer() {
+        $data = $this->request->query;
+        if (!empty($data['token'])) {
+            $user_data = $this->checkLogin($data['token']);
+            $last_id = (!empty($data['last_id'])) ? $data['last_id'] : 0;
+            $limit = (!empty($data['limit'])) ? $data['limit'] : 10;
+            $content = (!empty($data['content'])) ? $data['content'] : '';
+            if ($user_data) {
+                if ($this->checkLogin($data['token'])) {
+                    $client_data = $this->Customer->get_search($user_data['code'], $last_id, $limit, $content);
                     $rep = array();
                     if (!empty($client_data)) {
                         foreach ($client_data as $key => $value) {

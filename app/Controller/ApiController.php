@@ -251,6 +251,7 @@ class ApiController extends AppController {
     //đăng nhập vào hệ thống
     public function login() {
         $data = $this->request->query;
+        $data['role'] = !empty($data['role']) ? $data['role'] : 'customer';
         if (!empty($data['username']) && !empty($data['password'])) {
             $username = $data['username'];
             $data_user = $this->Customer->find('all', array('conditions' => array('Customer.username' => $username)));

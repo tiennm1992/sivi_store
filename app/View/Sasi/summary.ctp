@@ -60,7 +60,7 @@
         </td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >DT</p>    
-            <p><?php echo $sasi['revenue'] ?></p>
+            <p><?php echo  number_format($sasi['revenue'], 0, '','.');  ?></p>
         </td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >Đr</p>    
@@ -113,18 +113,18 @@
         <td colspan="3" class="text_3">Income</td>
         <td colspan="3" >
             <p class="text_1">LN</p>
-            <p><?php echo $sasi['profit'] ?></p>
+            <p><?php echo  number_format($sasi['profit'], 0, '','.');  ?></p>
         </td>
         <td colspan="3" >
             <p class="text_1">CC</p>
-            <p><?php echo $sasi['profit_cc'] ?></p>
+            <p><?php echo number_format($sasi['profit_cc'], 0, '','.');  ?></p>
         </td>
         <td colspan="3" >
             <p class="text_1">TN</p>
-            <p>0</p>
+            <p><?php echo  number_format($sasi['profit']  +  $sasi['profit_cc'] , 0, '','.');    ?></p>
         </td>
         <td colspan="3" >
-            <p class="text_1">Số khách hàng</p>
+            <p class="text_1">T-KH</p>
             <p><?php echo $number_customer ?></p>
         </td>
     </tr>
