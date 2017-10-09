@@ -40,19 +40,4 @@ class Customer extends AppModel {
         return $data;
     }
 
-    public function get_search($user_code, $last_id = 0, $limit = 10, $name = '') {
-        $conditions = array();
-        $conditions['employee_code'] = $user_code;
-        $conditions['username LIKE '] = "%{$name}%";
-        if (!empty($last_id)) {
-            $conditions['id <'] = $last_id;
-        }
-        $data = $this->find('all', array(
-            'conditions' => $conditions,
-            'limit' => $limit,
-            'order' => array("Customer.id DESC")
-        ));
-        return $data;
-    }
-
 }

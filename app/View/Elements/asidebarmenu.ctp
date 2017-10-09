@@ -37,6 +37,7 @@ $urls = array(
     'summary' => $this->Html->url(array('controller' => 'sasi', 'action' => 'summary', 'admin' => true), true),
     'policy' => $this->Html->url(array('controller' => 'sasi', 'action' => 'policy', 'admin' => true), true),
     'convert_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'convert_list', 'admin' => true), true),
+    'products_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'products_list', 'admin' => true), true),
 );
 ?>
 
@@ -91,7 +92,7 @@ $urls = array(
         <li><a href="<?php echo $urls['infor']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thông tin cá nhân</span></a></li>
         <li><a href="<?php echo $urls['convert_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng quy ước</span></a></li>
         <li><a href="<?php echo $urls['policy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng chuyển đổi</span></a></li>
-        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Danh sách sản phẩm</span></a></li>
+        <li><a href="<?php echo $urls['products_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Danh sách sản phẩm</span></a></li>
 
 
     <?php endif; ?>

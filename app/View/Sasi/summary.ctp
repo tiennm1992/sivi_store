@@ -38,6 +38,25 @@
     }
 
 </style>
+<div class="row">
+    <form method="get" >
+        <div class="col-xs-12">
+              <div class="form-group col-xs-12 col-sm-3">
+                <label style= 'padding-top: 5px; font-size: 18px;' for="date">Thống kê theo tháng : </label>
+            </div>
+            <div class="form-group col-xs-12 col-sm-5">
+                <div >
+                    <input   style= 'font-size: 18px;' type="month" class="form-control valid" name="date" id="date" value="<?php echo $date1; ?>">
+                    </span>
+                </div>
+            </div>
+            <div class="form-group col-xs-12 col-sm-2">
+              <label for="date"></label>
+                <input style= 'font-size: 18px;' type="submit" class="btn btn-primary" name="search" value="search">
+            </div>
+        </div>
+    </form>
+</div>
 <table style="width: 100%; " >
     <tr>
         <td colspan="5">

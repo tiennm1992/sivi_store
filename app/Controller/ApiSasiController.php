@@ -92,7 +92,7 @@ class ApiSasiController extends AppController {
                     $revenue_sasi['profit_cc'] = 0;
                 }
                 $number_buy = $this->UserBuy->get_number_buy($user_data['code'],$month,$year);
-                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code',$month,$year);
+                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code'],$month,$year);
                 $number_customer = $this->Customer->get_num_customer($user_data['code'],$month,$year);
                 $rep = array(
                     'name' => $user_data['name'],

@@ -10,7 +10,7 @@ App::uses('AppController', 'Controller');
 class SasiController extends AppController {
 
     public $components = array('Paginator');
-    public $uses = array('Customer', 'UserPosition', 'UserLevel', 'User', 'UserBuy', 'UserPosition','Category');
+    public $uses = array('Customer', 'UserPosition', 'UserLevel', 'User', 'UserBuy', 'UserPosition','Category','Product');
     public $user_info;
     public $user_code;
 
@@ -36,6 +36,12 @@ class SasiController extends AppController {
         $date = explode('-', $date);
         $month = $date[1];
         $year = $date[0];
+        $query = $this->request->query;
+        if (isset($query['date']) && !empty($query['date'])) {
+              $date = explode('-', $query['date']);
+              $month = $date[1];
+              $year = $date[0];
+        }
         $revenue_sasi = $this->UserPosition->find('first', array(
             'conditions' => array(
                 'UserPosition.code' => $this->user_code,
@@ -78,10 +84,10 @@ class SasiController extends AppController {
             $revenue_sasi['point_dr'] = 0;
             $revenue_sasi['point_d'] = 0;
         }
-        $number_buy = $this->UserBuy->get_number_buy($this->user_code);
-        $sasi_list = $this->UserLevel->get_sub_position_list($this->user_code);
+        $number_buy = $this->UserBuy->get_number_buy($this->user_code,$month,$year);
+        $sasi_list = $this->UserLevel->get_sub_position_list($this->user_code,$month,$year);
 
-        $number_customer = $this->Customer->get_num_customer($this->user_code);
+        $number_customer = $this->Customer->get_num_customer($this->user_code,$month,$year);
         $this->set('sasi', $revenue_sasi);
         $this->set('current_position', $current_position);
         $this->set('best_position', $best_position);
@@ -89,6 +95,9 @@ class SasiController extends AppController {
         $this->set('number_customer', $number_customer);
         $this->set('sasi_list', $sasi_list);
         $this->set('user_name', $this->user_info['name']);
+        $this->set('date1', $year.'-'.$month);
+        $this->set('title_for_layout', 'Thống kê sasi tháng '.$month. ' năm '.$year);
+
     }
 
     public function order_list() {
@@ -206,7 +215,7 @@ class SasiController extends AppController {
             'conditions' => $conditions,
         );
         $this->Product->recursive = 0;
-        $this->set('products', $this->Paginator->paginate());
+        $this->set('products', $this->Paginator->paginate('Product'));
         $this->set('name', $name);
         $this->set('category', $category);
         $this->set('start_time', $start_time);
