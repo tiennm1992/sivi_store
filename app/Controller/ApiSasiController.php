@@ -79,6 +79,7 @@ class ApiSasiController extends AppController {
                         'point_dr' => 0,
                         'point_dc' => 0,
                         'point_d' => 0,
+                        'profit_cc' => 0,
                         'month' => $month,
                         'year' => $year
                     );
@@ -88,10 +89,11 @@ class ApiSasiController extends AppController {
                     $revenue_sasi['point_dc'] = 0;
                     $revenue_sasi['point_dr'] = 0;
                     $revenue_sasi['point_d'] = 0;
+                    $revenue_sasi['profit_cc'] = 0;
                 }
-                $number_buy = $this->UserBuy->get_number_buy($user_data['code']);
-                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code']);
-                $number_customer = $this->Customer->get_num_customer($user_data['code']);
+                $number_buy = $this->UserBuy->get_number_buy($user_data['code'],$month,$year);
+                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code',$month,$year);
+                $number_customer = $this->Customer->get_num_customer($user_data['code'],$month,$year);
                 $rep = array(
                     'name' => $user_data['name'],
                     'spb' => $number_buy . '',

@@ -146,10 +146,16 @@ class UserLevel extends AppModel {
 
     public function get_sub_level($code) {
         $UserModel = ClassRegistry::init('User');
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
         $level_data = $UserModel->find('all', array(
             'fields' => array("User_pos.*", "User.*"),
             'conditions' => array(
-                'User.sale_id_protected' => $code
+                'User.sale_id_protected' => $code,
+                'User_pos.month' => $month,
+                'User_pos.year' => $year,
             ),
             'joins' => array(
                 array(
@@ -273,11 +279,11 @@ class UserLevel extends AppModel {
         return 0;
     }
 
-    public function get_sub_position_list($user_code) {
-        $date = date("Y-m");
-        $date = explode('-', $date);
-        $month = $date[1];
-        $year = $date[0];
+    public function get_sub_position_list($user_code,$month,$year) {
+        // $date = date("Y-m");
+        // $date = explode('-', $date);
+        // $month = $date[1];
+        // $year = $date[0];
         $position_data = $this->find('all', array(
             'conditions' => array(
                 "sale_id_protected" => $user_code,
@@ -349,6 +355,7 @@ class UserLevel extends AppModel {
                 'User.sale_id_protected' => $user_code,
             )
         ));
+       
         return $rep_data;
     }
 
