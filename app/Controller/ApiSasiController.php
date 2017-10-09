@@ -329,6 +329,37 @@ class ApiSasiController extends AppController {
         }
     }
 
+    public function search_customer() {
+        $data = $this->request->query;
+        if (!empty($data['token'])) {
+            $user_data = $this->checkLogin($data['token']);
+            $last_id = (!empty($data['last_id'])) ? $data['last_id'] : 0;
+            $limit = (!empty($data['limit'])) ? $data['limit'] : 10;
+            $content = (!empty($data['content'])) ? $data['content'] : '';
+            if ($user_data) {
+                if ($this->checkLogin($data['token'])) {
+                    $client_data = $this->Customer->get_search($user_data['code'], $last_id, $limit, $content);
+                    $rep = array();
+                    if (!empty($client_data)) {
+                        foreach ($client_data as $key => $value) {
+                            $rep[$key]['client_id'] = $value['Customer']['id'];
+                            $rep[$key]['client_name'] = $value['Customer']['username'];
+                            $rep[$key]['client_phone'] = $value['Customer']['phone'];
+                            $rep[$key]['client_address'] = $value['Customer']['address'];
+                            $rep[$key]['join_date'] = $value['Customer']['created_datetime'];
+                            $rep[$key]['number_buy'] = $this->UserBuy->get_number_buy_client($user_data['code'], $value['Customer']['id']);
+                        }
+                    }
+                    $this->success('Lấy thành công danh sách', $rep);
+                }
+            } else {
+                $this->bugError('Tài khoản không tồn tại');
+            }
+        } else {
+            $this->echoError();
+        }
+    }
+
     public function product_list() {
         $data = $this->request->query;
         $conditions = array();
