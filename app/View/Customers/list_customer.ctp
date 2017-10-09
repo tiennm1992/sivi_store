@@ -41,9 +41,9 @@ echo $this->grid->create($customers, null, $option);
         <td><?php echo h($customer['Customer']['phone']); ?>&nbsp;</td>
         <td><?php echo h($customer['Customer']['address']); ?>&nbsp;</td>
         <td><?php echo h($customer['Customer']['employee_code']); ?>&nbsp;</td>
-        <td><a>Lịch sử mua hàng</a></td>
+        <td><a href="/userBuys/history_buy_item?user_id=<?php echo $customer['Customer']['id'] ?>" >Lịch sử mua hàng</a></td>
         <td><?php echo h($customer['Customer']['created_datetime']); ?>&nbsp;</td>
-        
+
         <td class="actions">
             <?php
             echo $this->Html->link(

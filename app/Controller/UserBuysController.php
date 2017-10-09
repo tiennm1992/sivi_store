@@ -16,7 +16,7 @@ class UserBuysController extends AppController {
      * @var array
      */
     public $components = array('Paginator');
-    public $uses = array('UserPosition', 'UserLevel', 'User', 'UserBuy');
+    public $uses = array('UserPosition', 'UserLevel', 'User', 'UserBuy', 'Customer');
 
 //    public $uses = array('Buy','UserBuy',);
 
@@ -610,6 +610,58 @@ class UserBuysController extends AppController {
             echo $exc->getMessage();
             die;
         }
+    }
+
+    public function history_buy_item() {
+        $query = $this->request->query;
+        $conditions = array();
+        $name = '';
+        if (isset($query['user_id']) && !empty($query['user_id'])) {
+            $conditions['Buy.customer_id'] = $query['user_id'];
+        }
+//        $this->Paginator->settings = array(
+//            'limit' => ITEMS_PER_PAGE,
+//            'paramType' => 'querystring',
+//            'conditions' => $conditions
+//        );
+        $this->Buy->recursive = -1;
+        $this->Paginator->settings = array(
+            'fields' => array('Customer.*', 'Product.*', 'Buy.*', 'User.*',),
+            'conditions' => $conditions,
+            'limit' => 10,
+            'order' => array(
+                'UserBuy.id' => 'DESC'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'customers',
+                    'alias' => 'Customer',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Buy.customer_id = Customer.id'
+                    )
+                ),
+                array(
+                    'table' => 'products',
+                    'alias' => 'Product',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Buy.product_id = Product.id'
+                    )
+                ),
+                array(
+                    'table' => 'users',
+                    'alias' => 'User',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'User.code = Buy.code'
+                    )
+                )
+            )
+        );
+        $this->Customer->recursive = 0;
+        $this->set('userBuys', $this->Paginator->paginate('Buy'));
+        $this->set('title_for_layout', 'Lịch sử mua hàng');
     }
 
 }
