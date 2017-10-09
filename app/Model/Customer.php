@@ -17,10 +17,23 @@ class Customer extends AppModel {
         }
     }
 
-    public function get_num_customer($user_code,$month,$year) {
+    public function get_num_customer($user_code, $month, $year) {
         $data = $this->find('count', array(
             'conditions' => array(
-                'employee_code' => $user_code
+                'employee_code' => $user_code,
+            )
+        ));
+        return $data;
+    }
+
+    public function get_new_num_customer($user_code, $month, $year) {
+        $end_date = $year . '-' . $month . "-31 00:00:00";
+        $start_date = $year . '-' . $month . "-1 00:00:00";
+        $data = $this->find('count', array(
+            'conditions' => array(
+                'employee_code' => $user_code,
+                "created_datetime <= '{$end_date}'",
+                "created_datetime > '{$start_date}'",
             )
         ));
         return $data;

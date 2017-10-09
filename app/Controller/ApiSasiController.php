@@ -91,9 +91,10 @@ class ApiSasiController extends AppController {
                     $revenue_sasi['point_d'] = 0;
                     $revenue_sasi['profit_cc'] = 0;
                 }
-                $number_buy = $this->UserBuy->get_number_buy($user_data['code'],$month,$year);
-                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code'],$month,$year);
-                $number_customer = $this->Customer->get_num_customer($user_data['code'],$month,$year);
+                $number_buy = $this->UserBuy->get_number_buy($user_data['code'], $month, $year);
+                $sasi_list = $this->UserLevel->get_sub_position_list($user_data['code'], $month, $year);
+                $number_customer = $this->Customer->get_num_customer($user_data['code'], $month, $year);
+                $new_number_customer = $this->Customer->get_new_num_customer($user_data['code'], $month, $year);
                 $rep = array(
                     'name' => $user_data['name'],
                     'spb' => $number_buy . '',
@@ -112,8 +113,9 @@ class ApiSasiController extends AppController {
                     'd' => ($revenue_sasi['point_dr'] + $revenue_sasi['point_dc']) . '',
                     'ln' => $revenue_sasi['profit'] . '',
                     'cc' => $revenue_sasi['profit_cc'] . '',
-                    'tn' => '0',
+                    'tn' => ($revenue_sasi['profit'] + $revenue_sasi['profit_cc']) . '',
                     'num_customer' => $number_customer . '',
+                    'new_num_customer' => $new_number_customer . '',
                 );
             }
             $this->success('Lấy thành công danh sách', $rep);

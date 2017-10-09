@@ -10,7 +10,7 @@ App::uses('AppController', 'Controller');
 class SasiController extends AppController {
 
     public $components = array('Paginator');
-    public $uses = array('Customer', 'UserPosition', 'UserLevel', 'User', 'UserBuy', 'UserPosition','Category','Product');
+    public $uses = array('Customer', 'UserPosition', 'UserLevel', 'User', 'UserBuy', 'UserPosition', 'Category', 'Product');
     public $user_info;
     public $user_code;
 
@@ -38,9 +38,9 @@ class SasiController extends AppController {
         $year = $date[0];
         $query = $this->request->query;
         if (isset($query['date']) && !empty($query['date'])) {
-              $date = explode('-', $query['date']);
-              $month = $date[1];
-              $year = $date[0];
+            $date = explode('-', $query['date']);
+            $month = $date[1];
+            $year = $date[0];
         }
         $revenue_sasi = $this->UserPosition->find('first', array(
             'conditions' => array(
@@ -84,20 +84,21 @@ class SasiController extends AppController {
             $revenue_sasi['point_dr'] = 0;
             $revenue_sasi['point_d'] = 0;
         }
-        $number_buy = $this->UserBuy->get_number_buy($this->user_code,$month,$year);
-        $sasi_list = $this->UserLevel->get_sub_position_list($this->user_code,$month,$year);
+        $number_buy = $this->UserBuy->get_number_buy($this->user_code, $month, $year);
+        $sasi_list = $this->UserLevel->get_sub_position_list($this->user_code, $month, $year);
 
-        $number_customer = $this->Customer->get_num_customer($this->user_code,$month,$year);
+        $number_customer = $this->Customer->get_num_customer($this->user_code, $month, $year);
+        $new_num_customer = $this->Customer->get_new_num_customer($this->user_code, $month, $year);
         $this->set('sasi', $revenue_sasi);
         $this->set('current_position', $current_position);
         $this->set('best_position', $best_position);
         $this->set('number_buy', $number_buy);
         $this->set('number_customer', $number_customer);
+        $this->set('new_num_customer', $new_num_customer);
         $this->set('sasi_list', $sasi_list);
         $this->set('user_name', $this->user_info['name']);
-        $this->set('date1', $year.'-'.$month);
-        $this->set('title_for_layout', 'Thống kê sasi tháng '.$month. ' năm '.$year);
-
+        $this->set('date1', $year . '-' . $month);
+        $this->set('title_for_layout', 'Thống kê sasi tháng ' . $month . ' năm ' . $year);
     }
 
     public function order_list() {
@@ -183,9 +184,10 @@ class SasiController extends AppController {
         pr($a);
         die;
     }
-     public function products_list() {
+
+    public function products_list() {
         //get category
-        $this->Category->unbindModel(array('hasMany' => array('Product','Subcategory')));
+        $this->Category->unbindModel(array('hasMany' => array('Product', 'Subcategory')));
         $list_category = $this->Category->find('all', array('fields' => array('Category.id', 'Category.name')));
         //get search
         $query = $this->request->query;
@@ -200,8 +202,8 @@ class SasiController extends AppController {
             $conditions['Product.category_id'] = $query['category'];
             $category = $query['category'];
         }
-        $start_time = isset($query['startdate']) ? $query['startdate']  : null;
-        $end_time = isset($query['enddate']) ? $query['enddate']: null;
+        $start_time = isset($query['startdate']) ? $query['startdate'] : null;
+        $end_time = isset($query['enddate']) ? $query['enddate'] : null;
         if ($start_time && $end_time) {
             $conditions[] = "Product.date_create >= date('{$start_time}') AND Product.date_create<= date('{$end_time}')";
         } else if ($end_time) {

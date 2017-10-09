@@ -41,7 +41,7 @@
 <div class="row">
     <form method="get" >
         <div class="col-xs-12">
-              <div class="form-group col-xs-12 col-sm-3">
+            <div class="form-group col-xs-12 col-sm-3">
                 <label style= 'padding-top: 5px; font-size: 18px;' for="date">Thống kê theo tháng : </label>
             </div>
             <div class="form-group col-xs-12 col-sm-5">
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="form-group col-xs-12 col-sm-2">
-              <label for="date"></label>
+                <label for="date"></label>
                 <input style= 'font-size: 18px;' type="submit" class="btn btn-primary" name="search" value="search">
             </div>
         </div>
@@ -79,7 +79,7 @@
         </td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >DT</p>    
-            <p><?php echo  number_format($sasi['revenue'], 0, '','.');  ?></p>
+            <p><?php echo number_format($sasi['revenue'], 0, '', '.'); ?></p>
         </td>
         <td colspan="3"   style="width: 20%">
             <p class="text_1" >Đr</p>    
@@ -130,21 +130,25 @@
     </tr>
     <tr>
         <td colspan="3" class="text_3">Income</td>
-        <td colspan="3" >
+        <td colspan="2" >
             <p class="text_1">LN</p>
-            <p><?php echo  number_format($sasi['profit'], 0, '','.');  ?></p>
+            <p><?php echo number_format($sasi['profit'], 0, '', '.'); ?></p>
         </td>
-        <td colspan="3" >
+        <td colspan="2" >
             <p class="text_1">CC</p>
-            <p><?php echo number_format($sasi['profit_cc'], 0, '','.');  ?></p>
+            <p><?php echo number_format($sasi['profit_cc'], 0, '', '.'); ?></p>
         </td>
-        <td colspan="3" >
+        <td colspan="2" >
             <p class="text_1">TN</p>
-            <p><?php echo  number_format($sasi['profit']  +  $sasi['profit_cc'] , 0, '','.');    ?></p>
+            <p><?php echo number_format($sasi['profit'] + $sasi['profit_cc'], 0, '', '.'); ?></p>
         </td>
         <td colspan="3" >
             <p class="text_1">T-KH</p>
             <p><?php echo $number_customer ?></p>
+        </td>
+        <td colspan="3" >
+            <p class="text_1">N-KH</p>
+            <p><?php echo $new_num_customer ?></p>
         </td>
     </tr>
 
