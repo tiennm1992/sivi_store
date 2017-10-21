@@ -10,7 +10,7 @@ App::uses('AppController', 'Controller');
 class SasiController extends AppController {
 
     public $components = array('Paginator');
-    public $uses = array('Customer', 'UserPosition', 'UserLevel', 'User', 'UserBuy', 'UserPosition', 'Category', 'Product');
+    public $uses = array('ComparePosition', 'Customer', 'UserPosition', 'UserLevel', 'User', 'UserBuy', 'UserPosition', 'Category', 'Product', 'ExchangePositions');
     public $user_info;
     public $user_code;
 
@@ -173,9 +173,16 @@ class SasiController extends AppController {
         $this->render(false);
     }
 
+    public function compare() {
+        $this->ComparePosition->recursive = 0;
+        $this->set('ComparePosition', $this->Paginator->paginate('ComparePosition'));
+        $this->set('title_for_layout', 'Bảng đối chiếu');
+    }
+
     public function convert_list() {
-//        $this->layout = false;
-        $this->render(false);
+        $this->ExchangePositions->recursive = 0;
+        $this->set('ExchangePositions', $this->Paginator->paginate('ExchangePositions'));
+        $this->set('title_for_layout', 'Bảng quy đổi');
     }
 
     public function test() {
@@ -183,6 +190,14 @@ class SasiController extends AppController {
 //        $a= $this->UserPosition->get_profit(20170720);
         pr($a);
         die;
+    }
+
+    public function user_infor() {
+        $this->User->id = $id;
+        if (!$this->User->exists()) {
+            throw new NotFoundException(__('Invalid user'));
+        }
+        $this->set('user', $this->User->findById($id));
     }
 
     public function products_list() {
