@@ -23,7 +23,8 @@ class UsersController extends AppController {
     }
 
     public function isAuthorized($user) {
-        if ($user['role'] != 'super') {
+        $action = $this->request->params['action'];
+        if ($user['role'] != 'super' && $action != 'edit_sasi') {
             throw new NotFoundException('Không có quyền truy cập');
         }
         return parent::isAuthorized($user);
@@ -129,9 +130,38 @@ class UsersController extends AppController {
             $id = $data['id'];
             $check_user = $this->User->find('all', array('conditions' => array('User.username' => $data['username'], "User.id!=$id")));
             if (!$check_user) {
-                if ($this->User->save($this->request->data)) {
+                $save_data=$this->request->data;
+                unset($save_data['password']);
+                if ($this->User->save($save_data, array('validate' => false, 'callbacks' => false))) {
                     $this->Session->setFlash(__('The User has been saved.'));
                     return $this->redirect(array('action' => $action));
+                } else {
+                    $this->Session->setFlash(__('The User could not be saved. Please, try again.'));
+                }
+            } else {
+                $this->Session->setFlash(__('The customer could not be saved. Please, try again.'));
+            }
+        } else {
+            $options = array('conditions' => array('User.' . $this->User->primaryKey => $id));
+            $this->request->data = $this->User->find('first', $options);
+        }
+    }
+
+    public function edit_sasi() {
+        $infor = $this->Auth->user();
+        $id = $infor['id'];
+        if (!$this->User->exists($id)) {
+            throw new NotFoundException(__('Invalid customer'));
+        }
+        if ($this->request->is(array('post', 'put'))) {
+            $data = $this->request->data;
+            $data = $data['User'];
+            $id = $data['id'];
+            $check_user = $this->User->find('all', array('conditions' => array('User.username' => $data['username'], "User.id!=$id")));
+            if (!$check_user) {
+                if ($this->User->save($this->request->data)) {
+                    $this->Session->setFlash(__('The User has been saved.'));
+                    return $this->redirect('/sasi/user_infor');
                 } else {
                     $this->Session->setFlash(__('The User could not be saved. Please, try again.'));
                 }

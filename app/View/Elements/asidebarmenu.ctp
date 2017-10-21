@@ -40,6 +40,7 @@ $urls = array(
     'compare_sasi' => $this->Html->url(array('controller' => 'sasi', 'action' => 'compare', 'admin' => true), true),
     'convert_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'convert_list', 'admin' => true), true),
     'products_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'products_list', 'admin' => true), true),
+    'infor_sasi' => $this->Html->url(array('controller' => 'sasi', 'action' => 'user_infor', 'admin' => true), true),
     //
     'exchange' => $this->Html->url(array('controller' => 'Exchange', 'action' => 'index', 'admin' => true), true),
     'compare' => $this->Html->url(array('controller' => 'Compare', 'action' => 'index', 'admin' => true), true),
@@ -96,7 +97,7 @@ $urls = array(
     <li><a href="<?php echo $urls['customer']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
     <!--<li><a href="<?php // echo $urls['userbuy'];  ?>" ><i class="fa fa-angle-double-right"></i> <span>Doanh thu</span></a></li>-->
     <li class="header"><i class="fa fa-square"></i> <span>More ...</span></li>
-    <li><a href="<?php echo $urls['infor']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thông tin cá nhân</span></a></li>
+    <li><a href="<?php echo $urls['infor_sasi']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thông tin cá nhân</span></a></li>
     <li><a href="<?php echo $urls['compare_sasi']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng đối chiếu</span></a></li>
     <li><a href="<?php echo $urls['convert_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng quy đổi</span></a></li>
     <li><a href="<?php echo $urls['products_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Danh sách sản phẩm</span></a></li>

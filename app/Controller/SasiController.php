@@ -193,11 +193,14 @@ class SasiController extends AppController {
     }
 
     public function user_infor() {
-        $this->User->id = $id;
+        $infor=$this->user_info;
+        $this->User->id = $infor['id'];
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user'));
         }
-        $this->set('user', $this->User->findById($id));
+        $user = $this->User->findById($infor['id']);
+        $this->set('user',$user['User']);
+        $this->set('user_infor',$user['User']);
     }
 
     public function products_list() {
