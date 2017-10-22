@@ -44,7 +44,8 @@ echo $this->grid->create($users, null, $option);
         <td><?php echo h($user['User']['address']); ?>&nbsp;</td>
         <td>
             <a href="/customers/index2/<?php echo h($user['User']['code']); ?>">User</a>&nbsp; |
-            <a href="/userBuys/index2/<?php echo h($user['User']['code']); ?>">Doanh thu</a>
+            <a href="/userBuys/index2/<?php echo h($user['User']['code']); ?>">Doanh thu</a>&nbsp; |
+            <a href="/sasi/summary_admin/<?php echo h($user['User']['code']); ?>">Thống kê</a>
         </td>
         <td class="actions">
             <?php

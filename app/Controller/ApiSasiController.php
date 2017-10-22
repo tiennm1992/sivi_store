@@ -342,7 +342,7 @@ class ApiSasiController extends AppController {
             $content = (!empty($data['content'])) ? $data['content'] : '';
             if ($user_data) {
                 if ($this->checkLogin($data['token'])) {
-                    $client_data = $this->Customer->get_search($user_data['code'], $last_id, $limit, $content);
+                    $client_data = $this->Customer->get_customer($user_data['code'], $last_id, $limit, $content);
                     $rep = array();
                     if (!empty($client_data)) {
                         foreach ($client_data as $key => $value) {

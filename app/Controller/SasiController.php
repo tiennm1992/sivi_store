@@ -21,7 +21,8 @@ class SasiController extends AppController {
     }
 
     public function isAuthorized($user) {
-        if ($user['role'] != 'employee') {
+        $action = $this->request->params['action'];
+        if ($user['role'] != 'employee' && $action != 'summary_admin') {
             throw new NotFoundException('Không có quyền truy cập');
         }
         return parent::isAuthorized($user);
@@ -97,6 +98,86 @@ class SasiController extends AppController {
         $this->set('new_num_customer', $new_num_customer);
         $this->set('sasi_list', $sasi_list);
         $this->set('user_name', $this->user_info['name']);
+        $this->set('date1', $year . '-' . $month);
+        $this->set('title_for_layout', 'Thống kê sasi tháng ' . $month . ' năm ' . $year);
+    }
+
+    public function summary_admin($code = 0) {
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
+        $query = $this->request->query;
+        if (isset($query['date']) && !empty($query['date'])) {
+            $date = explode('-', $query['date']);
+            $month = $date[1];
+            $year = $date[0];
+        }
+        $revenue_sasi = $this->UserPosition->find('first', array(
+            'conditions' => array(
+                'UserPosition.code' => $code,
+                'UserPosition.month' => $month,
+                'UserPosition.year' => $year,
+            )
+        ));
+        $best_sasi = $this->UserPosition->find('first', array(
+            'conditions' => array(
+                'UserPosition.code' => $code,
+                'UserPosition.year' => $year,
+            ),
+            'order' => array('UserPosition.sasi_position DESC', 'UserPosition.sasi_sub_position DESC')
+        ));
+        $current_position = 'sasi';
+        $best_position = 'sasi';
+        if (!empty($best_sasi)) {
+            $best_position = $this->UserLevel->convert_position($best_sasi['UserPosition']['level']);
+        }
+        if (!empty($revenue_sasi)) {
+            $revenue_sasi = $revenue_sasi['UserPosition'];
+            $current_position = $this->UserLevel->convert_position($revenue_sasi['level']);
+        } else {
+            $revenue_sasi = array(
+                'sasi_position' => 0,
+                'sasi_sub_position' => 0,
+                'revenue' => 0,
+                'profit' => 0,
+                'profit_cc' => 0,
+                'point_dr' => 0,
+                'point_dc' => 0,
+                'point_d' => 0,
+                'month' => $month,
+                'year' => $year
+            );
+        }
+        $revenue_sasi['point_dc'] = $this->UserLevel->get_point_dc($code);
+        if ($current_position == 'sasi' || $current_position == 'sasim') {
+            $revenue_sasi['point_dc'] = 0;
+            $revenue_sasi['point_dr'] = 0;
+            $revenue_sasi['point_d'] = 0;
+        }
+        $number_buy = $this->UserBuy->get_number_buy($code, $month, $year);
+        $sasi_list = $this->UserLevel->get_sub_position_list($code, $month, $year);
+
+        $number_customer = $this->Customer->get_num_customer($code, $month, $year);
+        $new_num_customer = $this->Customer->get_new_num_customer($code, $month, $year);
+        $user_data = $this->User->find('first', array(
+            'conditions' => array(
+                'code' => $code
+            )
+        ));
+        if (!empty($user_data['User'])) {
+            $user_name = $user_data['User']['name'];
+        } else {
+            $user_name = '';
+        }
+        $this->set('sasi', $revenue_sasi);
+        $this->set('current_position', $current_position);
+        $this->set('best_position', $best_position);
+        $this->set('number_buy', $number_buy);
+        $this->set('number_customer', $number_customer);
+        $this->set('new_num_customer', $new_num_customer);
+        $this->set('sasi_list', $sasi_list);
+        $this->set('user_name', $user_name);
         $this->set('date1', $year . '-' . $month);
         $this->set('title_for_layout', 'Thống kê sasi tháng ' . $month . ' năm ' . $year);
     }
@@ -193,14 +274,14 @@ class SasiController extends AppController {
     }
 
     public function user_infor() {
-        $infor=$this->user_info;
+        $infor = $this->user_info;
         $this->User->id = $infor['id'];
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user'));
         }
         $user = $this->User->findById($infor['id']);
-        $this->set('user',$user['User']);
-        $this->set('user_infor',$user['User']);
+        $this->set('user', $user['User']);
+        $this->set('user_infor', $user['User']);
     }
 
     public function products_list() {

@@ -279,18 +279,12 @@ class UserLevel extends AppModel {
         return 0;
     }
 
-    public function get_sub_position_list($user_code,$month,$year) {
+    public function get_sub_position_list($user_code, $month, $year) {
         // $date = date("Y-m");
         // $date = explode('-', $date);
         // $month = $date[1];
         // $year = $date[0];
-        $position_data = $this->find('all', array(
-            'conditions' => array(
-                "sale_id_protected" => $user_code,
-                'month' => $month,
-                'year' => $year,
-            )
-        ));
+        $position_data = array();
         $rep_data = array(
             'count' => 0,
             'newbie' => 0,
@@ -302,60 +296,71 @@ class UserLevel extends AppModel {
             'sasimo' => 0,
             'sasimu' => 0,
         );
-        if (!empty($position_data)) {
-            foreach ($position_data as $key => $value) {
-                switch ($value['UserLevel']['level']) {
-                    case 0:// up to sasim
-                        $rep_data['sasi'] += 1;
-                        break;
-                    case 10:// up to sasim
-                        $rep_data['sasim'] += 1;
-                        break;
-                    case 20: //up to sasima
-                        $rep_data['sasima'] += 1;
-                        break;
-                    case 30: //up to sasime
-                    case 31: //up to sasime
-                    case 32: //up to sasime
-                        $rep_data['sasime'] += 1;
-                        break;
-                    case 40:
-                    case 41:
-                    case 42:
-                    case 43:
-                        $rep_data['sasimi'] += 1;
-                        break;
-                    case 50:
-                    case 51:
-                    case 52:
-                    case 53:
-                        $rep_data['sasimo'] += 1;
-                        break;
-                    case 60:
-                    case 61:
-                    case 62:
-                    case 63:
-                        $rep_data['sasimu'] += 1;
-                        break;
+        if (!empty($user_code)) {
+            $position_data = $this->find('all', array(
+                'conditions' => array(
+                    "sale_id_protected" => $user_code,
+                    'month' => $month,
+                    'year' => $year,
+                )
+            ));
+
+
+            if (!empty($position_data)) {
+                foreach ($position_data as $key => $value) {
+                    switch ($value['UserLevel']['level']) {
+                        case 0:// up to sasim
+                            $rep_data['sasi'] += 1;
+                            break;
+                        case 10:// up to sasim
+                            $rep_data['sasim'] += 1;
+                            break;
+                        case 20: //up to sasima
+                            $rep_data['sasima'] += 1;
+                            break;
+                        case 30: //up to sasime
+                        case 31: //up to sasime
+                        case 32: //up to sasime
+                            $rep_data['sasime'] += 1;
+                            break;
+                        case 40:
+                        case 41:
+                        case 42:
+                        case 43:
+                            $rep_data['sasimi'] += 1;
+                            break;
+                        case 50:
+                        case 51:
+                        case 52:
+                        case 53:
+                            $rep_data['sasimo'] += 1;
+                            break;
+                        case 60:
+                        case 61:
+                        case 62:
+                        case 63:
+                            $rep_data['sasimu'] += 1;
+                            break;
+                    }
                 }
             }
+            $end_date = date("Y-m-d H:s:i");
+            $start_date = date("Y-m") . "-1 00:00:00";
+            $User_model = ClassRegistry::init('User');
+            $rep_data['newbie'] = $User_model->find('count', array(
+                'conditions' => array(
+                    'User.sale_id_protected' => $user_code,
+                    "User.created_datetime <= '{$end_date}'",
+                    "User.created_datetime > '{$start_date}'",
+                )
+            ));
+            $rep_data['count'] = $User_model->find('count', array(
+                'conditions' => array(
+                    'User.sale_id_protected' => $user_code,
+                )
+            ));
         }
-        $end_date = date("Y-m-d H:s:i");
-        $start_date = date("Y-m") . "-1 00:00:00";
-        $User_model = ClassRegistry::init('User');
-        $rep_data['newbie'] = $User_model->find('count', array(
-            'conditions' => array(
-                'User.sale_id_protected' => $user_code,
-                "User.created_datetime <= '{$end_date}'",
-                "User.created_datetime > '{$start_date}'",
-            )
-        ));
-        $rep_data['count'] = $User_model->find('count', array(
-            'conditions' => array(
-                'User.sale_id_protected' => $user_code,
-            )
-        ));
-       
+
         return $rep_data;
     }
 
@@ -482,7 +487,7 @@ class UserLevel extends AppModel {
                     ));
                     if (!empty($user_profit)) {
                         foreach ($user_profit as $key1 => $value1) {
-                            $value1=$value1['UserBuy'];
+                            $value1 = $value1['UserBuy'];
                             $profit_tmp = 0;
                             switch ($boss_data['level']) {
                                 case 0:// up to sasim
