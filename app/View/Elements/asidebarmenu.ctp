@@ -92,7 +92,7 @@ $urls = array(
     <li class="header"><i class="fa fa-square"></i> <span>Thông tin</span></li>
     <!--pages-->
     <li><a href="<?php echo $urls['summary']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng thống kê</span></a></li>
-    <li><a href="<?php echo $urls['order_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng hàng</span></a></li>
+    <li><a href="<?php echo $urls['order_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng</span></a></li>
     <li><a href="<?php echo $urls['sasi_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Sasi</span></a></li>
     <li><a href="<?php echo $urls['customer']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
     <!--<li><a href="<?php // echo $urls['userbuy'];  ?>" ><i class="fa fa-angle-double-right"></i> <span>Doanh thu</span></a></li>-->
