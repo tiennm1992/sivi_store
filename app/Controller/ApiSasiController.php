@@ -524,6 +524,12 @@ class ApiSasiController extends AppController {
             $this->echoError();
         }
     }
+    public function exchange() {
+        
+    }
+    public function compare() {
+        
+    }
 
     public function checkLogin($token) {
         $data = $this->User->find('first', array('conditions' => array('token' => $token)));
