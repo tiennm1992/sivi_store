@@ -19,7 +19,7 @@ class CompareController extends AppController {
     public $components = array('Paginator');
 
     public function beforeFilter() {
-        $this->set('title_for_layout', 'Khuyến mại');
+        $this->set('title_for_layout', 'Bảng đối chiếu');
     }
 
     /**

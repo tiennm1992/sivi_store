@@ -22,6 +22,8 @@ class ApiSasiController extends AppController {
         $this->loadModel('User');
         $this->loadModel('UserPosition');
         $this->loadModel('UserLevel');
+        $this->loadModel('ExchangePositions');
+        $this->loadModel('ComparePosition');
     }
 
     //******************************* API customer*****************************
@@ -524,11 +526,21 @@ class ApiSasiController extends AppController {
             $this->echoError();
         }
     }
+
     public function exchange() {
-        
+        $data_exchange = $this->ExchangePositions->find('all', array(
+            'fields' => array('value1', 'value2')
+        ));
+        $data_exchange = Set::extract('/ExchangePositions/.', $data_exchange);
+        $this->success('Lấy bảng quy đổi thành công!', $data_exchange);
     }
+
     public function compare() {
-        
+        $data_exchange = $this->ComparePosition->find('all', array(
+            'fields' => array('value1', 'value2')
+        ));
+        $data_exchange = Set::extract('/ComparePosition/.', $data_exchange);
+        $this->success('Lấy bảng đối chiếu thành công!', $data_exchange);
     }
 
     public function checkLogin($token) {

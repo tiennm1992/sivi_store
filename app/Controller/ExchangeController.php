@@ -19,7 +19,7 @@ class ExchangeController extends AppController {
     public $components = array('Paginator');
 
     public function beforeFilter() {
-        $this->set('title_for_layout', 'Đối chiếu');
+        $this->set('title_for_layout', 'Bảng qui đổi');
     }
 
     /**
