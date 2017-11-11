@@ -111,9 +111,9 @@ class UserBuy extends AppModel {
         )
     );
 
-    public function get_number_buy($code = 0,$month,$year) {
-        $end_date = $year.'-'.$month . "-31 00:00:00";
-        $start_date = $year.'-'.$month . "-1 00:00:00";
+    public function get_number_buy($code = 0, $month, $year) {
+        $end_date = $year . '-' . $month . "-31 00:00:00";
+        $start_date = $year . '-' . $month . "-1 00:00:00";
         $this->recursive = -1;
         $num_buy_data = $this->find('all', array(
             'conditions' => array(
@@ -139,6 +139,41 @@ class UserBuy extends AppModel {
             'conditions' => array(
                 'UserBuy.code' => $code,
                 'UserBuy.customer_id' => $client_id,
+                'UserBuy.status' => 2,
+            )
+        ));
+        $num = 0;
+        if (!empty($num_buy_data)) {
+            foreach ($num_buy_data as $key => $value) {
+                $num += $value['UserBuy']['number_product'];
+            }
+            return $num;
+        }
+        return 0;
+    }
+
+    public function get_number_buy_sasi($code = 0) {
+        $this->recursive = -1;
+        $num_buy_data = $this->find('all', array(
+            'conditions' => array(
+                'UserBuy.code' => $code,
+                'UserBuy.status' => 2,
+            )
+        ));
+        $num = 0;
+        if (!empty($num_buy_data)) {
+            foreach ($num_buy_data as $key => $value) {
+                $num += $value['UserBuy']['number_product'];
+            }
+            return $num;
+        }
+        return 0;
+    }
+    public function get_buy_client($customer_id) {
+        $this->recursive = -1;
+        $num_buy_data = $this->find('all', array(
+            'conditions' => array(
+                'UserBuy.customer_id' => $customer_id,
                 'UserBuy.status' => 2,
             )
         ));

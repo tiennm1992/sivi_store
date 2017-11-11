@@ -38,10 +38,16 @@ class SasiController extends AppController {
         $month = $date[1];
         $year = $date[0];
         $query = $this->request->query;
-        if (isset($query['date']) && !empty($query['date'])) {
-            $date = explode('-', $query['date']);
-            $month = $date[1];
-            $year = $date[0];
+//        if (isset($query['date']) && !empty($query['date'])) {
+//            $date = explode('-', $query['date']);
+//            $month = $date[1];
+//            $year = $date[0];
+//        }
+        if (isset($query['month']) && !empty($query['month'])) {
+            $month = $query['month'];
+        }
+        if (isset($query['year']) && !empty($query['year'])) {
+            $year = $query['year'];
         }
         $revenue_sasi = $this->UserPosition->find('first', array(
             'conditions' => array(
@@ -90,6 +96,7 @@ class SasiController extends AppController {
 
         $number_customer = $this->Customer->get_num_customer($this->user_code, $month, $year);
         $new_num_customer = $this->Customer->get_new_num_customer($this->user_code, $month, $year);
+        $arr_year = array($year - 2, $year - 1, $year, $year + 1, $year + 2);
         $this->set('sasi', $revenue_sasi);
         $this->set('current_position', $current_position);
         $this->set('best_position', $best_position);
@@ -99,6 +106,10 @@ class SasiController extends AppController {
         $this->set('sasi_list', $sasi_list);
         $this->set('user_name', $this->user_info['name']);
         $this->set('date1', $year . '-' . $month);
+        $this->set('month', $month);
+        $this->set('year', $year);
+        $this->set('arr_year', $arr_year);
+
         $this->set('title_for_layout', 'Thống kê sasi tháng ' . $month . ' năm ' . $year);
     }
 

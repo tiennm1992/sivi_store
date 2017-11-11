@@ -39,29 +39,57 @@
 
 </style>
 <div class="row">
-    <form method="get" >
+    <form method="GET" action="/sasi/summary">
         <div class="col-xs-12">
             <div class="form-group col-xs-12 col-sm-3">
                 <label style= 'padding-top: 5px; font-size: 18px;' for="date">Thống kê theo tháng : </label>
             </div>
-            <div class="form-group col-xs-12 col-sm-5">
-                <div >
-                    <input   style= 'font-size: 18px;' type="month" class="form-control valid" name="date" id="date" value="<?php echo $date1; ?>">
-                    </span>
-                </div>
+            <div class="form-group col-xs-12 col-sm-3">
+<!--                <select name="agent_id" required>
+                    <option value="1">Agent Homer</option>
+                    <option value="2">Agent Lenny</option>
+                    <option value="3">Agent Carl</option>
+                </select>-->
+                <select class="form-control valid"  style= 'font-size: 18px;'  name="month" >
+                    <option value="1" <?php if ($month == 1) echo 'selected' ?> >Tháng 1</option>
+                    <option value="2" <?php if ($month == 2) echo 'selected' ?>>Tháng 2</option>
+                    <option value="3" <?php if ($month == 3) echo 'selected' ?>>Tháng 3</option>
+                    <option value="4" <?php if ($month == 4) echo 'selected' ?>>Tháng 4</option>
+                    <option value="5" <?php if ($month == 5) echo 'selected' ?>>Tháng 5</option>
+                    <option value="6" <?php if ($month == 6) echo 'selected' ?>>Tháng 6</option>
+                    <option value="7" <?php if ($month == 7) echo 'selected' ?>>Tháng 7</option>
+                    <option value="8" <?php if ($month == 8) echo 'selected' ?>>Tháng 8</option>
+                    <option value="9" <?php if ($month == 9) echo 'selected' ?>>Tháng 9</option>
+                    <option value="10" <?php if ($month == 10) echo 'selected' ?>>Tháng 10</option>
+                    <option value="11" <?php if ($month == 11) echo 'selected' ?>>Tháng 11</option>
+                    <option value="12" <?php if ($month == 12) echo 'selected' ?>>Tháng 12</option>
+                </select>
             </div>
-            <div class="form-group col-xs-12 col-sm-2">
-                <label for="date"></label>
-                <input style= 'font-size: 18px;' type="submit" class="btn btn-primary" name="search" value="search">
+            <div class="form-group col-xs-12 col-sm-3">
+                <select class="form-control valid"  style= 'font-size: 18px;' name="year">
+                    <?php foreach ($arr_year as $key => $value) : ?>
+                        <option value="<?php echo $value ?>" 
+                        <?php
+                        if ($value == $year) {
+                            echo 'selected';
+                        }
+                        ?>><?php echo $value ?></option>
+                            <?php endforeach; ?>
+                </select>
+            </div>
+            <div class = "form-group col-xs-12 col-sm-2">
+                <label for = "date"></label>
+                <input style = 'font-size: 18px;' type = "submit" class = "btn btn-primary" name = "search" value = "search">
             </div>
         </div>
     </form>
 </div>
-<table style="width: 100%; " >
+<table style = "width: 100%; " >
     <tr>
-        <td colspan="5">
-            <p  class="text_2">Chức danh hiện tại</p>
-            <p><?php echo $current_position ?></p>
+        <td colspan = "5">
+            <p class = "text_2">Chức danh hiện tại</p>
+            <p><?php echo $current_position
+                            ?></p>
         </td>
         <td colspan="5" >
             <?php echo $user_name ?>

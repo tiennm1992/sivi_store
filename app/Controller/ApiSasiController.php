@@ -190,9 +190,19 @@ class ApiSasiController extends AppController {
                             'id' => $value['UserBuy']['id'],
                             'product_name' => $value['Product']['name'],
                             'product_avatar' => $value['Product']['avatar'],
+                            'product_code' => $value['Product']['product_code'],
+                            'color' => $value['Product']['color'],
+                            'number_product' => $value['UserBuy']['number_product'],
+                            'dvt' => 'hộp',
+                            'gia_le' => $value['Product']['price'],
+                            'gia_goc' => $value['Product']['c0'],
+                            'gia_sale' => $value['Product']['sale'],
+                            'promotion' => $value['Product']['promotion'],
+                            'transfer_by' => $value['Product']['transfer_by'],
                             'sasi_name' => $value['User']['name'],
                             'phone_sasi' => $value['User']['phone'],
                             'address' => $value['User']['address'],
+                            'customer_account' => $value['Customer']['username'],
                             'customer_name' => $value['Customer']['name'],
                             'customer_phone' => $value['Customer']['phone'],
                             'customer_address' => $value['Customer']['address'],
@@ -207,6 +217,97 @@ class ApiSasiController extends AppController {
         } else {
             $this->echoError();
         }
+    }
+
+    public function order_list_client() {
+        $data = $this->request->query;
+        if (empty($data['customer_id'])) {
+            $this->bugError('Thieu customer id');
+        }
+        $customer_data = $this->Customer->find('first', array(
+            'conditions' => array(
+                'Customer.id' => $data['customer_id']
+            )
+        ));
+        if (empty($customer_data)) {
+            $this->bugError('Id cuar khach hang khong dung');
+        }
+        $limit = (!empty($data['limit'])) ? $data['limit'] : 10;
+        $last_id = (!empty($data['last_id'])) ? $data['last_id'] : 0;
+        $conditions = array(
+            'UserBuy.status' => 2,
+            'UserBuy.customer_id' => $customer_data['Customer']['id'],
+        );
+        if (!empty($last_id)) {
+            $conditions['UserBuy.id <'] = $last_id;
+        }
+        $this->UserBuy->recursive = -1;
+        $buy_data = $this->UserBuy->find('all', array(
+            'fields' => array(
+                'Customer.*',
+                'Product.*',
+                'UserBuy.*',
+                'User.*',),
+            'conditions' => $conditions,
+            'limit' => $limit,
+            'order' => array(
+                'UserBuy.id' => 'DESC'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'customers',
+                    'alias' => 'Customer',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'UserBuy.customer_id=Customer.id'
+                    )
+                ),
+                array(
+                    'table' => 'products',
+                    'alias' => 'Product',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'UserBuy.product_id=Product.id'
+                    )
+                ),
+                array(
+                    'table' => 'users',
+                    'alias' => 'User',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'User.code=UserBuy.code'
+                    )
+                )
+            )
+        ));
+        $rep = array();
+        if (!empty($buy_data)) {
+            foreach ($buy_data as $key => $value) {
+                $rep[$key] = array(
+                    'id' => $value['UserBuy']['id'],
+                    'product_name' => $value['Product']['name'],
+                    'product_avatar' => $value['Product']['avatar'],
+                    'product_code' => $value['Product']['product_code'],
+                    'color' => $value['Product']['color'],
+                    'number_product' => $value['UserBuy']['number_product'],
+                    'dvt' => 'hộp',
+                    'gia_le' => $value['Product']['price'],
+                    'gia_goc' => $value['Product']['c0'],
+                    'gia_sale' => $value['Product']['sale'],
+                    'promotion' => $value['Product']['promotion'],
+                    'transfer_by' => $value['Product']['transfer_by'],
+                    'sasi_name' => $value['User']['name'],
+                    'phone_sasi' => $value['User']['phone'],
+                    'address' => $value['User']['address'],
+                    'customer_account' => $value['Customer']['username'],
+                    'customer_name' => $value['Customer']['name'],
+                    'customer_phone' => $value['Customer']['phone'],
+                    'customer_address' => $value['Customer']['address'],
+                    'date' => $value['UserBuy']['date'],
+                );
+            }
+        }
+        $this->success('Lấy thành công danh sách', $rep);
     }
 
     public function sasi_list() {
@@ -230,11 +331,19 @@ class ApiSasiController extends AppController {
                 $rep = array();
                 if (!empty($sasi_data)) {
                     foreach ($sasi_data as $key => $value) {
+                        $data_sasi = $this->get_infor_sasi_summary($value['User']['code']);
                         $rep[$key] = array(
                             'id' => $value['User']['id'],
                             'sasi_name' => $value['User']['name'],
                             'sasi_phone' => $value['User']['phone'],
+                            'sasi_address' => $value['User']['address'],
                             'sasi_code' => $value['User']['code'],
+                            'email' => $value['User']['email'],
+                            'spb' => $data_sasi['spb'],
+                            't_sasi' => $data_sasi['t_sasi'],
+                            't_kh' => $data_sasi['t_kh'],
+                            'current_level' => $data_sasi['current_level'],
+                            'max_level' => $data_sasi['max_level'],
                             'date_join' => date("Y-m-d", strtotime($value['User']['created_datetime'])),
                         );
                     }
@@ -269,16 +378,67 @@ class ApiSasiController extends AppController {
         $rep = array();
         if (!empty($sasi_data)) {
             foreach ($sasi_data as $key => $value) {
+                $data_sasi = $this->get_infor_sasi_summary($value['User']['code']);
                 $rep[$key] = array(
                     'id' => $value['User']['id'],
                     'sasi_name' => $value['User']['name'],
                     'sasi_phone' => $value['User']['phone'],
+                    'sasi_address' => $value['User']['address'],
                     'sasi_code' => $value['User']['code'],
+                    'spb' => $data_sasi['spb'],
+                    't_sasi' => $data_sasi['t_sasi'],
+                    't_kh' => $data_sasi['t_kh'],
+                    'current_level' => $data_sasi['current_level'],
+                    'max_level' => $data_sasi['max_level'],
                     'date_join' => date("Y-m-d", strtotime($value['User']['created_datetime'])),
                 );
             }
         }
         $this->success('Lấy thành công danh sách', $rep);
+    }
+
+    public function get_infor_sasi_summary($code = 0) {
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
+        $rep = array(
+            'spb' => 0,
+            't_sasi' => 0,
+            't_kh' => 0,
+            'current_level' => 0,
+            'max_level' => 0,
+        );
+        $rep['spb'] = $this->UserBuy->get_number_buy_sasi($code);
+        $sasi_list = $this->UserLevel->get_sub_position_list($code, $month, $year);
+        $rep['t_sasi'] = $sasi_list['count'];
+        $rep['t_kh'] = $this->Customer->get_num_customer($code, 1, 2017);
+        //
+        $best_sasi = $this->UserPosition->find('first', array(
+            'conditions' => array(
+                'UserPosition.code' => $code,
+                'UserPosition.year' => $year,
+            ),
+            'order' => array('UserPosition.sasi_position DESC', 'UserPosition.sasi_sub_position DESC')
+        ));
+        $revenue_sasi = $this->UserPosition->find('first', array(
+            'conditions' => array(
+                'UserPosition.code' => $code,
+                'UserPosition.month' => $month,
+                'UserPosition.year' => $year,
+            )
+        ));
+        $current_position = 'sasi';
+        $best_position = 'sasi';
+        if (!empty($best_sasi)) {
+            $best_position = $this->UserLevel->convert_position($best_sasi['UserPosition']['level']);
+        }
+        if (!empty($revenue_sasi)) {
+            $current_position = $this->UserLevel->convert_position($revenue_sasi['level']);
+        }
+        $rep['current_level'] = $current_position;
+        $rep['max_level'] = $best_position;
+        return $rep;
     }
 
     public function sasi_detail() {
@@ -321,8 +481,11 @@ class ApiSasiController extends AppController {
                             $rep[$key]['client_name'] = $value['Customer']['username'];
                             $rep[$key]['client_phone'] = $value['Customer']['phone'];
                             $rep[$key]['client_address'] = $value['Customer']['address'];
+                            $rep[$key]['birth_day'] = $value['Customer']['birth_day'];
+                            $rep[$key]['email'] = $value['Customer']['email'];
                             $rep[$key]['join_date'] = $value['Customer']['created_datetime'];
-                            $rep[$key]['number_buy'] = $this->UserBuy->get_number_buy_client($user_data['code'], $value['Customer']['id']);
+                            $rep[$key]['number_buy'] = $this->UserBuy->get_buy_client($value['Customer']['id']);
+//                            $rep[$key]['number_buy'] = $this->UserBuy->get_number_buy_client($user_data['code'], $value['Customer']['id']);
                         }
                     }
                     $this->success('Lấy thành công danh sách', $rep);
@@ -456,8 +619,8 @@ class ApiSasiController extends AppController {
             if (!empty($data['bank_atm'])) {
                 $user_data['bank_atm'] = $data['bank_atm'];
             }
-            if (!empty($data['full_name'])) {
-                $user_data['full_name'] = $data['full_name'];
+            if (!empty($data['name'])) {
+                $user_data['name'] = $data['name'];
             }
             if (!empty($data['cmtnd'])) {
                 $user_data['cmtnd'] = $data['cmtnd'];
