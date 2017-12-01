@@ -20,6 +20,7 @@ class ApiController extends AppController {
         $this->loadModel('UserBuy');
         $this->loadModel('UserLike');
         $this->loadModel('User');
+        $this->loadModel('SocialCount');
     }
 
     //******************************* API customer*****************************
@@ -750,6 +751,37 @@ class ApiController extends AppController {
         } else {
             echo 'Chans ddowi';
         }
+    }
+
+    //social count : like, favorite, comment
+    public function social_action() {
+        $data = $this->request->query;
+        if (empty($data['token']) || empty($data['user_id']) || empty($data['product_id']) || empty($data['action'])) {
+            $this->echoError();
+        }
+        if ($data['action'] != 'like' || $data['action'] != 'favorite') {
+            $this->bugError('Action khong ton tai !');
+        }
+        $data['type'] = !isset($data['type']) ? $data['type'] : 1;
+        if ($data['type'] != 1 || $data['type'] != 0) {
+            $this->bugError('Trang thai cua type khong phu hop !');
+        }
+        if (!$this->checkLogin($data['token'])) {
+            $this->bugError('Người dùng chưa login');
+        }
+        if (!$this->Product->exists($data['product_id'])) {
+            $this->bugError('Sản phẩm không tồn tại');
+        }
+        $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
+        $product_user = $this->Customer->find('first', array('conditions' => array('Customer.id' => $data['user_id'])));
+        if ($data['action'] == 'like') {
+            $this->SocialCount->social_action($data['user_id'], $data['product_id'], $data['type'], $data['action']);
+            $this->success('Like san pham thanh cong.');
+        } elseif ($data['action'] == 'favorite') {
+            $this->SocialCount->social_action($data['user_id'], $data['product_id'], $data['type'], $data['action']);
+            $this->success('Favorite san pham thanh cong.');
+        }
+        $this->bugError('Thưc hiện không thành công !');
     }
 
     public function search() {
