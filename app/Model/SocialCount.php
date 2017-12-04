@@ -57,19 +57,15 @@ class SocialCount extends AppModel {
             if ($data) {
                 if ($action == 'like') {
                     if ($type) {
-                        $data['SocialCount']['like']+=1;
+                        $data['SocialCount']['like'] = 1;
                     } else {
-                        if (!empty($data['SocialCount']['like'])) {
-                            $data['SocialCount']['like'] -=1;
-                        }
+                        $data['SocialCount']['like'] = 0;
                     }
                 } else {
                     if ($type) {
-                        $data['SocialCount']['favorite']+=1;
+                        $data['SocialCount']['favorite'] = 1;
                     } else {
-                        if (!empty($data['SocialCount']['favorite'])) {
-                            $data['SocialCount']['favorite'] -=1;
-                        }
+                        $data['SocialCount']['favorite'] = 0;
                     }
                 }
                 $this->save($data['SocialCount']);
@@ -81,11 +77,11 @@ class SocialCount extends AppModel {
                 );
                 if ($action == 'like') {
                     if ($type) {
-                        $arr['like']+=1;
+                        $arr['like'] = 1;
                     }
                 } else {
                     if ($type) {
-                        $arr['favorite']+=1;
+                        $arr['favorite'] = 1;
                     }
                 }
                 $this->save($arr);

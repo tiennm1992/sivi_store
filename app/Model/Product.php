@@ -85,14 +85,10 @@ class Product extends AppModel {
 //            'Product.storage',
 //            'Product.product_from',
 //            'Product.sort',
-//            'Product.user_view',
-//            'Product.user_like',
-//            'Product.user_share',
+            'Product.user_view',
+            'Product.user_like',
+            'Product.user_share',
         );
-//        $this->unbindModel(array('belongsTo' => array('Category', 'Subcategory')), true);
-//        $this->Product->unbindModel(
-//                array('hasMany' => array('Follower'))
-//        );
         $arr = array(
             'fields' => $arr,
             'limit' => 10, //int

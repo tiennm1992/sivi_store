@@ -8,7 +8,9 @@ class ApiController extends AppController {
         parent::beforeFilter();
         $this->autoRender = FALSE;
         $this->Auth->allow('display');
-        $this->Auth->allow('test', 'get_customer', 'get_revenue', 'cancel_order', 'edit_profile', 'like_product', 'get_buy', 'read_late', 'check_buy', 'buy_item', 'login', 'user_infor', 'sign_up', 'home', 'product', 'suggest_product', 'get_product', 'get_category', 'get_subcategory', 'get_slide', 'get_top', 'check_view', 'search', 'post_relate', 'menu_tab', 'promotion');
+        $this->Auth->allow(
+                'social_action', 'test', 'get_customer', 'get_revenue', 'cancel_order', 'edit_profile', 'like_product', 'get_buy', 'read_late', 'check_buy', 'buy_item', 'login', 'user_infor', 'sign_up', 'home', 'product', 'suggest_product', 'get_product', 'get_category', 'get_subcategory', 'get_slide', 'get_top', 'check_view', 'search', 'post_relate', 'menu_tab', 'promotion'
+        );
         //load model
         $this->loadModel('Product');
         $this->loadModel('Category');
@@ -449,6 +451,15 @@ class ApiController extends AppController {
         }
     }
 
+    public function get_customer_Login($token) {
+        $data = $this->Customer->find('first', array('conditions' => array('token' => $token)));
+        if ($data) {
+            return $data['Customer'];
+        } else {
+            return 0;
+        }
+    }
+
     //lay list san phan da mua
     public function get_buy() {
         $user_id = $this->request->query('user_id');
@@ -756,29 +767,47 @@ class ApiController extends AppController {
     //social count : like, favorite, comment
     public function social_action() {
         $data = $this->request->query;
-        if (empty($data['token']) || empty($data['user_id']) || empty($data['product_id']) || empty($data['action'])) {
+        if (empty($data['token']) || empty($data['product_id']) || empty($data['action'])) {
             $this->echoError();
         }
-        if ($data['action'] != 'like' || $data['action'] != 'favorite') {
+        if ($data['action'] != 'like' && $data['action'] != 'favorite') {
             $this->bugError('Action khong ton tai !');
         }
-        $data['type'] = !isset($data['type']) ? $data['type'] : 1;
-        if ($data['type'] != 1 || $data['type'] != 0) {
+        $data['type'] = isset($data['type']) ? $data['type'] : 1;
+        if ($data['type'] != 1 && $data['type'] != 0) {
             $this->bugError('Trang thai cua type khong phu hop !');
         }
-        if (!$this->checkLogin($data['token'])) {
+        $user_data = $this->get_customer_Login($data['token']);
+        if (!$user_data) {
             $this->bugError('Người dùng chưa login');
         }
         if (!$this->Product->exists($data['product_id'])) {
             $this->bugError('Sản phẩm không tồn tại');
         }
         $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
-        $product_user = $this->Customer->find('first', array('conditions' => array('Customer.id' => $data['user_id'])));
         if ($data['action'] == 'like') {
-            $this->SocialCount->social_action($data['user_id'], $data['product_id'], $data['type'], $data['action']);
+            $this->SocialCount->social_action($user_data['id'], $data['product_id'], $data['type'], $data['action']);
+            if ($data['type']) {
+                $product_data['Product']['user_like'] +=1;
+                $this->Product->save($product_data['Product']);
+            } else {
+                if (!empty($product_data['Product']['user_like'])) {
+                    $product_data['Product']['user_like'] -=1;
+                    $this->Product->save($product_data['Product']);
+                }
+            }
             $this->success('Like san pham thanh cong.');
         } elseif ($data['action'] == 'favorite') {
-            $this->SocialCount->social_action($data['user_id'], $data['product_id'], $data['type'], $data['action']);
+            $this->SocialCount->social_action($user_data['id'], $data['product_id'], $data['type'], $data['action']);
+            if ($data['type']) {
+                $product_data['Product']['user_favorite'] +=1;
+                $this->Product->save($product_data['Product']);
+            } else {
+                if (!empty($product_data['Product']['user_favorite'])) {
+                    $product_data['Product']['user_favorite'] -=1;
+                    $this->Product->save($product_data['Product']);
+                }
+            }
             $this->success('Favorite san pham thanh cong.');
         }
         $this->bugError('Thưc hiện không thành công !');
@@ -922,6 +951,7 @@ class ApiController extends AppController {
         );
         $data_api = json_encode($data_api, true);
         echo ($data_api);
+        die;
     }
 
     function echoError() {
@@ -931,6 +961,7 @@ class ApiController extends AppController {
         );
         $data_api = json_encode($data_api, true);
         echo ($data_api);
+        die;
     }
 
     function bugError($infor) {
