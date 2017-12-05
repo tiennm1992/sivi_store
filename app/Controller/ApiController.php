@@ -874,6 +874,7 @@ class ApiController extends AppController {
         $page = (isset($params['page'])) ? $params['page'] : 0;
         $conditions = array();
         $order = '';
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
         if (!empty($params['type']) && (!empty($params['category']) || !empty($params['subcategory']))) {
             $arr1 = array(
                 'Product.id',
@@ -882,6 +883,9 @@ class ApiController extends AppController {
                 'Product.description',
                 'Product.avatar',
                 'Product.price',
+                'Product.user_view',
+                'Product.user_like',
+                'Product.user_favorite',
             );
             if (!empty($params['category'])) {
                 $conditions = array(
@@ -892,7 +896,32 @@ class ApiController extends AppController {
                     'Product.subcategory_id' => $params['subcategory']
                 );
             }
+            $last_id = !empty($params['last_id']) ? $params['last_id'] : 0;
+            $last_data = $this->Product->find('first', array(
+                'conditions' => array(
+                    'Product.id' => $last_id
+                )
+            ));
+            if (!empty($last_id) && !empty($last_data['Product'])) {
+                switch ($params['type']) {
+                    case 'all':
+                        $conditions['Product.id <'] = $last_id;
+                        break;
+                    case 'new':
+                        $conditions['Product.id <'] = $last_id;
+                        break;
+                    case 'hot':
+                        $conditions['Product.user_view <'] = $last_data['Product']['user_view'];
+                        break;
+                    case 'promotion':
+                        $conditions['Product.sale <'] = $last_data['Product']['sale'];
+                        break;
+                }
+            }
             switch ($params['type']) {
+                case 'all':
+                    $order = 'Product.id DESC';
+                    break;
                 case 'new':
                     $order = 'Product.id DESC';
                     break;
@@ -905,8 +934,8 @@ class ApiController extends AppController {
             }
             $arr = array(
                 'conditions' => $conditions,
-                'limit' => 10, //int
-                'page' => $page, //int
+                'limit' => $limit, //int
+//                'page' => $page, //int
                 'order' => $order,
                 'fields' => $arr1
             );
