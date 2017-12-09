@@ -635,6 +635,10 @@ class ApiController extends AppController {
             'Product.description',
             'Product.avatar',
             'Product.price',
+            'Product.user_view',
+            'Product.user_like',
+            'Product.user_favorite',
+            'Product.star',
         );
         $arr = array(
             'limit' => 10, //int
@@ -839,7 +843,7 @@ class ApiController extends AppController {
         }
         if ($review = $this->Review->check_review($user_data['id'], $data['product_id'])) {
             $data_save['id'] = $review['id'];
-            unset($review['created_date']);
+            unset($data_save['created_date']);
         }
         $this->Review->save($data_save);
         //update star trong product
@@ -925,6 +929,7 @@ class ApiController extends AppController {
                 'Product.user_view',
                 'Product.user_like',
                 'Product.user_favorite',
+                'Product.star',
             );
             if (!empty($params['category'])) {
                 $conditions = array(
