@@ -23,6 +23,7 @@ class ApiController extends AppController {
         $this->loadModel('UserLike');
         $this->loadModel('User');
         $this->loadModel('SocialCount');
+        $this->loadModel('Review');
     }
 
     //******************************* API customer*****************************
@@ -788,11 +789,11 @@ class ApiController extends AppController {
         if ($data['action'] == 'like') {
             $this->SocialCount->social_action($user_data['id'], $data['product_id'], $data['type'], $data['action']);
             if ($data['type']) {
-                $product_data['Product']['user_like'] +=1;
+                $product_data['Product']['user_like'] += 1;
                 $this->Product->save($product_data['Product']);
             } else {
                 if (!empty($product_data['Product']['user_like'])) {
-                    $product_data['Product']['user_like'] -=1;
+                    $product_data['Product']['user_like'] -= 1;
                     $this->Product->save($product_data['Product']);
                 }
             }
@@ -800,17 +801,56 @@ class ApiController extends AppController {
         } elseif ($data['action'] == 'favorite') {
             $this->SocialCount->social_action($user_data['id'], $data['product_id'], $data['type'], $data['action']);
             if ($data['type']) {
-                $product_data['Product']['user_favorite'] +=1;
+                $product_data['Product']['user_favorite'] += 1;
                 $this->Product->save($product_data['Product']);
             } else {
                 if (!empty($product_data['Product']['user_favorite'])) {
-                    $product_data['Product']['user_favorite'] -=1;
+                    $product_data['Product']['user_favorite'] -= 1;
                     $this->Product->save($product_data['Product']);
                 }
             }
             $this->success('Favorite san pham thanh cong.');
         }
         $this->bugError('Thưc hiện không thành công !');
+    }
+
+    public function review_and_comment() {
+        $data = $this->request->query;
+        if (empty($data['token']) || empty($data['product_id']) || empty($data['start'])) {
+            $this->echoError();
+        }
+        $user_data = $this->get_customer_Login($data['token']);
+        if (!$user_data) {
+            $this->bugError('Người dùng chưa login');
+        }
+        if (!$this->Product->exists($data['product_id'])) {
+            $this->bugError('Sản phẩm không tồn tại');
+        }
+        $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
+        // lưu lại thông tin review and comment
+
+        $data_save = array(
+            'user_id' => $user_data['id'],
+            'product_id' => $data['product_id'],
+            'start' => $data['start'],
+            'created_date' => date("Y-m-d H:i:s"),
+            'updated_date' => date("Y-m-d H:i:s"),
+        );
+        if (!empty($data['comment'])) {
+            $data_save['comment'] = $data['comment'];
+        }
+        if ($review = $this->Review->check_review($user_data['id'], $data['product_id'])) {
+            $data_save['id'] = $review['id'];
+        }
+        $this->Review->save($data_save);
+        //update start trong product
+        $star = $this->Review->review_summary($data['product_id']);
+        $product_update = array(
+            'id' => $data['product_id'],
+            'star' => $star
+        );
+        $this->Product->save($product_update);
+        $this->success('Favorite san pham thanh cong.');
     }
 
     public function search() {
