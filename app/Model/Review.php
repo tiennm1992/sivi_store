@@ -25,7 +25,7 @@ class Review extends AppModel {
         );
         $count = $this->find('count', array('conditions' => $cond));
         $total_star = $this->find('all', array(
-            'fields' => array('SUM(Review.start) AS total_star'),
+            'fields' => array('SUM(Review.star) AS total_star'),
             'conditions' => $cond,
         ));
         if (!empty($total_star[0][0]['total_star'])) {

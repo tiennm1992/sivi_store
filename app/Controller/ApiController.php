@@ -7,10 +7,9 @@ class ApiController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
         $this->autoRender = FALSE;
-        $this->Auth->allow('display');
-        $this->Auth->allow(
-                'social_action', 'test', 'get_customer', 'get_revenue', 'cancel_order', 'edit_profile', 'like_product', 'get_buy', 'read_late', 'check_buy', 'buy_item', 'login', 'user_infor', 'sign_up', 'home', 'product', 'suggest_product', 'get_product', 'get_category', 'get_subcategory', 'get_slide', 'get_top', 'check_view', 'search', 'post_relate', 'menu_tab', 'promotion'
-        );
+//        $this->Auth->allow('display');
+        $this->Auth->allow();
+//        $this->Auth->allow('social_action', 'test', 'get_customer', 'get_revenue', 'cancel_order', 'edit_profile', 'like_product', 'get_buy', 'read_late', 'check_buy', 'buy_item', 'login', 'user_infor', 'sign_up', 'home', 'product', 'suggest_product', 'get_product', 'get_category', 'get_subcategory', 'get_slide', 'get_top', 'check_view', 'search', 'post_relate', 'menu_tab', 'promotion' );
         //load model
         $this->loadModel('Product');
         $this->loadModel('Category');
@@ -816,7 +815,7 @@ class ApiController extends AppController {
 
     public function review_and_comment() {
         $data = $this->request->query;
-        if (empty($data['token']) || empty($data['product_id']) || empty($data['start'])) {
+        if (empty($data['token']) || empty($data['product_id']) || empty($data['star'])) {
             $this->echoError();
         }
         $user_data = $this->get_customer_Login($data['token']);
@@ -828,11 +827,10 @@ class ApiController extends AppController {
         }
         $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
         // lưu lại thông tin review and comment
-
         $data_save = array(
             'user_id' => $user_data['id'],
             'product_id' => $data['product_id'],
-            'start' => $data['start'],
+            'star' => $data['star'],
             'created_date' => date("Y-m-d H:i:s"),
             'updated_date' => date("Y-m-d H:i:s"),
         );
@@ -841,9 +839,10 @@ class ApiController extends AppController {
         }
         if ($review = $this->Review->check_review($user_data['id'], $data['product_id'])) {
             $data_save['id'] = $review['id'];
+            unset($review['created_date']);
         }
         $this->Review->save($data_save);
-        //update start trong product
+        //update star trong product
         $star = $this->Review->review_summary($data['product_id']);
         $product_update = array(
             'id' => $data['product_id'],
