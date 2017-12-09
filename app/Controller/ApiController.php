@@ -874,6 +874,9 @@ class ApiController extends AppController {
         if (empty($data['token']) || empty($data['product_id']) || empty($data['star'])) {
             $this->echoError();
         }
+        if ($data['star'] != 1 && $data['star'] != 2 && $data['star'] != 3 && $data['star'] != 4 && $data['star'] != 5) {
+            $this->bugError('Gía trị của star không đúng !');
+        }
         $user_data = $this->get_customer_Login($data['token']);
         if (!$user_data) {
             $this->bugError('Người dùng chưa login');
@@ -945,11 +948,11 @@ class ApiController extends AppController {
             ),
             'order' => array("Review.id DESC")
         ));
-        $review=array();
-        if(!empty($rep_data)){
+        $review = array();
+        if (!empty($rep_data)) {
             foreach ($rep_data as $key => $value) {
-                $review[$key]=$value['Review'];
-                $review[$key]['customer_name']=$value['Customer']['username'];
+                $review[$key] = $value['Review'];
+                $review[$key]['customer_name'] = $value['Customer']['username'];
             }
         }
 
@@ -1031,7 +1034,6 @@ class ApiController extends AppController {
                 $user_id = $user_data['id'];
             }
         }
-
 
         if (!empty($params['type']) && (!empty($params['category']) || !empty($params['subcategory']))) {
             $arr1 = array(
