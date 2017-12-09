@@ -33,7 +33,67 @@ class Review extends AppModel {
         } else {
             $total_star = 0;
         }
-        return round($total_star/$count, 1);
+        return round($total_star / $count, 1);
+    }
+
+    public function get_comment($product_id, $last_id = 0, $limit = 10) {
+        $cond = array(
+            'Review.product_id' => $product_id,
+        );
+        if (!empty($last_id)) {
+            $cond['Review.id <'] = $last_id;
+        }
+        $rep_data = $this->find('all', array(
+            'conditions' => $cond,
+            'limit' => $limit,
+            'order'=>array("Review.id DESC")
+        ));
+        if (!empty($rep_data)) {
+            return Set::extract('/Review/.', $rep_data);
+        }
+        return $rep_data;
+    }
+
+    public function get_all_star($product_id) {
+
+        $one_star = $this->find('count', array(
+            'conditions' => array(
+                'Review.product_id' => $product_id,
+                'Review.star' => 1,
+            )
+        ));
+        $two_star = $this->find('count', array(
+            'conditions' => array(
+                'Review.product_id' => $product_id,
+                'Review.star' => 2,
+            )
+        ));
+        $three_star = $this->find('count', array(
+            'conditions' => array(
+                'Review.product_id' => $product_id,
+                'Review.star' => 3,
+            )
+        ));
+        $four_star = $this->find('count', array(
+            'conditions' => array(
+                'Review.product_id' => $product_id,
+                'Review.star' => 4,
+            )
+        ));
+        $five_star = $this->find('count', array(
+            'conditions' => array(
+                'Review.product_id' => $product_id,
+                'Review.star' => 5,
+            )
+        ));
+        $rep = array(
+            'one_star' => $one_star,
+            'two_star' => $two_star,
+            'three_star' => $three_star,
+            'four_star' => $four_star,
+            'five_star' => $five_star,
+        );
+        return $rep;
     }
 
 }

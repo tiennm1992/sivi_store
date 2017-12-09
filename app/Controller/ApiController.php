@@ -628,6 +628,14 @@ class ApiController extends AppController {
     public function suggest_product($page = 0) {
         $page1 = $this->request->query('page');
         $page = (isset($page1)) ? $page1 : $page;
+        $params = $this->request->query;
+        $user_id = 0;
+        if (!empty($params['token'])) {
+            $user_data = $this->get_customer_Login($params['token']);
+            if (!empty($user_data)) {
+                $user_id = $user_data['id'];
+            }
+        }
         $arr1 = array(
             'Product.id',
             'Product.name',
@@ -637,18 +645,34 @@ class ApiController extends AppController {
             'Product.price',
             'Product.user_view',
             'Product.user_like',
-            'Product.user_favorite',
             'Product.star',
+            'Social.id',
+            'Social.like'
         );
         $arr = array(
             'limit' => 10, //int
             'page' => $page, //int
             'order' => 'Product.sort DESC',
-            'fields' => $arr1
+            'fields' => $arr1,
+            'joins' => array(
+                array(
+                    'table' => 'social_count',
+                    'alias' => 'Social',
+                    'type' => 'left',
+                    'conditions' => array(
+                        "Social.product_id = Product.id AND Social.user_id = {$user_id}"
+                    )
+                )
+            )
         );
         $data = $this->Product->find('all', $arr);
         foreach ($data as $key1 => $value1) {
             $data[$key1]['Product']['price'] = number_format($data[$key1]['Product']['price'], 0, ',', '.');
+            if (!empty($data[$key1]['Social']['id'])) {
+                $data[$key1]['Product']['is_like'] = $data[$key1]['Social']['like'];
+            } else {
+                $data[$key1]['Product']['is_like'] = 0;
+            }
         }
         $this->echoData($data);
     }
@@ -734,6 +758,14 @@ class ApiController extends AppController {
     public function get_top($page = 0) {
         $page1 = $this->request->query('page');
         $page = (isset($page1)) ? $page1 : $page;
+        $params = $this->request->query;
+        $user_id = 0;
+        if (!empty($params['token'])) {
+            $user_data = $this->get_customer_Login($params['token']);
+            if (!empty($user_data)) {
+                $user_id = $user_data['id'];
+            }
+        }
         $arr1 = array(
             'Product.id',
             'Product.name',
@@ -741,16 +773,36 @@ class ApiController extends AppController {
             'Product.description',
             'Product.avatar',
             'Product.price',
+            'Product.user_view',
+            'Product.user_like',
+            'Product.star',
+            'Social.id',
+            'Social.like'
         );
         $arr = array(
             'limit' => 10, //int
             'page' => $page, //int
             'order' => 'Product.user_view DESC',
-            'fields' => $arr1
+            'fields' => $arr1,
+            'joins' => array(
+                array(
+                    'table' => 'social_count',
+                    'alias' => 'Social',
+                    'type' => 'left',
+                    'conditions' => array(
+                        "Social.product_id = Product.id AND Social.user_id = {$user_id}"
+                    )
+                )
+            )
         );
         $data = $this->Product->find('all', $arr);
         foreach ($data as $key1 => $value1) {
             $data[$key1]['Product']['price'] = number_format($data[$key1]['Product']['price'], 0, ',', '.');
+            if (!empty($data[$key1]['Social']['id'])) {
+                $data[$key1]['Product']['is_like'] = $data[$key1]['Social']['like'];
+            } else {
+                $data[$key1]['Product']['is_like'] = 0;
+            }
         }
         $this->echoData($data);
     }
@@ -818,7 +870,7 @@ class ApiController extends AppController {
     }
 
     public function review_and_comment() {
-        $data = $this->request->query;
+        $data = $this->request->data;
         if (empty($data['token']) || empty($data['product_id']) || empty($data['star'])) {
             $this->echoError();
         }
@@ -853,7 +905,61 @@ class ApiController extends AppController {
             'star' => $star
         );
         $this->Product->save($product_update);
-        $this->success('Favorite san pham thanh cong.');
+        $this->success('Review san pham thanh cong !');
+    }
+
+    public function get_comment() {
+        $data = $this->request->query;
+        if (empty($data['product_id'])) {
+            $this->echoError();
+        }
+        if (!$this->Product->exists($data['product_id'])) {
+            $this->bugError('Sản phẩm không tồn tại');
+        }
+        $limit = !empty($data['limit']) ? $data['limit'] : 10;
+        $last_id = !empty($data['last_id']) ? $data['last_id'] : 0;
+
+        $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
+
+//        $review = $this->Review->get_comment($data['product_id'], $last_id, $limit);
+        //
+        $cond = array(
+            'Review.product_id' => $data['product_id'],
+        );
+        if (!empty($last_id)) {
+            $cond['Review.id <'] = $last_id;
+        }
+        $rep_data = $this->Review->find('all', array(
+            'fields' => array('Review.*', 'Customer.*'),
+            'conditions' => $cond,
+            'limit' => $limit,
+            'joins' => array(
+                array(
+                    'table' => 'customers',
+                    'alias' => 'Customer',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Customer.id = Review.user_id'
+                    )
+                )
+            ),
+            'order' => array("Review.id DESC")
+        ));
+        $review=array();
+        if(!empty($rep_data)){
+            foreach ($rep_data as $key => $value) {
+                $review[$key]=$value['Review'];
+                $review[$key]['customer_name']=$value['Customer']['username'];
+            }
+        }
+
+        $star = $this->Review->get_all_star($data['product_id']);
+        $rep = array(
+            'review' => $review,
+            'star_summary' => $star,
+        );
+
+        $this->success('Lay comment thanh cong', $rep);
     }
 
     public function search() {
@@ -918,6 +1024,15 @@ class ApiController extends AppController {
         $conditions = array();
         $order = '';
         $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $user_id = 0;
+        if (!empty($params['token'])) {
+            $user_data = $this->get_customer_Login($params['token']);
+            if (!empty($user_data)) {
+                $user_id = $user_data['id'];
+            }
+        }
+
+
         if (!empty($params['type']) && (!empty($params['category']) || !empty($params['subcategory']))) {
             $arr1 = array(
                 'Product.id',
@@ -928,8 +1043,9 @@ class ApiController extends AppController {
                 'Product.price',
                 'Product.user_view',
                 'Product.user_like',
-                'Product.user_favorite',
                 'Product.star',
+                'Social.id',
+                'Social.like'
             );
             if (!empty($params['category'])) {
                 $conditions = array(
@@ -979,13 +1095,28 @@ class ApiController extends AppController {
             $arr = array(
                 'conditions' => $conditions,
                 'limit' => $limit, //int
-//                'page' => $page, //int
                 'order' => $order,
-                'fields' => $arr1
+                'fields' => $arr1,
+                'joins' => array(
+                    array(
+                        'table' => 'social_count',
+                        'alias' => 'Social',
+                        'type' => 'left',
+                        'conditions' => array(
+                            "Social.product_id = Product.id AND Social.user_id = {$user_id}"
+                        )
+                    )
+                )
             );
             $data = $this->Product->find('all', $arr);
+            $rep = array();
             foreach ($data as $key1 => $value1) {
                 $data[$key1]['Product']['price'] = number_format($data[$key1]['Product']['price'], 0, ',', '.');
+                if (!empty($data[$key1]['Social']['id'])) {
+                    $data[$key1]['Product']['is_like'] = $data[$key1]['Social']['like'];
+                } else {
+                    $data[$key1]['Product']['is_like'] = 0;
+                }
             }
             $this->echoData($data);
         } else {
@@ -1006,7 +1137,7 @@ class ApiController extends AppController {
             $data_api[] = $value['Promotion'];
         }
         $data_api = array(
-            'success' => 'true',
+            'success' => 1,
             'infor' => $data_api,
         );
         $data_api = json_encode($data_api, true);
@@ -1019,7 +1150,7 @@ class ApiController extends AppController {
             $data_api[] = $value['Product'];
         }
         $data_api = array(
-            'success' => 'true',
+            'success' => 1,
             'infor' => $data_api,
         );
         $data_api = json_encode($data_api, true);
@@ -1029,7 +1160,7 @@ class ApiController extends AppController {
 
     function echoError() {
         $data_api = array(
-            'success' => 'false',
+            'success' => 0,
             'infor' => 'Thiếu tham số',
         );
         $data_api = json_encode($data_api, true);
@@ -1039,7 +1170,7 @@ class ApiController extends AppController {
 
     function bugError($infor) {
         $data_api = array(
-            'success' => 'false',
+            'success' => 0,
             'infor' => $infor,
         );
         $data_api = json_encode($data_api, true);
@@ -1047,10 +1178,11 @@ class ApiController extends AppController {
         die;
     }
 
-    function success($infor) {
+    function success($infor, $data = array()) {
         $data_api = array(
-            'success' => 'success',
+            'success' => 1,
             'infor' => $infor,
+            'data' => $data
         );
         $data_api = json_encode($data_api, true);
         echo ($data_api);
