@@ -42,6 +42,16 @@
         echo $this->Form->input('storage', array('label' => array('text' => 'Kho chứa sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('product_from', array('label' => array('text' => 'Nơi sản xuất', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('sort', array('label' => array('text' => 'sắp xếp', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'number', 'value' => 1));
+       ?>
+        <div class="form-group">
+            <label for="Productsale" class="control-label col-xs-12 col-sm-2">Sale sản phẩm</label>
+            <div class="controls col-xs-12 col-sm-8">
+                <select name="data[Product][is_sale]" class="form-control">
+                    <option value="0"  >Không sale sản phẩm</option>
+                    <option value="1" >Sale sản phẩm</option>
+                </select></div><div class="clearfix"></div>
+        </div>
+        <?php
         echo $this->Form->input('user_view', array('label' => array('text' => 'Sô người view', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'number', 'value' => 0));
         echo $this->Form->input('user_like', array('label' => array('text' => 'Số người like', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'number', 'value' => 0));
         echo $this->Form->input('user_share', array('label' => array('text' => 'Số người chia sẻ', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'number', 'value' => 0));

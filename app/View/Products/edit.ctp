@@ -40,11 +40,11 @@
                 $slide_img = array_filter($slide_img);
                 foreach ($slide_img as $key => $value):
                     ?>
-                    <div id="<?php echo $key ?>">
-                        <img src="<?php echo '/' . $value ?>" alt="Mountain View" style="width:250px;height:250px;">
-                        <a class="btn btn-warning" onclick="_delete(<?php echo $key ?>)">delete</a>
-                        <input type="hidden" name="data[Product][img_tmp][]" value="<?php echo $value ?>">
-                    </div>
+                <div id="<?php echo $key ?>">
+                    <img src="<?php echo '/' . $value ?>" alt="Mountain View" style="width:250px;height:250px;">
+                    <a class="btn btn-warning" onclick="_delete(<?php echo $key ?>)">delete</a>
+                    <input type="hidden" name="data[Product][img_tmp][]" value="<?php echo $value ?>">
+                </div>
                     <?php
                 endforeach;
                 ?>
@@ -59,6 +59,16 @@
         echo $this->Form->input('storage', array('label' => array('text' => 'Kho chứa sản phẩm', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('product_from', array('label' => array('text' => 'Nơi sản xuất', 'class' => 'control-label col-xs-12 col-sm-2'),));
         echo $this->Form->input('sort', array('label' => array('text' => 'sắp xếp', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'number', 'value' => 1));
+        ?>
+        <div class="form-group">
+            <label for="Productsale" class="control-label col-xs-12 col-sm-2">Sale sản phẩm</label>
+            <div class="controls col-xs-12 col-sm-8">
+                <select name="data[Product][is_sale]" class="form-control">
+                    <option value="0" <?php if( $this->data['Product']['is_sale'] == 0  ) echo 'selected'?>  >Không sale sản phẩm</option>
+                    <option value="1" <?php if( $this->data['Product']['is_sale'] == 1  ) echo 'selected'?> >Sale sản phẩm</option>
+                </select></div><div class="clearfix"></div>
+        </div>
+        <?php
         echo $this->Form->input('user_view', array('label' => array('text' => 'Sô người view', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'number', 'value' => 0));
         echo $this->Form->input('user_like', array('label' => array('text' => 'Số người like', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'number', 'value' => 0));
         echo $this->Form->input('user_share', array('label' => array('text' => 'Số người chia sẻ', 'class' => 'control-label col-xs-12 col-sm-2'), 'type' => 'number', 'value' => 0));

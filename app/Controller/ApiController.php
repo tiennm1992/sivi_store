@@ -807,6 +807,67 @@ class ApiController extends AppController {
         $this->echoData($data);
     }
 
+    // lay sp ban chạy
+    public function get_sale_product($page = 0) {
+        $page1 = $this->request->query('page');
+        $page = (isset($page1)) ? $page1 : $page;
+        $params = $this->request->query;
+        $user_id = 0;
+        if (!empty($params['token'])) {
+            $user_data = $this->get_customer_Login($params['token']);
+            if (!empty($user_data)) {
+                $user_id = $user_data['id'];
+            }
+        }
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $last_id = !empty($params['last_id']) ? $params['last_id'] : 0;
+        $arr1 = array(
+            'Product.id',
+            'Product.name',
+            'Product.title',
+            'Product.description',
+            'Product.avatar',
+            'Product.price',
+            'Product.user_view',
+            'Product.user_like',
+            'Product.star',
+            'Social.id',
+            'Social.like'
+        );
+        $conditions = array();
+        $conditions['Product.is_sale'] = 1;
+        if (!empty($last_id)) {
+            $conditions['Product.id <'] = $last_id;
+        }
+        $arr = array(
+            'conditions' => $conditions,
+            'limit' => $limit, //int
+            'page' => $page, //int
+            'order' => 'Product.id DESC',
+            'fields' => $arr1,
+            'joins' => array(
+                array(
+                    'table' => 'social_count',
+                    'alias' => 'Social',
+                    'type' => 'left',
+                    'conditions' => array(
+                        "Social.product_id = Product.id AND Social.user_id = {$user_id}"
+                    )
+                )
+            )
+        );
+        $data = $this->Product->find('all', $arr);
+        foreach ($data as $key1 => $value1) {
+            $data[$key1]['Product']['price'] = number_format($data[$key1]['Product']['price'], 0, ',', '.');
+            if (!empty($data[$key1]['Social']['id'])) {
+                $data[$key1]['Product']['is_like'] = $data[$key1]['Social']['like'];
+            } else {
+                $data[$key1]['Product']['is_like'] = 0;
+            }
+        }
+        $this->echoData($data);
+    }
+
     public function check_view() {
         $product_id = $this->request->query('product_id');
         if ($product_id) {

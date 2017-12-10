@@ -16,6 +16,7 @@ class PromotionsController extends AppController {
      * @var array
      */
     public $components = array('Paginator');
+    public $uses =array('Category','Product');
 
     public function beforeFilter() {
         $this->set('title_for_layout', 'Khuyến mại');
@@ -27,6 +28,47 @@ class PromotionsController extends AppController {
      * @return void
      */
     public function index() {
+        //get category
+        $this->Category->unbindModel(array('hasMany' => array('Product','Subcategory')));
+        $list_category = $this->Category->find('all', array('fields' => array('Category.id', 'Category.name')));
+        //get search
+        $query = $this->request->query;
+        $conditions = array();
+        $conditions['Product.is_sale'] = 1;
+        $name = '';
+        if (isset($query['name']) && !empty($query['name'])) {
+            $conditions['Product.name LIKE'] = "%{$query['name']}%";
+            $name = $query['name'];
+        }
+        $category = '';
+        if (isset($query['category']) && !empty($query['category'])) {
+            $conditions['Product.category_id'] = $query['category'];
+            $category = $query['category'];
+        }
+        $start_time = isset($query['startdate']) ? $query['startdate']  : null;
+        $end_time = isset($query['enddate']) ? $query['enddate']: null;
+        if ($start_time && $end_time) {
+            $conditions[] = "Product.date_create >= date('{$start_time}') AND Product.date_create<= date('{$end_time}')";
+        } else if ($end_time) {
+            $conditions[] = "Product.date_create <= date('{$end_time}')";
+        } else if ($start_time) {
+            $conditions[] = "Product.date_create >= date('{$start_time}')";
+        }
+        $this->Paginator->settings = array(
+            'limit' => ITEMS_PER_PAGE,
+            'paramType' => 'querystring',
+            'conditions' => $conditions,
+        );
+        $this->Product->recursive = 0;
+        $this->set('products', $this->Paginator->paginate("Product"));
+        $this->set('name', $name);
+        $this->set('category', $category);
+        $this->set('start_time', $start_time);
+        $this->set('end_time', $end_time);
+        $this->set('category', $list_category);
+    }
+
+    public function old_index() {
         $this->Promotion->recursive = 0;
         $this->set('promotions', $this->Paginator->paginate());
     }
