@@ -888,18 +888,18 @@ class ApiController extends AppController {
             $this->echoError();
         }
         if ($data['action'] != 'like' && $data['action'] != 'favorite') {
-            $this->bugError('Action khong ton tai !');
+            $this->new_bugError('Action khong ton tai !');
         }
         $data['type'] = isset($data['type']) ? $data['type'] : 1;
         if ($data['type'] != 1 && $data['type'] != 0) {
-            $this->bugError('Trang thai cua type khong phu hop !');
+            $this->new_bugError('Trang thai cua type khong phu hop !');
         }
         $user_data = $this->get_customer_Login($data['token']);
         if (!$user_data) {
-            $this->bugError('Người dùng chưa login');
+            $this->new_bugError('Người dùng chưa login');
         }
         if (!$this->Product->exists($data['product_id'])) {
-            $this->bugError('Sản phẩm không tồn tại');
+            $this->new_bugError('Sản phẩm không tồn tại');
         }
         $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
         if ($data['action'] == 'like') {
@@ -927,7 +927,7 @@ class ApiController extends AppController {
             }
             $this->success('Favorite san pham thanh cong.');
         }
-        $this->bugError('Thưc hiện không thành công !');
+        $this->new_bugError('Thưc hiện không thành công !');
     }
 
     public function review_and_comment() {
@@ -936,14 +936,14 @@ class ApiController extends AppController {
             $this->echoError();
         }
         if ($data['star'] != 1 && $data['star'] != 2 && $data['star'] != 3 && $data['star'] != 4 && $data['star'] != 5) {
-            $this->bugError('Gía trị của star không đúng !');
+            $this->new_bugError('Gía trị của star không đúng !');
         }
         $user_data = $this->get_customer_Login($data['token']);
         if (!$user_data) {
-            $this->bugError('Người dùng chưa login');
+            $this->new_bugError('Người dùng chưa login');
         }
         if (!$this->Product->exists($data['product_id'])) {
-            $this->bugError('Sản phẩm không tồn tại');
+            $this->new_bugError('Sản phẩm không tồn tại');
         }
         $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
         // lưu lại thông tin review and comment
@@ -978,7 +978,7 @@ class ApiController extends AppController {
             $this->echoError();
         }
         if (!$this->Product->exists($data['product_id'])) {
-            $this->bugError('Sản phẩm không tồn tại');
+            $this->new_bugError('Sản phẩm không tồn tại');
         }
         $limit = !empty($data['limit']) ? $data['limit'] : 10;
         $last_id = !empty($data['last_id']) ? $data['last_id'] : 0;
@@ -1232,6 +1232,15 @@ class ApiController extends AppController {
     }
 
     function bugError($infor) {
+        $data_api = array(
+            'success' => false,
+            'infor' => $infor,
+        );
+        $data_api = json_encode($data_api, true);
+        echo ($data_api);
+        die;
+    }
+    function new_bugError($infor) {
         $data_api = array(
             'success' => 0,
             'infor' => $infor,
