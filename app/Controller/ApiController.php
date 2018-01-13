@@ -7,9 +7,7 @@ class ApiController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
         $this->autoRender = FALSE;
-//        $this->Auth->allow('display');
         $this->Auth->allow();
-//        $this->Auth->allow('social_action', 'test', 'get_customer', 'get_revenue', 'cancel_order', 'edit_profile', 'like_product', 'get_buy', 'read_late', 'check_buy', 'buy_item', 'login', 'user_infor', 'sign_up', 'home', 'product', 'suggest_product', 'get_product', 'get_category', 'get_subcategory', 'get_slide', 'get_top', 'check_view', 'search', 'post_relate', 'menu_tab', 'promotion' );
         //load model
         $this->loadModel('Product');
         $this->loadModel('Category');
@@ -674,7 +672,11 @@ class ApiController extends AppController {
                 $data[$key1]['Product']['is_like'] = 0;
             }
         }
-        $this->echoData($data);
+        $data_api = array();
+        foreach ($data as $key => $value) {
+            $data_api[] = $value['Product'];
+        }
+        $this->success('Get success', $data_api);
     }
 
     public function get_product($id = 0) {
@@ -689,12 +691,7 @@ class ApiController extends AppController {
             $user_id = 0;
         }
         $data = $this->Product->getDetailProduct($id, $user_id);
-        $data = array(
-            'success' => API_SUCCESS,
-            'infor' => $data,
-        );
-        $data = json_encode($data, true);
-        echo ($data);
+        $this->success('Get success', $data);
     }
 
     public function get_category() {
@@ -805,7 +802,12 @@ class ApiController extends AppController {
                 $data[$key1]['Product']['is_like'] = 0;
             }
         }
-        $this->echoData($data);
+        $data_api = array();
+        foreach ($data as $key => $value) {
+            $data_api[] = $value['Product'];
+        }
+        $this->success('Get success', $data_api);
+//        $this->echoData($data);
     }
 
     // lay sp ban chạy
@@ -866,7 +868,11 @@ class ApiController extends AppController {
                 $data[$key1]['Product']['is_like'] = 0;
             }
         }
-        $this->echoData($data);
+        $data_api = array();
+        foreach ($data as $key => $value) {
+            $data_api[] = $value['Product'];
+        }
+        $this->success('Get success', $data_api);
     }
 
     public function check_view() {
