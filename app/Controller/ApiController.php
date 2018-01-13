@@ -46,7 +46,7 @@ class ApiController extends AppController {
                     $arr[$key]['employee_code'] = $value['Customer']['employee_code'];
                 }
                 $rep = array(
-                    'success' => 'true',
+                    'success' => API_SUCCESS,
                     'infor' => 'Lấy thông tin thành công',
                     'mess' => $arr,
                 );
@@ -78,7 +78,7 @@ class ApiController extends AppController {
                     'list_id_product' => $list_product_id
                 );
                 $rep = array(
-                    'success' => 'true',
+                    'success' => API_SUCCESS,
                     'mess' => $infor_user
                 );
                 echo json_encode($rep);
@@ -131,7 +131,7 @@ class ApiController extends AppController {
                     $arr[$key]['revenue'] = number_format($arr[$key]['revenue'], 0, ',', '.');
                 }
                 $rep = array(
-                    'success' => 'true',
+                    'success' => API_SUCCESS,
                     'infor' => 'Lấy thông tin thành công',
                     'sum_revenue' => $sum_revenue,
                     'mess' => $arr,
@@ -180,7 +180,7 @@ class ApiController extends AppController {
     //api edit profile client
     public function edit_profile() {
         $data = $this->request->query;
-        if (!empty($data['id']) && !empty($data['password']) && !empty($data['employee_code']) && !empty($data['phone']) && !empty($data['token'])) {
+        if (!empty($data['id']) && !empty($data['password'])  && !empty($data['phone']) && !empty($data['token'])) {
             if ($this->checkLogin($data['token'])) {
                 $data_user = $this->Customer->find('first', array('conditions' => array('Customer.id' => $data['id'])));
                 if ($data_user) {
@@ -232,13 +232,13 @@ class ApiController extends AppController {
                 $check = $this->UserLike->status($data['user_id'], $data['product_id'], $data['status']);
                 if ($check) {
                     $rep = array(
-                        'success' => 'true',
+                        'success' => API_SUCCESS,
                         'infor' => 'thành công',
                     );
                     echo json_encode($rep, true);
                 } else {
                     $rep = array(
-                        'success' => 'false',
+                        'success' => API_SUCCESS,
                         'infor' => 'That bai',
                     );
                     echo json_encode($rep, true);
@@ -275,7 +275,7 @@ class ApiController extends AppController {
                                 $sale_name_protected = !empty($user_protected['User']['name']) ? $user_protected['User']['name'] : '';
                             }
                             $rep = array(
-                                'success' => 'true',
+                                'success' => API_SUCCESS,
                                 'infor' => 'Login thành công',
                                 'mess' => array(
                                     'id' => $data_user['id'],
@@ -319,7 +319,7 @@ class ApiController extends AppController {
                     $this->Customer->create();
                     if ($this->Customer->save($data_update)) {
                         $rep = array(
-                            'success' => 'true',
+                            'success' => API_SUCCESS,
                             'infor' => 'Login thành công',
                             'mess' => array(
                                 'id' => $data_user['id'],
@@ -375,7 +375,7 @@ class ApiController extends AppController {
                         $this->UserBuy->clear();
                         $this->calculate_money($arr['code']);
                         $rep = array(
-                            'success' => 'true',
+                            'success' => API_SUCCESS,
                             'infor' => 'Mua sản phẩm thành công',
                         );
                         echo json_encode($rep, true);
@@ -513,7 +513,7 @@ class ApiController extends AppController {
                     'employee_code' => $data_user['code'],
                 );
                 $rep = array(
-                    'success' => 'true',
+                    'success' => API_SUCCESS,
                     'mess' => $infor_user
                 );
                 echo json_encode($rep);
@@ -539,7 +539,7 @@ class ApiController extends AppController {
                     'list_id_product' => $list_product_id
                 );
                 $rep = array(
-                    'success' => 'true',
+                    'success' => API_SUCCESS,
                     'mess' => $infor_user
                 );
                 echo json_encode($rep);
@@ -690,7 +690,7 @@ class ApiController extends AppController {
         }
         $data = $this->Product->getDetailProduct($id, $user_id);
         $data = array(
-            'success' => 'true',
+            'success' => API_SUCCESS,
             'infor' => $data,
         );
         $data = json_encode($data, true);
@@ -742,8 +742,9 @@ class ApiController extends AppController {
             $slide[$key] = $value['Slide'];
             $slide[$key]['image'] = 'http://sivistore.com/' . $value['Slide']['image'];
         }
-        $slide = json_encode($slide, true);
-        echo $slide;
+        $this->success('Success', $slide);
+//        $slide = json_encode($slide, true);
+//        echo $slide;
     }
 
     public function home($page = 1) {
@@ -1213,7 +1214,7 @@ class ApiController extends AppController {
             $data_api[] = $value['Product'];
         }
         $data_api = array(
-            'success' => 1,
+            'success' => API_SUCCESS,
             'infor' => $data_api,
         );
         $data_api = json_encode($data_api, true);
@@ -1252,7 +1253,7 @@ class ApiController extends AppController {
 
     function success($infor, $data = array()) {
         $data_api = array(
-            'success' => 1,
+            'success' => API_SUCCESS,
             'infor' => $infor,
             'data' => $data
         );
