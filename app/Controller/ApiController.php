@@ -478,7 +478,7 @@ class ApiController extends AppController {
                     $rep[] = $arr_tmp;
                 }
             }
-            $this->success($rep);
+            $this->success('Buy success',$rep);
         } else {
             $this->bugError('Thiếu biến');
         }
@@ -536,11 +536,11 @@ class ApiController extends AppController {
                     'employee_code' => $data_user['employee_code'],
                     'list_id_product' => $list_product_id
                 );
-                $rep = array(
-                    'success' => API_SUCCESS,
-                    'mess' => $infor_user
-                );
-                echo json_encode($rep);
+//                $rep = array(
+//                    'success' => API_SUCCESS,
+//                    'mess' => $infor_user
+//                );
+                $this->success("Get infor success", $infor_user);
             } else {
                 $this->bugError('Người dùng chưa login');
             }
@@ -701,8 +701,7 @@ class ApiController extends AppController {
         foreach ($data as $key => $value) {
             $category[$key] = $value['Category'];
         }
-        $category = json_encode($category, true);
-        echo $category;
+        $this->success('', $category);
     }
 
     //lấy danh mục con
@@ -721,7 +720,7 @@ class ApiController extends AppController {
                 $subcategory[$key] = $value['Subcategory'];
             }
             $subcategory = json_encode($subcategory, true);
-            echo $subcategory;
+            $this->success('', $subcategory);
         } else {
             $this->echoError();
         }
@@ -740,8 +739,6 @@ class ApiController extends AppController {
             $slide[$key]['image'] = 'http://sivistore.com/' . $value['Slide']['image'];
         }
         $this->success('Success', $slide);
-//        $slide = json_encode($slide, true);
-//        echo $slide;
     }
 
     public function home($page = 1) {
@@ -807,7 +804,6 @@ class ApiController extends AppController {
             $data_api[] = $value['Product'];
         }
         $this->success('Get success', $data_api);
-//        $this->echoData($data);
     }
 
     // lay sp ban chạy
@@ -888,7 +884,6 @@ class ApiController extends AppController {
         }
     }
 
-    //social count : like, favorite, comment
     public function social_action() {
         $data = $this->request->query;
         if (empty($data['token']) || empty($data['product_id']) || empty($data['action'])) {
