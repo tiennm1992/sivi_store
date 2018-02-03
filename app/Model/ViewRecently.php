@@ -5,6 +5,7 @@ App::uses('AppModel', 'Model');
 class ViewRecently extends AppModel {
 
     public $name = "ViewRecently";
+    public $useTable = 'view_recently';
 
     public function update_view_recently($user_id, $product_id) {
         $data = array(

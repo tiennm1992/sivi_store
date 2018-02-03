@@ -11,4 +11,4 @@ define('ITEMS_PER_PAGE', 10);
 
 //define api
 define('API_SUCCESS', 1);
-define('API_ERROR', 1);
+define('API_ERROR', 0);
