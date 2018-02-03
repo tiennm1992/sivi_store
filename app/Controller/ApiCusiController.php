@@ -2,7 +2,7 @@
 
 class ApiCusiController extends AppController {
 
-    public $uses = array('User');
+    public $uses = array('User', 'Product', 'ViewRecently');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -41,11 +41,26 @@ class ApiCusiController extends AppController {
         $this->Baseapi->response('Lấy thành công danh sách', $rep);
     }
 
+    public function get_product($id = 0) {
+        $id1 = $this->request->query('id');
+        $id = (isset($id1)) ? $id1 : $id;
+        if (!$this->Product->exists($id)) {
+            $this->bugError('product_id not exits');
+        }
+
+        $user_id = $this->request->query('user_id');
+        if (!isset($user_id)) {
+            $user_id = 0;
+        }
+        $data = $this->Product->getDetailProduct($id, $user_id);
+        $this->ViewRecently->update_view_recently($user_id, $id);
+        $this->Baseapi->response('Lấy thành công danh sách', $data);
+    }
+    
     //api danh sach don hang
     //api xem gan day
     //api gio hang
     //api thong bao
     //api san pham yeu thich
-    //
-    
+//
 }
