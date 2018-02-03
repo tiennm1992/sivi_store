@@ -22,7 +22,7 @@ class BaseapiComponent extends Component {
     }
 
     public function validate_data() {
-        $data = $this->request->query;
+        $data = $this->request->data;
         if (!empty($data['token']) && !empty($data['user_id'])) {
             $data = $this->Customer->find('all', array('conditions' => array('token' => $data['token'])));
             if ($data) {

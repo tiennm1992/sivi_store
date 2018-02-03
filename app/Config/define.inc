@@ -12,3 +12,8 @@ define('ITEMS_PER_PAGE', 10);
 //define api
 define('API_SUCCESS', 1);
 define('API_ERROR', 0);
+
+define('ORDER_BUY', 0);
+define('WAITTING_APPROVE', 1);
+define('SUCCESS_BUY', 2);
+define('CANCEL_BUY', 3);

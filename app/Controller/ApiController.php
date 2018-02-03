@@ -719,8 +719,7 @@ class ApiController extends AppController {
             foreach ($data as $key => $value) {
                 $subcategory[$key] = $value['Subcategory'];
             }
-            $subcategory = json_encode($subcategory, true);
-            $this->success('', $subcategory);
+            $this->success('Lay subcategory thanh cong',$subcategory);
         } else {
             $this->echoError();
         }
@@ -1055,7 +1054,7 @@ class ApiController extends AppController {
             foreach ($data as $key1 => $value1) {
                 $data[$key1]['Product']['price'] = number_format($data[$key1]['Product']['price'], 0, ',', '.');
             }
-            $this->echoData($data);
+            $this->success('Lay du lieu thanh cong',$data);
         } else {
             $this->echoError();
         }
