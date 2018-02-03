@@ -64,12 +64,14 @@ class ApiCusiController extends AppController {
         }
         $last_id = !empty($request['last_id']) ? $request['last_id'] : 0;
         $limit = !empty($request['limit']) ? $request['limit'] : 10;
-
+        $conditions = array();
+        $conditions['ViewRecently.user_id'] = $request['user_id'];
+        if (!empty($last_id)) {
+            $conditions['ViewRecently.id <'] = $last_id;
+        }
         $data = $this->ViewRecently->find('all', array(
             'fields' => array('ViewRecently.*', 'Product.*'),
-            'conditions' => array(
-                'ViewRecently.user_id' => $request['user_id']
-            ),
+            'conditions' => $conditions,
             'joins' => array(
                 array(
                     'table' => 'products',
@@ -102,11 +104,14 @@ class ApiCusiController extends AppController {
         }
         $last_id = !empty($request['last_id']) ? $request['last_id'] : 0;
         $limit = !empty($request['limit']) ? $request['limit'] : 10;
+        $conditions = array();
+        $conditions['SocialCount.user_id'] = $request['user_id'];
+        if (!empty($last_id)) {
+            $conditions['SocialCount.id <'] = $last_id;
+        }
         $data = $this->SocialCount->find('all', array(
             'fields' => array('SocialCount.*', 'Product.*'),
-            'conditions' => array(
-                'SocialCount.user_id' => $request['user_id']
-            ),
+            'conditions' => $conditions,
             'joins' => array(
                 array(
                     'table' => 'products',
@@ -117,13 +122,25 @@ class ApiCusiController extends AppController {
                     )
                 ),
             ),
-            'order' => array('ViewRecently.id DESC')
+            'order' => array('SocialCount.id DESC'),
+            'limit' => $limit,
         ));
         $this->Baseapi->response('lay thanh cong du lieu', $data);
     }
 
     //api danh sach don hang
+    public function get_order_list() {
+        
+    }
+
     //api gio hang
+    public function get_store_list() {
+        
+    }
+
     //api thong bao
-//
+    public function get_notification_list() {
+        
+    }
+
 }
