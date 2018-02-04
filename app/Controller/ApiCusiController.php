@@ -128,11 +128,6 @@ class ApiCusiController extends AppController {
         $this->Baseapi->response('lay thanh cong du lieu', $data);
     }
 
-    //api thong bao
-    public function get_notification_list() {
-        
-    }
-
     //kiem tra san phanm da dc mua chua
     public function check_buy() {
         $this->baseapi->validate_data();
