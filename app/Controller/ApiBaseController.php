@@ -24,9 +24,9 @@ class ApiBaseController extends AppController {
     public function validate_data() {
         $data = $this->request->data;
         if (!empty($data['token']) && !empty($data['user_id'])) {
-            $data = $this->Customer->find('all', array('conditions' => array('token' => $data['token'])));
+            $data = $this->Customer->find('first', array('conditions' => array('token' => $data['token'])));
             if ($data) {
-                $this->user_id = $data['user_id'];
+                $this->user_id = $data['Customer']['id'];
             } else {
                 $this->response('Nguoi dung chua dang nhap', array(), API_ERROR);
             }

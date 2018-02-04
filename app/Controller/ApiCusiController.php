@@ -362,7 +362,7 @@ class ApiCusiController extends ApiBaseController {
                 }
             }
 
-            if (!empty($data['employee_code'])&& ($data['employee_code'] != $data_user['Customer']['employee_code'])) {
+            if (!empty($data['employee_code']) && ($data['employee_code'] != $data_user['Customer']['employee_code'])) {
                 $data_change['employee_code'] = $data['employee_code'];
             }
             if (!empty($data['phone']) && ($data['phone'] != $data_user['Customer']['phone'])) {
@@ -381,51 +381,23 @@ class ApiCusiController extends ApiBaseController {
 
     //lấy thông tin user
     public function user_infor() {
-        $data = $this->request->query;
-        if (!empty($data['role']) && ($data['role'] == 'employee') && !empty($data['user_id'])) {
-            $data_user = $this->User->find('all', array('conditions' => array('User.id' => $data['user_id'])));
-            if ($data_user) {
-                $data_user = $data_user[0]['User'];
-                $infor_user = array(
-                    'user_name' => $data_user['username'],
-                    'address' => $data_user['address'],
-//                    'phone' => $data_user['phone'],
-                    'phone' => !empty($data_user['phone']) ? $data_user['phone'] : '',
-                    'employee_code' => $data_user['code'],
-                );
-                $rep = array(
-                    'success' => API_SUCCESS,
-                    'mess' => $infor_user
-                );
-                echo json_encode($rep);
-                die;
-            } else {
-                $this->bugError('Tài khoản nhân viên không tồn tại');
-            }
+        $data = $this->request->data;
+        $this->validate_data();
+        $data_user = $this->Customer->find('all', array('conditions' => array('Customer.id' => $data['user_id'])));
+        $data_user = $data_user[0]['Customer'];
+        $list_product_id = array();
+        $list_product = $this->UserBuy->find('all', array('conditions' => array('UserBuy.customer_id' => $data['user_id'])));
+        foreach ($list_product as $key => $value) {
+            $list_product_id[] = $value['UserBuy']['product_id'];
         }
-        if (!empty($data['token']) && !empty($data['user_id'])) {
-            if ($this->checkLogin($data['token'])) {
-                $data_user = $this->Customer->find('all', array('conditions' => array('Customer.id' => $data['user_id'])));
-                $data_user = $data_user[0]['Customer'];
-                $list_product_id = array();
-                $list_product = $this->UserBuy->find('all', array('conditions' => array('UserBuy.customer_id' => $data['user_id'])));
-                foreach ($list_product as $key => $value) {
-                    $list_product_id[] = $value['UserBuy']['product_id'];
-                }
-                $infor_user = array(
-                    'user_name' => $data_user['username'],
-                    'address' => $data_user['address'],
-                    'phone' => !empty($data_user['phone']) ? $data_user['phone'] : '',
-                    'employee_code' => $data_user['employee_code'],
-                    'list_id_product' => $list_product_id
-                );
-                $this->success("Get infor success", $infor_user);
-            } else {
-                $this->bugError('Người dùng chưa login');
-            }
-        } else {
-            $this->echoError();
-        }
+        $infor_user = array(
+            'user_name' => $data_user['username'],
+            'address' => $data_user['address'],
+            'phone' => !empty($data_user['phone']) ? $data_user['phone'] : '',
+            'employee_code' => $data_user['employee_code'],
+            'list_id_product' => $list_product_id
+        );
+        $this->response("Get infor success", $infor_user);
     }
 
 }
