@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-class BaseapiComponent extends Component {
+class ApiBaseController extends AppController {
 
     public $user_id;
 
@@ -31,7 +31,7 @@ class BaseapiComponent extends Component {
                 $this->response('Nguoi dung chua dang nhap', array(), API_ERROR);
             }
         } else {
-            $this->response('Missing param: user_id, Token', array(), API_ERROR);
+            $this->response('Missing param: user_id, token', array(), API_ERROR);
         }
     }
 
@@ -45,7 +45,8 @@ class BaseapiComponent extends Component {
         }
         return $data;
     }
-     function generateRandomString($length = 8) {
+
+    function generateRandomString($length = 8) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';

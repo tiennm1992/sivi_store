@@ -1,6 +1,8 @@
 <?php
 
-class ApiCusiController extends AppController {
+App::import('Controller', 'ApiBase');
+
+class ApiCusiController extends ApiBaseController {
 
     public $uses = array('User', 'Product', 'ViewRecently', 'SocialCount', 'UserBuy', 'Customer', 'Category', 'Subcategory', 'Slide', 'Promotion', 'Employee', 'UserLike', 'Review');
 
@@ -17,7 +19,7 @@ class ApiCusiController extends AppController {
         $id1 = $this->request->query('id');
         $id = (isset($id1)) ? $id1 : $id;
         if (!$this->Product->exists($id)) {
-            $this->Baseapi->response(API_ERROR, 'product_id not exits');
+            $this->response(API_ERROR, 'product_id not exits');
         }
         $user_id = $this->request->query('user_id');
         if (!isset($user_id)) {
@@ -25,14 +27,14 @@ class ApiCusiController extends AppController {
         }
         $data = $this->Product->getDetailProduct($id, $user_id);
         $this->ViewRecently->update_view_recently($user_id, $id);
-        $this->Baseapi->response(API_SUCCESS, 'Lấy thành công danh sách', $data);
+        $this->response(API_SUCCESS, 'Lấy thành công danh sách', $data);
     }
 
     //api xem gan day
     public function get_recently_product() {
         $request = $this->request->query;
         if (empty($request['user_id'])) {
-            $this->Baseapi->response(API_ERROR, 'missing params: user_id');
+            $this->response(API_ERROR, 'missing params: user_id');
         }
         $last_id = !empty($request['last_id']) ? $request['last_id'] : 0;
         $limit = !empty($request['limit']) ? $request['limit'] : 10;
@@ -64,15 +66,15 @@ class ApiCusiController extends AppController {
             ),
             'order' => array('ViewRecently.id DESC')
         ));
-        $data = $this->Baseapi->add_check_like($data);
-        $this->Baseapi->response(API_SUCCESS, 'lay thanh cong du lieu', $data);
+        $data = $this->add_check_like($data);
+        $this->response(API_SUCCESS, 'lay thanh cong du lieu', $data);
     }
 
     //api san pham yeu thich
     public function get_like_product() {
         $request = $this->request->query;
         if (empty($request['user_id'])) {
-            $this->Baseapi->response(API_ERROR, 'missing params: user_id');
+            $this->response(API_ERROR, 'missing params: user_id');
         }
         $last_id = !empty($request['last_id']) ? $request['last_id'] : 0;
         $limit = !empty($request['limit']) ? $request['limit'] : 10;
@@ -97,7 +99,7 @@ class ApiCusiController extends AppController {
             'order' => array('SocialCount.id DESC'),
             'limit' => $limit,
         ));
-        $this->Baseapi->response(API_SUCCESS, 'lay thanh cong du lieu', $data);
+        $this->response(API_SUCCESS, 'lay thanh cong du lieu', $data);
     }
 
     //kiem tra san phanm da dc mua chua
@@ -107,9 +109,9 @@ class ApiCusiController extends AppController {
         $product_id = $this->request->data('product_id');
         $data = $this->UserBuy->find('all', array('conditions' => array('UserBuy.customer_id' => $user_id, 'UserBuy.product_id' => $product_id)));
         if ($data) {
-            $this->Baseapi->response(API_ERROR, 'Sản phẩm đã được mua');
+            $this->response(API_ERROR, 'Sản phẩm đã được mua');
         } else {
-            $this->Baseapi->response(API_SUCCESS, 'Sản phẩm chưa được mua');
+            $this->response(API_SUCCESS, 'Sản phẩm chưa được mua');
         }
     }
 
@@ -144,12 +146,12 @@ class ApiCusiController extends AppController {
             if ($this->UserBuy->save($arr)) {
                 $this->UserBuy->clear();
                 $this->calculate_money($arr['code']);
-                $this->Baseapi->response(API_SUCCESS, 'Mua sản phẩm thành công');
+                $this->response(API_SUCCESS, 'Mua sản phẩm thành công');
             } else {
-                $this->Baseapi->response(API_ERROR, 'Mua sản phầm thất bại');
+                $this->response(API_ERROR, 'Mua sản phầm thất bại');
             }
         } else {
-            $this->Baseapi->response(API_ERROR, 'Sản phẩm không tồn tại');
+            $this->response(API_ERROR, 'Sản phẩm không tồn tại');
         }
     }
 
@@ -204,7 +206,7 @@ class ApiCusiController extends AppController {
             $this->baseapi->response(API_ERROR, 'Missing param: product_id');
         }
         if ($this->Product->exists($data['product_id'])) {
-            $this->Baseapi->response(API_ERROR, 'Sản phẩm không tồn tại');
+            $this->response(API_ERROR, 'Sản phẩm không tồn tại');
         }
         $conditions = array(
             'UserBuy.customer_id' => $data['user_id'],
@@ -216,12 +218,12 @@ class ApiCusiController extends AppController {
         $data_buy = $this->UserBuy->find('first', $conditions);
         if (!empty($data_buy['UserBuy']['status']) && ($data_buy['UserBuy']['status'] >= 1)) {
 
-            $this->Baseapi->response(API_ERROR, 'Đơn hàng đã được duyệt không hủy được đơn hàng');
+            $this->response(API_ERROR, 'Đơn hàng đã được duyệt không hủy được đơn hàng');
         } else {
             $data_up = $data_buy['UserBuy'];
             $data_up['status'] = 3;
             $this->UserBuy->save($data_up);
-            $this->Baseapi->response(API_SUCCESS, 'Hủy thành công đơn hàng');
+            $this->response(API_SUCCESS, 'Hủy thành công đơn hàng');
         }
     }
 
@@ -249,7 +251,7 @@ class ApiCusiController extends AppController {
                 $rep[] = $arr_tmp;
             }
         }
-        $this->Baseapi->response(API_ERROR, 'Lấy danh sách thành công');
+        $this->response(API_ERROR, 'Lấy danh sách thành công');
     }
 
     //lay list san phan da mua
@@ -276,22 +278,22 @@ class ApiCusiController extends AppController {
                 $rep[] = $arr_tmp;
             }
         }
-        $this->Baseapi->response(API_SUCCESS, 'Lấy danh sách thành công');
+        $this->response(API_SUCCESS, 'Lấy danh sách thành công');
     }
 
     //đăng kí user
     public function sign_up() {
         $data = $this->request->data;
-        if (empty($data['username']) || empty($data['password'])) {
-            $this->Baseapi->response(API_ERROR, 'Missing params:username, password ');
+        if (empty($data['username']) || empty($data['password']) || empty($data['employee_code']) || empty($data['phone'])) {
+            $this->response(API_ERROR, 'Missing params:username, password,employee_code, phone ');
         }
         $check_account = $this->User->checkExitsUser($data['username']);
-        if (!$check_account) {
-            $this->Baseapi->response(API_ERROR, 'Tài khoản đã tồn tại!');
+        if ($check_account) {
+            $this->response(API_ERROR, 'Tài khoản đã tồn tại!');
         }
         $employee_code = $this->User->checkExitsCode($data['employee_code']);
         if (!$employee_code) {
-            $this->Baseapi->response(API_ERROR, 'Mã nhân viên không tồn tại');
+            $this->response(API_ERROR, 'Mã nhân viên không tồn tại');
         }
         $address = (isset($data['address'])) ? $data['address'] : '';
         $arr = array(
@@ -299,101 +301,127 @@ class ApiCusiController extends AppController {
             'password' => $data['password'],
             'phone' => $data['phone'],
             'address' => $address,
+            'role' => 'client',
             'employee_code' => !empty($data['employee_code']) ? $data['employee_code'] : 0,
             'created_datetime' => date("Y-m-d H:i:s")
         );
         if ($this->Customer->save($arr)) {
-            $this->Baseapi->response(API_SUCCESS, 'Đăng kí thành công!');
+            $this->response(API_SUCCESS, 'Đăng kí thành công!');
         }
-        $this->Baseapi->response(API_ERROR, 'Đăng kí thất bại!');
+        $this->response(API_ERROR, 'Đăng kí thất bại!');
     }
 
     //đăng nhập vào hệ thống của cusi
     public function login() {
-        $data = $this->request->query;
-        $data['role'] = !empty($data['role']) ? $data['role'] : 'customer';
-        if (!empty($data['username']) && !empty($data['password'])) {
-            $username = $data['username'];
-            $data_user = $this->Customer->find('all', array('conditions' => array('Customer.username' => $username)));
-            if (!empty($data['role']) && $data['role'] == 'sasi') {
-                $data_user = $this->User->find('all', array('conditions' => array('User.username' => $username)));
-                if ($data_user) {
-                    $data_user = $data_user[0]['User'];
-                    if ($data_user['password'] == $data['password']) {
-                        $token = $this->generateRandomString(16);
-                        $data_update = array(
-                            'id' => $data_user['id'],
-                            'token' => $token
-                        );
-                        if ($this->User->save($data_update)) {
-                            $sale_name_protected = '';
-                            if (!empty($data_user['sale_id_protected'])) {
-                                $user_protected = $this->User->find('first', array('conditions' => array('User.code' => $data_user['sale_id_protected'])));
-                                $sale_name_protected = !empty($user_protected['User']['name']) ? $user_protected['User']['name'] : '';
-                            }
-                            $rep = array(
-                                'success' => API_SUCCESS,
-                                'infor' => 'Login thành công',
-                                'mess' => array(
-                                    'id' => $data_user['id'],
-                                    'role' => 'sasi',
-//                                    'role' => $data_user['role'],
-                                    'token' => $token,
-                                    'username' => $data_user['username'],
-                                    'name' => $data_user['name'],
-                                    'avatar' => $data_user['avatar'],
-                                    'phone' => $data_user['phone'],
-                                    'birthday' => $data_user['birthday'],
-                                    'gender' => $data_user['gender'],
-                                    'address' => $data_user['address'],
-                                    'email' => $data_user['email'],
-                                    'cmtnd' => $data_user['cmtnd'],
-                                    'bank_atm' => $data_user['bank_atm'],
-                                    'date_join' => date("Y-m-d", strtotime($data_user['created_datetime'])),
-                                    'sale_id_protected' => $data_user['sale_id_protected'],
-                                    'sale_name_protected' => $sale_name_protected,
-                                ),
-                            );
-                            echo json_encode($rep, true);
-                        } else {
-                            $this->bugError('Lỗi khi đăng nhập');
-                        }
+        $request = $this->request->data;
+        if (empty($request['username']) || empty($request['password'])) {
+            $this->response(API_ERROR, 'Missing param: username, password');
+        }
+        $data_user = $this->User->find('first', array('conditions' => array('User.username' => $request['username'])));
+        if (empty($data_user)) {
+            $this->response(API_ERROR, 'Tài khoản không tồn tại');
+        }
+        if ($data_user['User']['password'] != $request['password']) {
+            $this->response(API_ERROR, 'Password sai');
+        }
+        $token = $this->generateRandomString(16);
+        $data_update = array(
+            'id' => $data_user['User']['id'],
+            'token' => $token
+        );
+        if ($this->User->save($data_update)) {
+            $sale_name_protected = '';
+            if (!empty($data_user['User']['sale_id_protected'])) {
+                $user_protected = $this->User->find('first', array('conditions' => array('User.code' => $data_user['User']['sale_id_protected'])));
+                $sale_name_protected = !empty($user_protected['User']['name']) ? $user_protected['User']['name'] : '';
+            }
+            $rep = $data_user['User'];
+            $rep['token'] = $token;
+            $rep['sale_name_protected'] = $sale_name_protected;
+            $rep['date_join'] = date("Y-m-d", strtotime($rep['created_datetime']));
+            unset($rep['password']);
+            $this->response(API_SUCCESS, 'Đăng nhập thành công!', $rep);
+        }
+    }
+
+    //api edit profile client
+    public function edit_profile() {
+        $data = $this->request->data;
+        $this->validate_data();
+        $data_user = $this->Customer->find('first', array('conditions' => array('Customer.id' => $data['user_id'])));
+        if ($data_user) {
+            $data_change = array();
+            $data_change['id'] = $data['user_id'];
+            if (!empty($data['password'])) {
+                if ($data['password'] != $data_user['Customer']['password']) {
+                    if (!empty($data['old_password']) && ($data['old_password'] == $data_user['Customer']['password'])) {
+                        $data_change['password'] = $data['password'];
                     } else {
-                        $this->bugError('Sai mật khẩu');
+                        $this->response(API_ERROR, 'Mật khẩu hiện tại nhập không đúng!');
                     }
-                } else {
-                    $this->bugError('Tài khoản không tồn tại');
                 }
-            } else if (!empty($data_user) && ( $data['role'] != 'sasi')) {
-                $data_user = $data_user[0]['Customer'];
-                $data_user['role'] = 'customer';
-                if ($data_user['password'] == $data['password']) {
-                    $token = $this->generateRandomString(16);
-                    $data_update = array(
-                        'id' => $data_user['id'],
-                        'token' => $token
-                    );
-                    $this->Customer->create();
-                    if ($this->Customer->save($data_update)) {
-                        $rep = array(
-                            'success' => API_SUCCESS,
-                            'infor' => 'Login thành công',
-                            'mess' => array(
-                                'id' => $data_user['id'],
-                                'role' => $data_user['role'],
-                                'token' => $token,
-                                'username' => $data_user['username'],
-                            ),
-                        );
-                        echo json_encode($rep, true);
-                    } else {
-                        $this->bugError('Lỗi khi đăng nhập');
-                    }
-                } else {
-                    $this->bugError('Sai mật khẩu');
-                }
+            }
+
+            if (!empty($data['employee_code'])&& ($data['employee_code'] != $data_user['Customer']['employee_code'])) {
+                $data_change['employee_code'] = $data['employee_code'];
+            }
+            if (!empty($data['phone']) && ($data['phone'] != $data_user['Customer']['phone'])) {
+                $data_change['phone'] = $data['phone'];
+            }
+            if (isset($data['address']) && ($data['address'] != $data_user['Customer']['address'])) {
+                $data_change['address'] = $data['address'];
+            }
+            if ($this->Customer->save($data_change)) {
+                $this->response(API_SUCCESS, 'Thay đổi thông tin thành công !');
             } else {
-                $this->bugError('Đăng nhập không hợp lệ, Tài khoản không đúng hoặc không tồn tại !');
+                $this->response(API_ERROR, 'Thay đổi thông tin thành công !');
+            }
+        }
+    }
+
+    //lấy thông tin user
+    public function user_infor() {
+        $data = $this->request->query;
+        if (!empty($data['role']) && ($data['role'] == 'employee') && !empty($data['user_id'])) {
+            $data_user = $this->User->find('all', array('conditions' => array('User.id' => $data['user_id'])));
+            if ($data_user) {
+                $data_user = $data_user[0]['User'];
+                $infor_user = array(
+                    'user_name' => $data_user['username'],
+                    'address' => $data_user['address'],
+//                    'phone' => $data_user['phone'],
+                    'phone' => !empty($data_user['phone']) ? $data_user['phone'] : '',
+                    'employee_code' => $data_user['code'],
+                );
+                $rep = array(
+                    'success' => API_SUCCESS,
+                    'mess' => $infor_user
+                );
+                echo json_encode($rep);
+                die;
+            } else {
+                $this->bugError('Tài khoản nhân viên không tồn tại');
+            }
+        }
+        if (!empty($data['token']) && !empty($data['user_id'])) {
+            if ($this->checkLogin($data['token'])) {
+                $data_user = $this->Customer->find('all', array('conditions' => array('Customer.id' => $data['user_id'])));
+                $data_user = $data_user[0]['Customer'];
+                $list_product_id = array();
+                $list_product = $this->UserBuy->find('all', array('conditions' => array('UserBuy.customer_id' => $data['user_id'])));
+                foreach ($list_product as $key => $value) {
+                    $list_product_id[] = $value['UserBuy']['product_id'];
+                }
+                $infor_user = array(
+                    'user_name' => $data_user['username'],
+                    'address' => $data_user['address'],
+                    'phone' => !empty($data_user['phone']) ? $data_user['phone'] : '',
+                    'employee_code' => $data_user['employee_code'],
+                    'list_id_product' => $list_product_id
+                );
+                $this->success("Get infor success", $infor_user);
+            } else {
+                $this->bugError('Người dùng chưa login');
             }
         } else {
             $this->echoError();
