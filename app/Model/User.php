@@ -12,39 +12,6 @@ class User extends AppModel {
 
     public $useTable = 'users';
 
-//    public $validate = array(
-//        'username' => array(
-//            'required' => array(
-//                'rule' => 'notBlank',
-//                'message' => 'A username is required'
-//            )
-//        ),
-//        'password' => array(
-//            'required' => array(
-//                'rule' => 'notBlank',
-//                'message' => 'A password is required'
-//            )
-//        ),
-//        'role' => array(
-//            'valid' => array(
-//                'rule' => array('inList', array('admin', 'employee', 'super')),
-//                'message' => 'Please enter a valid role',
-//                'allowEmpty' => false
-//            )
-//        ),
-//        'phone' => array(
-//            'notEmpty' => array(
-//                'rule' => 'notEmpty',
-//                'message' => 'This value may not be left empty!'
-//            ),
-//        ),
-//        'code' => array(
-//            'notEmpty' => array(
-//                'rule' => 'notEmpty',
-//                'message' => 'This value may not be left empty!'
-//            ),
-//        ),
-//    );
 
     public function beforeFilter() {
         $this->Auth->allow('index');
@@ -64,15 +31,6 @@ class User extends AppModel {
         return $passwordHasher->hash($password);
     }
 
-//    public function beforeSave($options = array()) {
-//        if (isset($this->data[$this->alias]['password'])) {
-//            $passwordHasher = new BlowfishPasswordHasher();
-//            $this->data[$this->alias]['password'] = $passwordHasher->hash(
-//                    $this->data[$this->alias]['password']
-//            );
-//        }
-//        return true;
-//    }
 
     public function checkExitsCode($code) {
         $data = $this->find('all', array('conditions' => array('User.code' => $code)));

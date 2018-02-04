@@ -17,3 +17,11 @@ define('ORDER_BUY', 0);
 define('WAITTING_APPROVE', 1);
 define('SUCCESS_BUY', 2);
 define('CANCEL_BUY', 3);
+
+
+//define user_type
+define('CUSI_TYPE', 1);// người mua hàng
+define('SASI_TYPE', 2);// người bán hàng sale
+define('SISI_TYPE', 3); // người giao hàng trên sivi
+define('COSI_TYPE', 4); // người chăm sóc khách hàng trên sivi
+define('ADMIN_TYPE', 20);

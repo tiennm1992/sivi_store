@@ -10,7 +10,7 @@ class BaseapiComponent extends Component {
 
     public $user_id;
 
-    function response($infor, $data = array(), $status = 1) {
+    function response($status = 1, $infor, $data = array()) {
         $data_api = array(
             'success' => $status,
             'infor' => $infor,

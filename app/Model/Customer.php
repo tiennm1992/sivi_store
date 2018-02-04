@@ -8,6 +8,8 @@ App::uses('AppModel', 'Model');
  */
 class Customer extends AppModel {
 
+    public $useTable = 'users';
+
     function checkUser($username) {
         $data = $this->find('all', array('conditions' => array('username' => $username)));
         if ($data) {
