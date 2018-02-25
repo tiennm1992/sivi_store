@@ -44,7 +44,7 @@ class ApiCusiController extends ApiBaseController {
             $conditions['ViewRecently.id <'] = $last_id;
         }
         $data = $this->ViewRecently->find('all', array(
-            'fields' => array('ViewRecently.*', 'Product.*'),
+            'fields' => array('Product.*'),
             'conditions' => $conditions,
             'joins' => array(
                 array(
@@ -64,9 +64,11 @@ class ApiCusiController extends ApiBaseController {
                     )
                 )
             ),
-            'order' => array('ViewRecently.id DESC')
+            'order' => array('ViewRecently.id DESC'),
+            'limit' => $limit
         ));
         $data = $this->add_check_like($data);
+        $data = Set::extract('/Product/.', $data);
         $this->response(API_SUCCESS, 'lay thanh cong du lieu', $data);
     }
 
@@ -104,7 +106,7 @@ class ApiCusiController extends ApiBaseController {
 
     //kiem tra san phanm da dc mua chua
     public function check_buy() {
-        $this->baseapi->validate_data();
+        $this->validate_data();
         $user_id = $this->request->data('user_id');
         $product_id = $this->request->data('product_id');
         $data = $this->UserBuy->find('all', array('conditions' => array('UserBuy.customer_id' => $user_id, 'UserBuy.product_id' => $product_id)));
@@ -118,9 +120,9 @@ class ApiCusiController extends ApiBaseController {
     // mua sản phẩm
     public function buy_item() {
         $data = $this->request->data;
-        $this->baseapi->validate_data();
+        $this->validate_data();
         if (empty($data['product_id'])) {
-            $this->baseapi->response(API_ERROR, 'Missing param: product_id');
+            $this->response(API_ERROR, 'Missing param: product_id');
         }
         if ($this->Product->exists($data['product_id'])) {
             $product_data = $this->Product->find('first', array('conditions' => array('Product.id' => $data['product_id'])));
@@ -200,10 +202,10 @@ class ApiCusiController extends ApiBaseController {
 
     //api delete order buy item
     public function cancel_order() {
-        $this->baseapi->validate_data();
+        $this->validate_data();
         $data = $this->request->data;
         if (empty($data['product_id'])) {
-            $this->baseapi->response(API_ERROR, 'Missing param: product_id');
+            $this->response(API_ERROR, 'Missing param: product_id');
         }
         if ($this->Product->exists($data['product_id'])) {
             $this->response(API_ERROR, 'Sản phẩm không tồn tại');
@@ -229,7 +231,7 @@ class ApiCusiController extends ApiBaseController {
 
     //get cancel list
     public function get_cancel_order_list() {
-        $this->baseapi->validate_data();
+        $this->validate_data();
         $user_id = $this->request->data('user_id');
         $data = $this->UserBuy->find('all', array(
             'conditions' => array(
@@ -256,7 +258,7 @@ class ApiCusiController extends ApiBaseController {
 
     //lay list san phan da mua
     public function get_buy() {
-        $this->baseapi->validate_data();
+        $this->validate_data();
         $user_id = $this->request->data('user_id');
         $data = $this->UserBuy->find('all', array(
             'conditions' => array(
@@ -274,11 +276,15 @@ class ApiCusiController extends ApiBaseController {
                     'price' => number_format($value['Product']['price'], 0, ',', '.'),
                     'date' => $value['UserBuy']['date'],
                     'number_product' => $value['UserBuy']['number_product'],
+                    'sum_price'=>number_format($value['Product']['price']*$value['UserBuy']['number_product'], 0, ',', '.'),
+                    'ship'=>0,
+                    'total_price'=>number_format($value['Product']['price']*$value['UserBuy']['number_product'], 0, ',', '.'),
+                  
                 );
                 $rep[] = $arr_tmp;
             }
         }
-        $this->response(API_SUCCESS, 'Lấy danh sách thành công');
+        $this->response(API_SUCCESS, 'Lấy danh sách thành công',$rep);
     }
 
     //đăng kí user

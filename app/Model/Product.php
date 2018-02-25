@@ -118,7 +118,7 @@ class Product extends AppModel {
         $data['img'] = $img_arr;
         $data['price'] = number_format($data['price'], 0, ',', '.');
         $model = new UserLike();
-        $data['liked'] = ''.$model->check_like($user_id, $id);
+        $data['is_like'] = $model->check_like($user_id, $id);
         return $data;
     }
 
