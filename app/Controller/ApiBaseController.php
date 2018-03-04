@@ -34,6 +34,19 @@ class ApiBaseController extends AppController {
             $this->response('Missing param: user_id, token', array(), API_ERROR);
         }
     }
+    public function validate_query() {
+        $data = $this->request->query;
+        if (!empty($data['token']) && !empty($data['user_id'])) {
+            $data = $this->Customer->find('first', array('conditions' => array('token' => $data['token'])));
+            if ($data) {
+                $this->user_id = $data['Customer']['id'];
+            } else {
+                $this->response('Nguoi dung chua dang nhap', array(), API_ERROR);
+            }
+        } else {
+            $this->response('Missing param: user_id, token', array(), API_ERROR);
+        }
+    }
 
     public function add_check_like($data) {
         foreach ($data as $key1 => $value1) {

@@ -258,8 +258,8 @@ class ApiCusiController extends ApiBaseController {
 
     //lay list san phan da mua
     public function get_buy() {
-        $this->validate_data();
-        $user_id = $this->request->data('user_id');
+        $this->validate_query();
+        $user_id = $this->request->query('user_id');
         $data = $this->UserBuy->find('all', array(
             'conditions' => array(
                 'UserBuy.customer_id' => $user_id,
