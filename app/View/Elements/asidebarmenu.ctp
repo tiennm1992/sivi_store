@@ -1,5 +1,4 @@
 <?php
-
 $urls = array(
     'products' => $this->Html->url(array('controller' => 'products', 'action' => 'index', 'admin' => true), true),
     'add_product' => $this->Html->url(array('controller' => 'products', 'action' => 'add', 'admin' => true), true),
@@ -31,7 +30,6 @@ $urls = array(
     'user_buy' => $this->Html->url(array('controller' => 'userBuys', 'action' => 'order', 'admin' => true), true),
     'check_buy' => $this->Html->url(array('controller' => 'userBuys', 'action' => 'check_buy', 'admin' => true), true),
     'success_buy' => $this->Html->url(array('controller' => 'userBuys', 'action' => 'success_buy', 'admin' => true), true),
-    
     //for sasi
     'sasi_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'sasi_list', 'admin' => true), true),
     'order_list' => $this->Html->url(array('controller' => 'sasi', 'action' => 'order_list', 'admin' => true), true),
@@ -49,70 +47,91 @@ $urls = array(
 
 <ul class="sidebar-menu">
     <?php if ($user['role'] == 'super'): ?>
-    <!--Quản trị đơn hàng-->
-    <li class="header"><i class="fa fa-square"></i> <span>Quản trị đơn hàng</span></li>
-    <!--pages-->
-    <li><a href="<?php echo $urls['user_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng mới</span></a></li>
-    <li><a href="<?php echo $urls['check_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng đang chờ</span></a></li>
-    <li><a href="<?php echo $urls['success_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng thành công</span></a></li>
-    <!--quản lý sản phẩm-->
-    <li class="header"><i class="fa fa-square"></i> <span>Quản lý sản phẩm</span></li>
-    <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Danh sách SP</span></a></li>
-    <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm SP mới</span></a></li>
-    <!--Quản lý tài khoản-->
-        <?php if ($user['role'] == 'super'): ?>
-    <li class="header"><i class="fa fa-square"></i> <span>Quản trị tài khoản</span></li>
-    <li><a href="<?php echo $urls['super']; ?>"><i class="fa fa-angle-double-right"></i> <span>Admin</span></a></li>
-    <li><a href="<?php echo $urls['cskh']; ?>"><i class="fa fa-angle-double-right"></i> <span>CSKH</span></a></li>
-    <li><a href="<?php echo $urls['employee']; ?>"><i class="fa fa-angle-double-right"></i> <span>Sales</span></a></li>
-    <li><a href="<?php echo $urls['list_user']; ?>"><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
-    <li><a href="<?php echo $urls['add_user']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm tài khoản</span></a></li>
-        <?php endif; ?>
-    <!--Quản lý category-->
-    <li class="header"><i class="fa fa-square"></i> <span>Quản lý danh mục</span></li>
-    <li><a href="<?php echo $urls['category']; ?>"><i class="fa fa-angle-double-right"></i> <span>Danh mục lớn</span></a></li>
-    <li><a href="<?php echo $urls['add_category']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm DML mới</span></a></li>
-    <!--Quản lý sub category-->
-    <li><a href="<?php echo $urls['subcategory']; ?>"><i class="fa fa-angle-double-right"></i> <span>Danh mục con</span></a></li>
-    <li><a href="<?php echo $urls['add_subcategory']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm DMC mới</span></a></li>
+        <!--Quản trị đơn hàng-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Osi</span></li>
+        <!--pages-->
+        <li><a href="<?php echo $urls['user_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng mới</span></a></li>
+        <li><a href="<?php echo $urls['check_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng đang chờ</span></a></li>
+        <li><a href="<?php echo $urls['success_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng thành công</span></a></li>
+        <!--quản lý người kinh doanh-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Sasi</span></li>
+         <li><a href="<?php echo $urls['employee']; ?>"><i class="fa fa-angle-double-right"></i> <span>Sasi</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm mới</span></a></li>
+        <!--quản lý khách hàng-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Cusi</span></li>
+        <li><a href="<?php echo $urls['list_user']; ?>"><i class="fa fa-angle-double-right"></i> <span>Cusi</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm mới</span></a></li>
+        <!--quản lý nhà phân phối/sản xuất sản phẩm-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Masi/Disi</span></li>
+        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Masi</span></a></li>
+        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Disi</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm mới</span></a></li>
+        <!--quản lý ship-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Sisi</span></li>
+        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Sisi</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm mới</span></a></li>
+        <!--quản lý Cosi cham soc khach hang-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Cosi</span></li>
+        <li><a href="<?php echo $urls['cskh']; ?>"><i class="fa fa-angle-double-right"></i> <span>Cosi</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm mới</span></a></li>
+        <!--quản lý Chat luong vao ra-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Wasi</span></li>
+        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Wasi</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm mới</span></a></li>
+        <!--quản lý doi web admin-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Asi</span></li>
+        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Asi</span></a></li>
+        <li><a href="<?php echo $urls['super']; ?>"><i class="fa fa-angle-double-right"></i> <span>Asi</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm mới</span></a></li>
 
+        <!--quản lý sản phẩm-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Prosi</span></li>
+        <li><a href="<?php echo $urls['products']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Prosi</span></a></li>
+        <li><a href="<?php echo $urls['add_product']; ?>"><i class="fa fa-angle-double-right"></i> <span>Thêm SP mới</span></a></li>
 
-    <!--Quản lý slide-->
-    <li class="header"><i class="fa fa-square"></i> <span>Quản lý khác</span></li>
-    <!--pages-->
-    <li><a href="<?php echo $urls['slides']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Slide</span></a></li>
-    <li><a href="<?php echo $urls['add_slides']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm Slide</span></a></li>
-    <li><a href="<?php echo $urls['promotion']; ?>" ><i class="fa fa-angle-double-right"></i> <span>khuyến mại</span></a></li>
-    <li><a href="<?php echo $urls['exchange']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng quy đổi</span></a></li>
-    <li><a href="<?php echo $urls['compare']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng đối chiếu</span></a></li>
-    <!--end pages-->
+        <!--Quản lý category-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý Menu</span></li>
+        <li><a href="<?php echo $urls['category']; ?>"><i class="fa fa-angle-double-right"></i> <span>Danh mục lớn</span></a></li>
+        <li><a href="<?php echo $urls['add_category']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm DML mới</span></a></li>
+        <!--Quản lý sub category-->
+        <li><a href="<?php echo $urls['subcategory']; ?>"><i class="fa fa-angle-double-right"></i> <span>Danh mục con</span></a></li>
+        <li><a href="<?php echo $urls['add_subcategory']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm DMC mới</span></a></li>
+
+        <!--Quản lý slide-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản lý khác</span></li>
+        <!--pages-->
+        <li><a href="<?php echo $urls['slides']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Slide</span></a></li>
+        <li><a href="<?php echo $urls['add_slides']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thêm Slide</span></a></li>
+        <li><a href="<?php echo $urls['promotion']; ?>" ><i class="fa fa-angle-double-right"></i> <span>khuyến mại</span></a></li>
+        <li><a href="<?php echo $urls['exchange']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng quy đổi</span></a></li>
+        <li><a href="<?php echo $urls['compare']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng đối chiếu</span></a></li>
     <?php endif; ?>
     <?php if ($user['role'] == 'employee' || $user['role'] == 'partner'): ?>
-    <!--quan ly cua nhan vien-->
-    <li class="header"><i class="fa fa-square"></i> <span>Thông tin</span></li>
-    <!--pages-->
-    <li><a href="<?php echo $urls['summary']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng thống kê</span></a></li>
-    <li><a href="<?php echo $urls['order_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng</span></a></li>
-    <li><a href="<?php echo $urls['sasi_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Sasi</span></a></li>
-    <li><a href="<?php echo $urls['customer']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
-    <!--<li><a href="<?php // echo $urls['userbuy'];  ?>" ><i class="fa fa-angle-double-right"></i> <span>Doanh thu</span></a></li>-->
-    <li class="header"><i class="fa fa-square"></i> <span>More ...</span></li>
-    <li><a href="<?php echo $urls['infor_sasi']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thông tin cá nhân</span></a></li>
-    <li><a href="<?php echo $urls['compare_sasi']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng đối chiếu</span></a></li>
-    <li><a href="<?php echo $urls['convert_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng quy đổi</span></a></li>
-    <li><a href="<?php echo $urls['products_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Danh sách sản phẩm</span></a></li>
+        <!--quan ly cua nhan vien-->
+        <li class="header"><i class="fa fa-square"></i> <span>Thông tin</span></li>
+        <!--pages-->
+        <li><a href="<?php echo $urls['summary']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng thống kê</span></a></li>
+        <li><a href="<?php echo $urls['order_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng</span></a></li>
+        <li><a href="<?php echo $urls['sasi_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Sasi</span></a></li>
+        <li><a href="<?php echo $urls['customer']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
+        <!--<li><a href="<?php // echo $urls['userbuy'];     ?>" ><i class="fa fa-angle-double-right"></i> <span>Doanh thu</span></a></li>-->
+        <li class="header"><i class="fa fa-square"></i> <span>More ...</span></li>
+        <li><a href="<?php echo $urls['infor_sasi']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Thông tin cá nhân</span></a></li>
+        <li><a href="<?php echo $urls['compare_sasi']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng đối chiếu</span></a></li>
+        <li><a href="<?php echo $urls['convert_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Bảng quy đổi</span></a></li>
+        <li><a href="<?php echo $urls['products_list']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Danh sách sản phẩm</span></a></li>
 
 
     <?php endif; ?>
     <?php if ($user['role'] == 'admin'): ?>
-    <!--quan ly cua nhan vien vien ban hang-->
-    <li class="header"><i class="fa fa-square"></i> <span>Quản trị đơn hàng</span></li>
-    <!--pages-->
-    <li><a href="<?php echo $urls['user_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng mới</span></a></li>
-    <li><a href="<?php echo $urls['check_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng đang chờ</span></a></li>
-    <li><a href="<?php echo $urls['success_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng thành công</span></a></li>
-    <!--quan tri khach hang-->
-    <li class="header"><i class="fa fa-square"></i> <span>Quản trị khách hàng</span></li>
-    <li><a href="<?php echo $urls['list_user']; ?>"><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
+        <!--quan ly cua nhan vien vien ban hang-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản trị đơn hàng</span></li>
+        <!--pages-->
+        <li><a href="<?php echo $urls['user_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng mới</span></a></li>
+        <li><a href="<?php echo $urls['check_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng đang chờ</span></a></li>
+        <li><a href="<?php echo $urls['success_buy']; ?>" ><i class="fa fa-angle-double-right"></i> <span>Đơn hàng thành công</span></a></li>
+        <!--quan tri khach hang-->
+        <li class="header"><i class="fa fa-square"></i> <span>Quản trị khách hàng</span></li>
+        <li><a href="<?php echo $urls['list_user']; ?>"><i class="fa fa-angle-double-right"></i> <span>Khách hàng</span></a></li>
         <?php endif; ?>
 </ul>

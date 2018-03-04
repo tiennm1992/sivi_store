@@ -581,7 +581,6 @@ class UserBuysController extends AppController {
                     )
                 )
             );
-//            pr($this->Paginator->paginate('UserBuy'));die;
             $this->set('userBuys', $this->Paginator->paginate('UserBuy'));
             $this->set('title_for_layout', 'Danh sách đơn hàng đang chờ');
         } catch (Exception $exc) {

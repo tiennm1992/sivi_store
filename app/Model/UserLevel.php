@@ -23,7 +23,11 @@ class UserLevel extends AppModel {
         if (empty($user_data)) {
             return 0;
         }
-        $number_product = $User_buy->get_number_buy($code);
+        $date = date("Y-m");
+        $date = explode('-', $date);
+        $month = $date[1];
+        $year = $date[0];
+        $number_product = $User_buy->get_number_buy($code, $month, $year);
         $arr = $this->get_sub_level($code);
         $level = $this->conditions_level($arr, $number_product);
         $profit = 0;
