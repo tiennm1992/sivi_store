@@ -178,7 +178,7 @@ class ApiController extends AppController {
     //api edit profile client
     public function edit_profile() {
         $data = $this->request->query;
-        if (!empty($data['id']) && !empty($data['password'])  && !empty($data['phone']) && !empty($data['token'])) {
+        if (!empty($data['id']) && !empty($data['password']) && !empty($data['phone']) && !empty($data['token'])) {
             if ($this->checkLogin($data['token'])) {
                 $data_user = $this->Customer->find('first', array('conditions' => array('Customer.id' => $data['id'])));
                 if ($data_user) {
@@ -478,7 +478,7 @@ class ApiController extends AppController {
                     $rep[] = $arr_tmp;
                 }
             }
-            $this->success('Buy success',$rep);
+            $this->success('Buy success', $rep);
         } else {
             $this->bugError('Thiếu biến');
         }
@@ -719,7 +719,7 @@ class ApiController extends AppController {
             foreach ($data as $key => $value) {
                 $subcategory[$key] = $value['Subcategory'];
             }
-            $this->success('Lay subcategory thanh cong',$subcategory);
+            $this->success('Lay subcategory thanh cong', $subcategory);
         } else {
             $this->echoError();
         }
@@ -1054,7 +1054,8 @@ class ApiController extends AppController {
             foreach ($data as $key1 => $value1) {
                 $data[$key1]['Product']['price'] = number_format($data[$key1]['Product']['price'], 0, ',', '.');
             }
-            $this->success('Lay du lieu thanh cong',$data);
+            $data = Set::extract('/Product/.', $data);
+            $this->success('Lay du lieu thanh cong', $data);
         } else {
             $this->echoError();
         }
@@ -1075,6 +1076,7 @@ class ApiController extends AppController {
                 foreach ($data as $key1 => $value1) {
                     $data[$key1]['Product']['price'] = number_format($data[$key1]['Product']['price'], 0, ',', '.');
                 }
+                $data = Set::extract('/Product/.', $data);
                 $this->echoData($data);
             }
         } else {
@@ -1182,6 +1184,7 @@ class ApiController extends AppController {
                     $data[$key1]['Product']['is_like'] = 0;
                 }
             }
+            $data = Set::extract('/Product/.', $data);
             $this->echoData($data);
         } else {
             $this->echoError();
@@ -1241,6 +1244,7 @@ class ApiController extends AppController {
         echo ($data_api);
         die;
     }
+
     function new_bugError($infor) {
         $data_api = array(
             'success' => 0,
