@@ -230,9 +230,9 @@ class ApiCusiController extends ApiBaseController {
     }
 
     //get cancel list
-    public function get_cancel_order_list() {
-        $this->validate_data();
-        $user_id = $this->request->data('user_id');
+    public function cancel_list() {
+        $this->validate_query();
+        $user_id = $this->request->query('user_id');
         $data = $this->UserBuy->find('all', array(
             'conditions' => array(
                 'UserBuy.customer_id' => $user_id,
@@ -257,7 +257,7 @@ class ApiCusiController extends ApiBaseController {
     }
 
     //lay list san phan da mua
-    public function get_buy() {
+    public function get_new_order_buy() {
         $this->validate_query();
         $user_id = $this->request->query('user_id');
         $data = $this->UserBuy->find('all', array(

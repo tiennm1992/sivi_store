@@ -438,7 +438,7 @@ class UserBuysController extends AppController {
                 ),
                 'joins' => array(
                     array(
-                        'table' => 'customers',
+                        'table' => 'users',
                         'alias' => 'Customer',
                         'type' => 'inner',
                         'conditions' => array(
@@ -507,7 +507,7 @@ class UserBuysController extends AppController {
                 ),
                 'joins' => array(
                     array(
-                        'table' => 'customers',
+                        'table' => 'users',
                         'alias' => 'Customer',
                         'type' => 'inner',
                         'conditions' => array(
@@ -556,7 +556,7 @@ class UserBuysController extends AppController {
                 ),
                 'joins' => array(
                     array(
-                        'table' => 'customers',
+                        'table' => 'users',
                         'alias' => 'Customer',
                         'type' => 'inner',
                         'conditions' => array(

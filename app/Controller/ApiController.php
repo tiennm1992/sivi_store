@@ -1077,7 +1077,8 @@ class ApiController extends AppController {
                     $data[$key1]['Product']['price'] = number_format($data[$key1]['Product']['price'], 0, ',', '.');
                 }
                 $data = Set::extract('/Product/.', $data);
-                $this->echoData($data);
+                $this->success('Get success', $data);
+//                $this->echoData($data);
             }
         } else {
             $this->echoError();
