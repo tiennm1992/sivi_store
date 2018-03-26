@@ -1186,7 +1186,7 @@ class ApiController extends AppController {
                 }
             }
             $data = Set::extract('/Product/.', $data);
-            $this->echoData($data);
+            $this->success('Susseccful get data',$data);
         } else {
             $this->echoError();
         }
